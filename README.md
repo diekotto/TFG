@@ -52,14 +52,40 @@ Inicialmente la interfaz se plantea web, para facilitar la accesibilidad desde d
 
 ### Funcionalidades
 
-- Registro de productos mediante Qr o código de barras (Mediante un móvil por ejemplo) además de a mano
-- Registro de usuarios
+- Registro de productos mediante Qr o código de barras (Mediante un móvil por ejemplo) además de a mano.
+    - Permitir leer en bloque desde la aplicación móvil con un adaptador usb.
+- PWA para poder usar lector con la cámara del móvil.
+- Cachear en local web en caso de pérdida de conectividad y disponibilidad.
+    - Información visual en la página web sobre si hay conexión o no.
+- Desarrollar las dos líneas de hardware, raspberry y cloud.
+    - Migración automática entre diferentes bases de datos por la posibilidad de migración entre una solución de hardware y otra.
+    - Mirar free tier mongodb y su capacidad. Solución agnóstica al motor de base de datos.
+- Registro de usuarios.
 - Generación de paneles/gráficos.
-    - Valorar predicciones y toma de decisiones
-- Generación de informes
+    - Valorar predicciones y toma de decisiones.
+- Generación de informes.
+    - Resúmenes de datos en la aplicación.
+    - Permitir imprimir.
+- Sección de almacén para visualizar los pedidos.
+    - Usuario pide X productos y al almacén le llega la notificación de qué quiere recoger, se da de alta en una recepción.
+    - Salida de productos flexibles, lectura en la entrada y no en la salida.
+    - Productos donados no se venden, salen a discreción de la recepción, sin petición del usuario.
 - Gestionar diferentes perfiles con acceso al sistema.
-    - Administrador completo (Acceso a los datos completos de todos los usuarios)
-    - Administrador por barrio (Acceso restringido a uno barrios correspondientes pero accesible a toda la información)
-    - Administrador (Sin acceso a los datos de ningún usuario pero con capacidad de modificar los elementos )
-    - "Caja" (Acceso restringido para procesar las solicitudes de venta de los productos a los usuarios)
-- Panel de administración
+    - Administrador completo (Acceso a los datos completos de todos los usuarios).
+    - Administrador por barrio (Acceso restringido a uno barrios correspondientes pero accesible a toda la información).
+    - Administrador (Sin acceso a los datos de ningún usuario pero con capacidad de modificar los elementos).
+- "Caja" (Acceso restringido para procesar las solicitudes de venta de los productos a los usuarios).
+    - Dejar un listado de pedidos pendientes de cobrar al de la caja.
+    - Apertura y cierre de cajas diarias.
+        - Cuánto producto ha salido
+        - Cuánto se ha vendido.
+        - Cuánto donado ha salido.
+    - Informes de caja.
+    - Familias especiales que no pagan.
+- Panel de administración.
+    - Gestionar permisos y usuarios.
+        - Permisos permanentes y temporales.
+    - Altas y edición de productos.
+    - Registrar usuarios.
+        - Se estudia y se decide unos límites.
+    - Histórico de cambios y responsables de éstos.
