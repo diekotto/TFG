@@ -1,6 +1,7 @@
 .idea
 docs
 ean.database
+backend/dist
 
 # Logs
 logs
