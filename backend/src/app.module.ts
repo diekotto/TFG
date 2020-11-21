@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserMongoModule } from './db/user-mongo/user-mongo.module';
 import { ProvidersModule } from './db/providers/providers.module';
+import { UserModule } from './api/user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ProvidersModule } from './db/providers/providers.module';
     EanModule,
     UserMongoModule,
     ProvidersModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,8 +13,8 @@ export const UserSchema = new mongoose.Schema({
       action: String,
     },
   ],
-  checkIn: Date,
-  checkOut: Date,
+  checkIn: String,
+  checkOut: String,
   comments: [
     {
       author: String,
@@ -40,7 +40,7 @@ export interface UserDocument extends Document {
   // permissions: string[]; // TODO: SIN HACER #9
   accessHistory: Date[];
   actionsHistory: UserAction[];
-  checkIn: Date;
-  checkOut: Date;
+  checkIn: string; // 'HH:ss'
+  checkOut: string; // 'HH:ss'
   comments: UserComment[];
 }
