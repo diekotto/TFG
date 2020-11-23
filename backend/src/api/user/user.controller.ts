@@ -13,6 +13,7 @@ import { ApiNotFoundResponse } from '@nestjs/swagger';
 import { AuthorizationInterceptor } from '../interceptors/authorization.interceptor';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user-dto';
+import { AddCommentDto } from './dto/add-comment-dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -53,5 +54,13 @@ export class UserController {
   @Put('/:id/deactivate')
   deactivateUser(@Param('id') id: string): Promise<UserDto> {
     return this.userService.deactivateUser(id);
+  }
+
+  @Put('/:id/comment')
+  addCommentToUser(
+    @Param('id') id: string,
+    @Body() body: AddCommentDto,
+  ): Promise<UserDto> {
+    return this.userService.addCommentToUser(id, new AddCommentDto(body));
   }
 }

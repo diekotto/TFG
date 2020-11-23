@@ -35,6 +35,8 @@ export class UserDto {
   accessHistory: string[];
 
   constructor(o: Partial<UserDto>) {
+    // PARA LA FUNCIONALIDAD DE BORRAR COMENTARIOS
+    // REVISA LA NECESIDAD DE AÑADIR ID A CADA COMENTARIO
     Object.assign(this, o);
     this.validateId();
     this.validateString('name');
