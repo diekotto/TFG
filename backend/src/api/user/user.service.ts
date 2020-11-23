@@ -23,13 +23,24 @@ export class UserService {
     return UserService.userMapper(await this.userMongo.findById(id));
   }
 
+  async updateUser(input: UserDto): Promise<UserDto> {
+    const user: UserDocument = await this.userMongo.findById(input.id);
+    user.name = input.name;
+    user.email = input.email;
+    user.active = input.active;
+    user.checkIn = input.checkIn;
+    user.checkOut = input.checkOut;
+    await user.save();
+    return UserService.userMapper(user);
+  }
+
   private static usersMapper(users: UserDocument[]): UserDto[] {
     return users.map(UserService.userMapper);
   }
 
   private static userMapper(user: UserDocument): UserDto {
-    return {
-      id: user._id,
+    return new UserDto({
+      id: user.id,
       name: user.name,
       email: user.email,
       active: user.active,
@@ -41,6 +52,6 @@ export class UserService {
       accessHistory: user.accessHistory.map((a: Date) => a.toISOString()),
       checkIn: user.checkIn,
       checkOut: user.checkOut,
-    };
+    });
   }
 }
