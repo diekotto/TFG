@@ -44,4 +44,14 @@ export class UserController {
     const user = new UserDto(body);
     return this.userService.updateUser(user);
   }
+
+  @Put('/:id/activate')
+  activateUser(@Param('id') id: string): Promise<UserDto> {
+    return this.userService.activateUser(id);
+  }
+
+  @Put('/:id/deactivate')
+  deactivateUser(@Param('id') id: string): Promise<UserDto> {
+    return this.userService.deactivateUser(id);
+  }
 }

@@ -23,6 +23,20 @@ export class UserService {
     return UserService.userMapper(await this.userMongo.findById(id));
   }
 
+  async activateUser(id: string): Promise<UserDto> {
+    const user: UserDocument = await this.userMongo.findById(id);
+    user.active = true;
+    await user.save();
+    return UserService.userMapper(user);
+  }
+
+  async deactivateUser(id: string): Promise<UserDto> {
+    const user: UserDocument = await this.userMongo.findById(id);
+    user.active = false;
+    await user.save();
+    return UserService.userMapper(user);
+  }
+
   async updateUser(input: UserDto): Promise<UserDto> {
     const user: UserDocument = await this.userMongo.findById(input.id);
     user.name = input.name;
