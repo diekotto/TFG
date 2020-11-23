@@ -6,6 +6,7 @@ import {
   UserDocument,
 } from '../../db/user-mongo/user-schema';
 import { UserDto } from './dto/user-dto';
+import { AddCommentDto } from './dto/add-comment-dto';
 
 @Injectable()
 export class UserService {
@@ -37,6 +38,13 @@ export class UserService {
     return UserService.userMapper(user);
   }
 
+  async addCommentToUser(id: string, comment: AddCommentDto): Promise<UserDto> {
+    const user: UserDocument = await this.userMongo.findById(id);
+    user.comments.push(comment.comment);
+    await user.save();
+    return UserService.userMapper(user);
+  }
+
   async updateUser(input: UserDto): Promise<UserDto> {
     const user: UserDocument = await this.userMongo.findById(input.id);
     user.name = input.name;
@@ -62,7 +70,10 @@ export class UserService {
         action: h.action,
         date: h.date.toISOString(),
       })),
-      comments: user.comments.map((c: UserComment) => ({ ...c })),
+      comments: user.comments.map((c: UserComment) => ({
+        comment: c.comment,
+        author: c.author,
+      })),
       accessHistory: user.accessHistory.map((a: Date) => a.toISOString()),
       checkIn: user.checkIn,
       checkOut: user.checkOut,
