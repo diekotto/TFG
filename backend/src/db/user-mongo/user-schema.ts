@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 export const UserSchema = new mongoose.Schema({
   name: String,
   email: String,
+  password: String,
   active: Boolean,
   // permissions: [String], // TODO: SIN HACER #9
   accessHistory: [Date],
@@ -36,6 +37,7 @@ export interface UserAction {
 export interface UserDocument extends Document {
   name: string;
   email: string;
+  password: string;
   active: boolean;
   // permissions: string[]; // TODO: SIN HACER #9
   accessHistory: Date[];

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserMongoService } from '../../db/user-mongo/user-mongo.service';
 import {
   UserAction,
@@ -13,6 +13,9 @@ export class UserService {
   constructor(private userMongo: UserMongoService) {}
 
   async createUser(user: UserDto): Promise<UserDto> {
+    if (!user.password) {
+      throw new BadRequestException('Create user needs password');
+    }
     return UserService.userMapper(await this.userMongo.create(user));
   }
 
@@ -56,11 +59,11 @@ export class UserService {
     return UserService.userMapper(user);
   }
 
-  private static usersMapper(users: UserDocument[]): UserDto[] {
+  static usersMapper(users: UserDocument[]): UserDto[] {
     return users.map(UserService.userMapper);
   }
 
-  private static userMapper(user: UserDocument): UserDto {
+  static userMapper(user: UserDocument): UserDto {
     return new UserDto({
       id: user.id,
       name: user.name,

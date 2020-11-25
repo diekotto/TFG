@@ -20,6 +20,12 @@ export class UserMongoService {
     return this.userModel.find();
   }
 
+  async find(key: string, value: any): Promise<UserDocument[]> {
+    const query = {};
+    query[key] = value;
+    return this.userModel.find(query);
+  }
+
   async findById(id: string): Promise<UserDocument> {
     return this.userModel.findById(id);
   }
