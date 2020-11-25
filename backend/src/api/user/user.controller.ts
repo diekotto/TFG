@@ -9,7 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
-import { ApiNotFoundResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { AuthorizationInterceptor } from '../interceptors/authorization.interceptor';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user-dto';
@@ -18,6 +18,9 @@ import { AddCommentDto } from './dto/add-comment-dto';
 @ApiTags('User')
 @Controller('user')
 @UseInterceptors(AuthorizationInterceptor)
+@ApiBadRequestResponse({
+  description: 'There are params error',
+})
 @ApiNotFoundResponse({
   description: 'Entity not found',
 })

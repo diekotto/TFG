@@ -22,6 +22,7 @@ export class UserDto {
   id?: string;
   @ApiProperty() name: string;
   @ApiProperty() email: string;
+  @ApiProperty() password: string;
   @ApiProperty() active: boolean;
   @ApiProperty({ required: false }) actionsHistory: UserActionDto[];
   @ApiProperty({ required: false }) comments: UserCommentDto[];
