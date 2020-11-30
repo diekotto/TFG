@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BadRequestException } from '@nestjs/common';
+import { RoleName } from '../../../db/role-mongo/role-schema';
 
 export class UserActionDto {
   @ApiProperty({
@@ -28,7 +29,10 @@ export class UserDto {
   @ApiProperty({ required: false }) comments: UserCommentDto[];
   @ApiProperty({ format: 'HH:ii', required: false }) checkIn?: string;
   @ApiProperty({ format: 'HH:ii', required: false }) checkOut?: string;
-  // permissions: string[]; // TODO: SIN HACER #9
+  @ApiProperty({
+    enum: RoleName,
+  })
+  permissions: RoleName[];
   @ApiProperty({
     format: 'ISO String',
     required: false,

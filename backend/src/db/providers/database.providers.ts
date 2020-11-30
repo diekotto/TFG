@@ -7,6 +7,9 @@ export const databaseProviders = [
     imports: [ConfigModule],
     inject: [ConfigService],
     useFactory: (configService: ConfigService): Promise<typeof mongoose> =>
-      mongoose.connect(configService.get('ES_MONGODB_URL')),
+      mongoose.connect(configService.get('ES_MONGODB_URL'), {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }),
   },
 ];

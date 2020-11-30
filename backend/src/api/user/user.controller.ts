@@ -10,10 +10,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
 import { ApiBadRequestResponse, ApiNotFoundResponse } from '@nestjs/swagger';
-import { AuthorizationInterceptor } from '../interceptors/authorization.interceptor';
+import { AuthorizationInterceptor } from '../interceptors/authorization/authorization.interceptor';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user-dto';
 import { AddCommentDto } from './dto/add-comment-dto';
+import { Role, RoleName } from '../../db/role-mongo/role-schema';
 
 @ApiTags('User')
 @Controller('user')
@@ -57,6 +58,16 @@ export class UserController {
   @Put('/:id/deactivate')
   deactivateUser(@Param('id') id: string): Promise<UserDto> {
     return this.userService.deactivateUser(id);
+  }
+
+  @Put('/:id/role/:roleName')
+  addRoleToUser(
+    @Param('id') id: string,
+    @Param('roleName') roleName: RoleName,
+  ): Promise<UserDto> {
+    if (!Role.validateRole(roleName))
+      throw new BadRequestException('Role invalid');
+    return this.userService.addRoleToUser(id, roleName);
   }
 
   @Put('/:id/comment')

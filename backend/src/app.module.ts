@@ -7,6 +7,7 @@ import { UserMongoModule } from './db/user-mongo/user-mongo.module';
 import { ProvidersModule } from './db/providers/providers.module';
 import { UserModule } from './api/user/user.module';
 import { LoginModule } from './api/login/login.module';
+import { RoleMongoModule } from './db/role-mongo/role-mongo.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LoginModule } from './api/login/login.module';
     ProvidersModule,
     UserModule,
     LoginModule,
+    RoleMongoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

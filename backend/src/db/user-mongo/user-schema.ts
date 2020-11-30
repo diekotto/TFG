@@ -1,48 +1,31 @@
 import { Document } from 'mongoose';
-import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { RoleName } from '../role-mongo/role-schema';
 
-export const UserSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
-  active: Boolean,
-  // permissions: [String], // TODO: SIN HACER #9
-  accessHistory: [Date],
-  actionsHistory: [
-    {
-      date: Date,
-      action: String,
-    },
-  ],
-  checkIn: String,
-  checkOut: String,
-  comments: [
-    {
-      author: String,
-      comment: String,
-    },
-  ],
-});
+export type UserDocument = User & Document;
 
-export interface UserComment {
-  author: string;
-  comment: string;
+export class UserComment {
+  @Prop() author: string;
+  @Prop() comment: string;
 }
 
-export interface UserAction {
-  date: Date;
-  action: string;
+export class UserAction {
+  @Prop() date: Date;
+  @Prop() action: string;
 }
 
-export interface UserDocument extends Document {
-  name: string;
-  email: string;
-  password: string;
-  active: boolean;
-  // permissions: string[]; // TODO: SIN HACER #9
-  accessHistory: Date[];
-  actionsHistory: UserAction[];
-  checkIn: string; // 'HH:ss'
-  checkOut: string; // 'HH:ss'
-  comments: UserComment[];
+@Schema()
+export class User {
+  @Prop() name: string;
+  @Prop() email: string;
+  @Prop() password: string;
+  @Prop() active: boolean;
+  @Prop() permissions: RoleName[];
+  @Prop() accessHistory: Date[];
+  @Prop() actionsHistory: UserAction[];
+  @Prop() checkIn: string; // 'HH:ss'
+  @Prop() checkOut: string; // 'HH:ss'
+  @Prop() comments: UserComment[];
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);
