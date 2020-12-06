@@ -13,6 +13,7 @@ import { UserDto } from './dto/user-dto';
 import { AddCommentDto } from './dto/add-comment-dto';
 import { RoleDocument, RoleName } from '../../db/role-mongo/role-schema';
 import { RoleMongoService } from '../../db/role-mongo/role-mongo.service';
+import { hashSync } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -22,9 +23,18 @@ export class UserService {
   ) {}
 
   async createUser(user: UserDto): Promise<UserDto> {
+    if (!user.email) {
+      throw new BadRequestException('Create user needs email');
+    }
     if (!user.password) {
       throw new BadRequestException('Create user needs password');
     }
+    if (user.password.length < 8) {
+      throw new BadRequestException(
+        'The password needs to be at least 8 char length',
+      );
+    }
+    user.password = hashSync(user.password, 10);
     return UserService.userMapper(await this.userMongo.create(user));
   }
 

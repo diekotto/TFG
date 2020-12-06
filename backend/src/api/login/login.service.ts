@@ -5,6 +5,7 @@ import { UserDto } from '../user/dto/user-dto';
 import { UserMongoService } from '../../db/user-mongo/user-mongo.service';
 import { UserService } from '../user/user.service';
 import { ConfigService } from '@nestjs/config';
+import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class LoginService {
@@ -18,7 +19,7 @@ export class LoginService {
   async login(input: LoginDto): Promise<UserDto> {
     const user = (await this.userMongo.find('email', input.email))[0];
     if (!user) throw new ForbiddenException(this.genericErrorMessage);
-    if (user.password !== input.password)
+    if (!compareSync(input.password, user.password))
       throw new ForbiddenException(this.genericErrorMessage);
     if (!user.active) {
       user.actionsHistory.push({
