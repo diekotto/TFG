@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,7 +12,7 @@ import {
 } from '../../db/user-mongo/user-schema';
 import { UserDto } from './dto/user-dto';
 import { AddCommentDto } from './dto/add-comment-dto';
-import { RoleDocument, RoleName } from '../../db/role-mongo/role-schema';
+import { Role, RoleDocument, RoleName } from '../../db/role-mongo/role-schema';
 import { RoleMongoService } from '../../db/role-mongo/role-mongo.service';
 import { hashSync } from 'bcrypt';
 
@@ -23,17 +24,12 @@ export class UserService {
   ) {}
 
   async createUser(user: UserDto): Promise<UserDto> {
-    if (!user.email) {
-      throw new BadRequestException('Create user needs email');
-    }
-    if (!user.password) {
-      throw new BadRequestException('Create user needs password');
-    }
-    if (user.password.length < 8) {
-      throw new BadRequestException(
-        'The password needs to be at least 8 char length',
-      );
-    }
+    this.userValidations(user);
+    const repeated: UserDocument = (
+      await this.userMongo.find('email', user.email)
+    )[0];
+    if (repeated)
+      throw new ConflictException(`The email ${user.email} is in use`);
     user.password = hashSync(user.password, 10);
     return UserService.userMapper(await this.userMongo.create(user));
   }
@@ -73,13 +69,12 @@ export class UserService {
   }
 
   async updateUser(input: UserDto): Promise<UserDto> {
+    this.userValidations(input);
     const user: UserDocument = await this.userMongo.findById(input.id);
     if (!user) throw new NotFoundException('User not found');
     user.name = input.name;
     user.email = input.email;
     user.active = input.active;
-    user.checkIn = input.checkIn;
-    user.checkOut = input.checkOut;
     await user.save();
     return UserService.userMapper(user);
   }
@@ -117,9 +112,30 @@ export class UserService {
         author: c.author,
       })),
       accessHistory: user.accessHistory.map((a: Date) => a.toISOString()),
-      checkIn: user.checkIn,
-      checkOut: user.checkOut,
       permissions: [...user.permissions],
     });
+  }
+
+  private userValidations(user: UserDto): void {
+    if (!user.name) {
+      throw new BadRequestException('User needs name');
+    }
+    if (!user.email) {
+      throw new BadRequestException('User needs email');
+    }
+    if (!user.password) {
+      throw new BadRequestException('User needs password');
+    }
+    if (user.password.length < 8) {
+      throw new BadRequestException(
+        'The password needs to be at least 8 char length',
+      );
+    }
+    if (
+      !user.permissions ||
+      !user.permissions.every((role) => Role.validateRole(role))
+    ) {
+      throw new BadRequestException('User roles invalid');
+    }
   }
 }

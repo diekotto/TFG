@@ -23,8 +23,6 @@ export class User {
   @Prop() permissions: RoleName[];
   @Prop() accessHistory: Date[];
   @Prop() actionsHistory: UserAction[];
-  @Prop() checkIn: string; // 'HH:ss'
-  @Prop() checkOut: string; // 'HH:ss'
   @Prop() comments: UserComment[];
 }
 

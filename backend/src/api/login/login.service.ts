@@ -6,6 +6,8 @@ import { UserMongoService } from '../../db/user-mongo/user-mongo.service';
 import { UserService } from '../user/user.service';
 import { ConfigService } from '@nestjs/config';
 import { compareSync } from 'bcrypt';
+import { JWToken } from '../guards/jwtoken.interface';
+import * as moment from 'moment';
 
 @Injectable()
 export class LoginService {
@@ -36,6 +38,11 @@ export class LoginService {
 
   createJwt(user: UserDto): string {
     const secret = this.configService.get('ES_JWT_SECRET');
-    return jwt.sign({ id: user.id }, secret);
+    const payload: Partial<JWToken> = {
+      id: user.id,
+      roles: user.permissions,
+      exp: moment().add(8, 'h').toDate().getTime(),
+    };
+    return jwt.sign(payload, secret);
   }
 }

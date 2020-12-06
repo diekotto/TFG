@@ -27,8 +27,6 @@ export class UserDto {
   @ApiProperty() active: boolean;
   @ApiProperty({ required: false }) actionsHistory: UserActionDto[];
   @ApiProperty({ required: false }) comments: UserCommentDto[];
-  @ApiProperty({ format: 'HH:ii', required: false }) checkIn?: string;
-  @ApiProperty({ format: 'HH:ii', required: false }) checkOut?: string;
   @ApiProperty({
     enum: RoleName,
   })
@@ -46,8 +44,6 @@ export class UserDto {
     this.validateId();
     this.validateString('name');
     this.validateString('email');
-    this.validateHoursFormat('checkIn');
-    this.validateHoursFormat('checkOut');
     this.validateBoolean('active');
   }
 
@@ -59,17 +55,6 @@ export class UserDto {
   private validateString(key: string): void {
     if (typeof this[key] !== 'string' || this[key].length < 1)
       throw new BadRequestException(`User ${key} bad format`);
-  }
-
-  private validateHoursFormat(key: string): void {
-    if (!this[key]) return;
-    this.validateString(key);
-    const regex = /^(..):(..)$/;
-    const group = regex.exec(this[key]);
-    if (+group[1] < 0 || +group[1] > 23)
-      throw new BadRequestException(`Bad ${key} hours format`);
-    if (+group[2] < 0 || +group[2] > 59)
-      throw new BadRequestException(`Bad ${key} minutes format`);
   }
 
   private validateBoolean(key: string): void {

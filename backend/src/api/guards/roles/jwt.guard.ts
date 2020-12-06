@@ -1,22 +1,22 @@
-import * as jwt from 'jsonwebtoken';
-import { Request } from 'express';
 import {
   BadRequestException,
-  CallHandler,
+  CanActivate,
   ExecutionContext,
   Injectable,
-  NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { Request } from 'express';
+import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
-import { RoleName } from '../../../db/role-mongo/role-schema';
+import { JWToken } from '../jwtoken.interface';
 
 @Injectable()
-export class AuthorizationInterceptor implements NestInterceptor {
+export class JwtGuard implements CanActivate {
   constructor(private configService: ConfigService) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    // CODIGO ANTES DEL CONTROLADOR
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
     const req: Request = context.switchToHttp().getRequest();
     const bearer: string = req.header('Authorization');
     let token: JWToken;
@@ -28,13 +28,6 @@ export class AuthorizationInterceptor implements NestInterceptor {
       throw new BadRequestException('Bad bearer token');
     }
     req['jwt'] = token;
-    return next.handle(); // CODIGO DESPUÉS DEL CONTROLADOR
+    return true;
   }
-}
-
-export interface JWToken {
-  iat: number; // POSIX CREATED
-  id: string; // ID USER
-  exp: number; // POSIX EXPIRY
-  role: RoleName;
 }

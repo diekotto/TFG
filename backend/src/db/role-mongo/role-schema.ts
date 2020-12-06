@@ -12,17 +12,11 @@ export class Role {
 
   static permissionMap: RolePermissionMap;
 
-  constructor() {
-    if (!Role.permissionMap) {
-      Role.permissionMap = Role.initPermissionMap();
-    }
-  }
-
   static validateRole(role: string): boolean {
     return Object.keys(RoleName).some((k: string) => RoleName[k] === role);
   }
 
-  static initPermissionMap(): RolePermissionMap {
+  static initPermissionMap(): void {
     const map = new Map<RoleName, RoleName[]>();
     map.set(RoleName.SUPERADMIN, [RoleName.SUPERADMIN]);
     map.set(RoleName.ADMIN, [RoleName.SUPERADMIN, RoleName.ADMIN]);
@@ -55,12 +49,15 @@ export class Role {
       RoleName.ADMINLOCAL,
       RoleName.CAJA,
     ]);
-    return map;
+    Role.permissionMap = map;
   }
 
-  static hasNeededRole(input: RoleName, needed: RoleName): boolean {
+  static hasNeededRole(input: RoleName[], needed: RoleName): boolean {
+    if (!Role.permissionMap) {
+      Role.initPermissionMap();
+    }
     const allowed = Role.permissionMap.get(needed);
-    return allowed && allowed.includes(input);
+    return allowed && input.some((role) => allowed.includes(role));
   }
 }
 
@@ -74,4 +71,5 @@ export enum RoleName {
   RECEPCION = 'recepcion',
   FAMILIAR = 'familiar',
   CAJA = 'caja',
+  OWNER = 'owner', // ONLY USED FOR GUARDS
 }
