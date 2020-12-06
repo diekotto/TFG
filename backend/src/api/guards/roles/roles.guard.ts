@@ -1,0 +1,24 @@
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { Role, RoleName } from '../../../db/role-mongo/role-schema';
+import { Request } from 'express';
+import { Reflector } from '@nestjs/core';
+import { JWToken } from '../jwtoken.interface';
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const roles = this.reflector.get<RoleName[]>('roles', context.getHandler());
+    const req: Request = context.switchToHttp().getRequest();
+    const requester = req.params.id;
+    const token: JWToken = req['jwt'];
+    if (roles.includes(RoleName.OWNER)) return requester === token.id;
+    return roles
+      .filter((role) => role !== RoleName.OWNER)
+      .every((role) => Role.hasNeededRole(token.roles, role));
+  }
+}

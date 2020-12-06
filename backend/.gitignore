@@ -1,6 +1,10 @@
+# PROD env example
+.env.prod
+
 # compiled output
 /node_modules
 .env
+dist
 
 # Logs
 logs
