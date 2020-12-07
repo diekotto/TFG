@@ -10,10 +10,13 @@ import { LoginModule } from './api/login/login.module';
 import { RoleMongoModule } from './db/role-mongo/role-mongo.module';
 import { ProductModule } from './api/product/product.module';
 import { ProductMongoModule } from './db/product-mongo/product-mongo.module';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      load: [configuration],
+    }),
     EanModule,
     UserMongoModule,
     ProvidersModule,

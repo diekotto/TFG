@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { compareSync } from 'bcrypt';
 import { JWToken } from '../guards/jwtoken.interface';
 import * as moment from 'moment';
+import { AppConfig } from '../../config/configuration';
 
 @Injectable()
 export class LoginService {
@@ -15,7 +16,7 @@ export class LoginService {
 
   constructor(
     private userMongo: UserMongoService,
-    private configService: ConfigService,
+    private configService: ConfigService<AppConfig>,
   ) {}
 
   async login(input: LoginDto): Promise<UserDto> {
@@ -37,7 +38,7 @@ export class LoginService {
   }
 
   createJwt(user: UserDto): string {
-    const secret = this.configService.get('ES_JWT_SECRET');
+    const secret = this.configService.get('jwtSecret');
     const payload: Partial<JWToken> = {
       id: user.id,
       roles: user.permissions,

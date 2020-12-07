@@ -6,6 +6,8 @@ import {
   ProductDocument,
 } from '../../db/product-mongo/product-schema';
 import { AxiosResponse } from 'axios';
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '../../config/configuration';
 
 @Injectable()
 export class ProductService {
@@ -13,6 +15,7 @@ export class ProductService {
     'https://world.openfoodfacts.org/api/v0/product/{{ean}}.json';
 
   constructor(
+    private config: ConfigService<AppConfig>,
     private productsMongo: ProductMongoService,
     private httpClient: HttpService,
   ) {}
@@ -24,7 +27,11 @@ export class ProductService {
     );
     if (!product) {
       const response: AxiosResponse = await this.httpClient
-        .get(this.openFoodUrl.replace('{{ean}}', ean))
+        .get(this.openFoodUrl.replace('{{ean}}', ean), {
+          headers: {
+            'User-Agent': this.config.get('openFoodUserAgent'),
+          },
+        })
         .toPromise();
       product = await this.productsMongo.create(
         ProductService.fromOpenFoodToProduct(response),
