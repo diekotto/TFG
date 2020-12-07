@@ -8,6 +8,8 @@ import { ProvidersModule } from './db/providers/providers.module';
 import { UserModule } from './api/user/user.module';
 import { LoginModule } from './api/login/login.module';
 import { RoleMongoModule } from './db/role-mongo/role-mongo.module';
+import { ProductModule } from './api/product/product.module';
+import { ProductMongoModule } from './db/product-mongo/product-mongo.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { RoleMongoModule } from './db/role-mongo/role-mongo.module';
     UserModule,
     LoginModule,
     RoleMongoModule,
+    ProductModule,
+    ProductMongoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
