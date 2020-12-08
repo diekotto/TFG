@@ -1,38 +1,22 @@
 import { Model } from 'mongoose';
 import { Inject, Injectable } from '@nestjs/common';
 import { Role, RoleDocument, RoleName } from './role-schema';
+import { AbstractMongo } from '../abstract-mongo';
 
 @Injectable()
-export class RoleMongoService {
+export class RoleMongoService extends AbstractMongo<Role, RoleDocument> {
   constructor(
     @Inject('ROLE_MODEL')
-    private roleModel: Model<RoleDocument>,
-  ) {}
-
-  async create(
-    userId: string,
-    roleName: RoleName,
-    expiry?: Date,
-  ): Promise<RoleDocument> {
-    const role: Role = {
-      userId,
-      roleName,
-      expiry,
-    };
-    const created: RoleDocument = new this.roleModel(role);
-    await created.save();
-    return created;
-  }
-
-  async findByUserId(userId: string): Promise<RoleDocument[]> {
-    return this.roleModel.find({ userId });
+    model: Model<RoleDocument>,
+  ) {
+    super(model);
   }
 
   async findByUserIdAndRoleName(
     userId: string,
     roleName: RoleName,
   ): Promise<RoleDocument> {
-    return this.roleModel.findOne({
+    return this.findOneByConditions({
       userId,
       roleName,
     });
@@ -42,7 +26,7 @@ export class RoleMongoService {
     userId: string,
     roleName: RoleName,
   ): Promise<void> {
-    await this.roleModel.deleteOne({
+    await this.deleteOneByConditions({
       userId,
       roleName,
     });

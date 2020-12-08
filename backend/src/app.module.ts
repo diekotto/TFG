@@ -10,6 +10,7 @@ import { LoginModule } from './api/login/login.module';
 import { RoleMongoModule } from './db/role-mongo/role-mongo.module';
 import { ProductModule } from './api/product/product.module';
 import { ProductMongoModule } from './db/product-mongo/product-mongo.module';
+import { HeadquarterMongoModule } from './db/headquarter-mongo/headquarter-mongo.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -25,6 +26,7 @@ import configuration from './config/configuration';
     RoleMongoModule,
     ProductModule,
     ProductMongoModule,
+    HeadquarterMongoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

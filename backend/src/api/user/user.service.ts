@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { UserMongoService } from '../../db/user-mongo/user-mongo.service';
 import {
+  User,
   UserAction,
   UserComment,
   UserDocument,
@@ -23,14 +24,16 @@ export class UserService {
     private roleMongo: RoleMongoService,
   ) {}
 
-  async createUser(user: UserDto): Promise<UserDto> {
-    this.userValidations(user);
-    const repeated: UserDocument = (
-      await this.userMongo.find('email', user.email)
-    )[0];
+  async createUser(input: UserDto): Promise<UserDto> {
+    this.userValidations(input);
+    const repeated: UserDocument = await this.userMongo.findOneBy(
+      'email',
+      input.email,
+    );
     if (repeated)
-      throw new ConflictException(`The email ${user.email} is in use`);
-    user.password = hashSync(user.password, 10);
+      throw new ConflictException(`The email ${input.email} is in use`);
+    input.password = hashSync(input.password, 10);
+    const user = User.fromUserDto(input);
     return UserService.userMapper(await this.userMongo.create(user));
   }
 
@@ -82,12 +85,16 @@ export class UserService {
   async addRoleToUser(userId: string, roleName: RoleName): Promise<UserDto> {
     const user: UserDocument = await this.userMongo.findById(userId);
     if (!user) throw new NotFoundException('User not found');
-    const role: RoleDocument = await this.roleMongo.findByUserIdAndRoleName(
+    const roleDoc: RoleDocument = await this.roleMongo.findByUserIdAndRoleName(
       userId,
       roleName,
     );
-    if (role) return UserService.userMapper(user);
-    await this.roleMongo.create(userId, roleName);
+    if (roleDoc) return UserService.userMapper(user);
+    const role = new Role({
+      userId,
+      roleName,
+    });
+    await this.roleMongo.create(role);
     user.permissions.push(roleName);
     await user.save();
     return UserService.userMapper(user);
