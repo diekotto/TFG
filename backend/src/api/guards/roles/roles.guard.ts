@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Role, RoleName } from '../../../db/role-mongo/role-schema';
 import { Request } from 'express';
@@ -13,6 +18,8 @@ export class RolesGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const roles = this.reflector.get<RoleName[]>('roles', context.getHandler());
+    if (!roles) throw new InternalServerErrorException('Roles needed in route');
+    if (roles.length < 1) return true;
     const req: Request = context.switchToHttp().getRequest();
     const requester = req.params.id;
     const token: JWToken = req['jwt'];
