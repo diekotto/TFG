@@ -6,7 +6,7 @@ import { HttpModule } from '@nestjs/common';
 import { ProductMongoModule } from '../../db/product-mongo/product-mongo.module';
 import configuration from '../../config/configuration';
 
-describe('ProductController', () => {
+describe('ProductController (e2e)', () => {
   let controller: ProductController;
 
   beforeEach(async () => {

@@ -6,7 +6,7 @@ import { RoleMongoModule } from '../../db/role-mongo/role-mongo.module';
 import { UserService } from './user.service';
 import configuration from '../../config/configuration';
 
-describe('UserController', () => {
+describe('UserController (e2e)', () => {
   let controller: UserController;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

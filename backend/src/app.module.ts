@@ -10,6 +10,8 @@ import { RoleMongoModule } from './db/role-mongo/role-mongo.module';
 import { ProductModule } from './api/product/product.module';
 import { ProductMongoModule } from './db/product-mongo/product-mongo.module';
 import { HeadquarterMongoModule } from './db/headquarter-mongo/headquarter-mongo.module';
+import { WarehouseMongoModule } from './db/warehouse-mongo/warehouse-mongo.module';
+import { WarehouseModule } from './api/warehouse/warehouse.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -25,6 +27,8 @@ import configuration from './config/configuration';
     ProductModule,
     ProductMongoModule,
     HeadquarterMongoModule,
+    WarehouseMongoModule,
+    WarehouseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

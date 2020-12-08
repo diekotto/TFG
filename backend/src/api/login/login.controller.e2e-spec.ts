@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserMongoModule } from '../../db/user-mongo/user-mongo.module';
 import configuration from '../../config/configuration';
 
-describe('LoginController', () => {
+describe('LoginController (e2e)', () => {
   let controller: LoginController;
 
   beforeEach(async () => {
