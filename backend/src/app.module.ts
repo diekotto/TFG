@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EanModule } from './api/ean/ean.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserMongoModule } from './db/user-mongo/user-mongo.module';
 import { ProvidersModule } from './db/providers/providers.module';
@@ -18,7 +17,6 @@ import configuration from './config/configuration';
     ConfigModule.forRoot({
       load: [configuration],
     }),
-    EanModule,
     UserMongoModule,
     ProvidersModule,
     UserModule,
