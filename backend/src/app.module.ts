@@ -12,6 +12,7 @@ import { ProductMongoModule } from './db/product-mongo/product-mongo.module';
 import { HeadquarterMongoModule } from './db/headquarter-mongo/headquarter-mongo.module';
 import { WarehouseMongoModule } from './db/warehouse-mongo/warehouse-mongo.module';
 import { WarehouseModule } from './api/warehouse/warehouse.module';
+import { HeadquarterModule } from './api/headquarter/headquarter.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -29,6 +30,7 @@ import configuration from './config/configuration';
     HeadquarterMongoModule,
     WarehouseMongoModule,
     WarehouseModule,
+    HeadquarterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
