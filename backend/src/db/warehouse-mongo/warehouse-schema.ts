@@ -13,6 +13,7 @@ export class WarehouseMetadata {
   @Prop() product: string;
   @Prop() priority: WarehouseProductPriority;
   @Prop() stock: number;
+  @Prop() blocked: boolean;
 }
 
 export class WarehouseProduct {

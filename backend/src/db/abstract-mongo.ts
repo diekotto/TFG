@@ -18,32 +18,28 @@ export abstract class AbstractMongo<C, D extends Document> {
     return this.model.findById(id);
   }
 
-  async findBy(k: string, v: string | number): Promise<D[]> {
+  async findBy(k: string, v: any): Promise<D[]> {
     const conditions = {};
     conditions[k] = v;
     return this.findByConditions(conditions);
   }
 
-  async findOneBy(k: string, v: string | number): Promise<D> {
+  async findOneBy(k: string, v: any): Promise<D> {
     const conditions = {};
     conditions[k] = v;
     return this.findOneByConditions(conditions);
   }
 
-  async findByConditions(conditions: {
-    [key: string]: string | number;
-  }): Promise<D[]> {
+  async findByConditions(conditions: { [key: string]: any }): Promise<D[]> {
     return this.model.find(conditions as any);
   }
 
-  async findOneByConditions(conditions: {
-    [key: string]: string | number;
-  }): Promise<D> {
+  async findOneByConditions(conditions: { [key: string]: any }): Promise<D> {
     return this.model.findOne(conditions as any);
   }
 
   async deleteOneByConditions(conditions: {
-    [key: string]: string | number;
+    [key: string]: any;
   }): Promise<void> {
     await this.model.deleteOne(conditions as any);
   }
