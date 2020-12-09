@@ -10,6 +10,10 @@ export class Role {
   @Prop({ required: true }) roleName: RoleName;
   @Prop() expiry?: Date;
 
+  constructor(o: Role) {
+    Object.assign(this, o);
+  }
+
   static permissionMap: RolePermissionMap;
 
   static validateRole(role: string): boolean {

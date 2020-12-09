@@ -20,7 +20,7 @@ export class LoginService {
   ) {}
 
   async login(input: LoginDto): Promise<UserDto> {
-    const user = (await this.userMongo.find('email', input.email))[0];
+    const user = (await this.userMongo.findBy('email', input.email))[0];
     if (!user) throw new ForbiddenException(this.genericErrorMessage);
     if (!compareSync(input.password, user.password))
       throw new ForbiddenException(this.genericErrorMessage);
