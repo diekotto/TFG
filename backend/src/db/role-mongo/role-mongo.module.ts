@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { RoleMongoService } from './role-mongo.service';
-import { roleProviders } from './role.provider';
+import { roleProviders } from './role.providers';
 import { ProvidersModule } from '../providers/providers.module';
 
 @Module({
