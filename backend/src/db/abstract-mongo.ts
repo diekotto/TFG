@@ -43,4 +43,10 @@ export abstract class AbstractMongo<C, D extends Document> {
   }): Promise<void> {
     await this.model.deleteOne(conditions as any);
   }
+
+  async deleteManyByConditions(conditions: {
+    [key: string]: any;
+  }): Promise<void> {
+    await this.model.deleteMany(conditions as any);
+  }
 }

@@ -34,6 +34,7 @@ export class WarehouseService {
   }
 
   async create(input: CreateWarehouseDto): Promise<WarehouseResponseDto> {
+    // TODO: PREGUNTAR A LA SEDE SI EXISTE
     const schema: Warehouse = {
       headquarter: input.headquarter,
     } as Warehouse;

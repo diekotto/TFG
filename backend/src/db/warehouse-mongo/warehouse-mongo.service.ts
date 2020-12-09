@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AbstractMongo } from '../abstract-mongo';
 import { Warehouse, WarehouseDocument } from './warehouse-schema';
 import { Model } from 'mongoose';
-import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class WarehouseMongoService extends AbstractMongo<
@@ -13,9 +12,9 @@ export class WarehouseMongoService extends AbstractMongo<
     super(model);
   }
 
-  readAllByHeadquarterId(id: string): Promise<WarehouseDocument[]> {
+  readAllByHeadquarterId(idHeadquarter: string): Promise<WarehouseDocument[]> {
     const conditions = {
-      _id: new ObjectId(id),
+      headquarter: idHeadquarter,
     };
     return this.findByConditions(conditions);
   }

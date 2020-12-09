@@ -22,6 +22,7 @@ export class WarehouseProductDto {
 }
 
 export class WarehouseResponseDto {
+  @ApiProperty() id?: string;
   @ApiProperty() headquarter: string;
   @ApiProperty() products: WarehouseProductDto[];
   @ApiProperty() metadata: WarehouseMetadataDto[];
@@ -32,6 +33,7 @@ export class WarehouseResponseDto {
 
   static fromWarehouseDocument(o: WarehouseDocument): WarehouseResponseDto {
     return new WarehouseResponseDto({
+      id: o.id,
       headquarter: o.headquarter,
       products: o.products.map((p: WarehouseProduct) => ({
         expiry: p.expiry.toISOString(),
