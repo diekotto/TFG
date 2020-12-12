@@ -3,22 +3,23 @@ import { Document } from 'mongoose';
 
 export type WarehouseDocument = Warehouse & Document;
 
-export enum WarehouseProductPriority {
+export enum WarehouseProductPreference {
   LOW,
   MEDIUM,
   HIGH,
 }
 
 export class WarehouseMetadata {
+  @Prop() id: string; // UID
   @Prop() product: string;
-  @Prop() priority: WarehouseProductPriority;
+  @Prop() preference: WarehouseProductPreference;
   @Prop() stock: number;
   @Prop() blocked: boolean;
 }
 
 export class WarehouseProduct {
+  @Prop() id: string; // UID
   @Prop() product: string;
-  @Prop() stock: number;
   @Prop() expiry: Date;
 }
 
