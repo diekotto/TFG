@@ -3,13 +3,13 @@ import {
   WarehouseDocument,
   WarehouseMetadata,
   WarehouseProduct,
-  WarehouseProductPriority,
+  WarehouseProductPreference,
 } from '../../../db/warehouse-mongo/warehouse-schema';
 
 export class WarehouseMetadataDto {
   @ApiProperty() id: string;
   @ApiProperty() product: string;
-  @ApiProperty() priority: WarehouseProductPriority;
+  @ApiProperty() preference: WarehouseProductPreference;
   @ApiProperty() stock: number;
   @ApiProperty() blocked: boolean;
 }
@@ -45,7 +45,7 @@ export class WarehouseResponseDto {
       metadata: o.metadata.map((m: WarehouseMetadata) => ({
         id: m.id,
         product: m.product,
-        priority: m.priority,
+        preference: m.preference,
         stock: m.stock,
         blocked: m.blocked,
       })),

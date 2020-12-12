@@ -6,7 +6,7 @@ import {
   WarehouseDocument,
   WarehouseMetadata,
   WarehouseProduct,
-  WarehouseProductPriority,
+  WarehouseProductPreference,
 } from '../../db/warehouse-mongo/warehouse-schema';
 import { CreateWarehouseDto } from './dto/create-warehouse-dto';
 import { ObjectId } from 'mongodb';
@@ -15,6 +15,7 @@ import * as moment from 'moment';
 import { RetrieveProductDto } from './dto/retrieve-product.dto';
 import { uid } from 'uid';
 import { BlockProductDto } from './dto/block-product-dto';
+import { UpdateProductPreferenceDto } from './dto/update-product-preference-dto';
 
 @Injectable()
 export class WarehouseService {
@@ -71,7 +72,7 @@ export class WarehouseService {
         id: uid(),
         product: input.product,
         stock: 1,
-        priority: WarehouseProductPriority.MEDIUM,
+        preference: WarehouseProductPreference.MEDIUM,
         blocked: false,
       });
     warehouse.products.push({
@@ -126,6 +127,24 @@ export class WarehouseService {
       throw new NotFoundException('Product is not in the warehouse.metadata');
     }
     warehouse.metadata[metadataPos].blocked = blocked;
+    warehouse.markModified('metadata');
+    await warehouse.save();
+    return WarehouseResponseDto.fromWarehouseDocument(warehouse);
+  }
+
+  async updateProductPreference(
+    id: string,
+    input: UpdateProductPreferenceDto,
+  ): Promise<WarehouseResponseDto> {
+    const warehouse: WarehouseDocument = await this.warehouseMongo.findById(id);
+    if (!warehouse) throw new NotFoundException(`Warehouse ${id} not found`);
+    const metadataPos = warehouse.metadata.findIndex(
+      (p: WarehouseMetadata) => p.product === input.product,
+    );
+    if (metadataPos < 0) {
+      throw new NotFoundException('Product is not in the warehouse.metadata');
+    }
+    warehouse.metadata[metadataPos].preference = input.preference;
     warehouse.markModified('metadata');
     await warehouse.save();
     return WarehouseResponseDto.fromWarehouseDocument(warehouse);

@@ -25,6 +25,7 @@ import { CreateWarehouseDto } from './dto/create-warehouse-dto';
 import { AddProductDto } from './dto/add-product-dto';
 import { RetrieveProductDto } from './dto/retrieve-product.dto';
 import { BlockProductDto } from './dto/block-product-dto';
+import { UpdateProductPreferenceDto } from './dto/update-product-preference-dto';
 
 @ApiTags('Warehouse')
 @Controller('warehouse')
@@ -109,6 +110,16 @@ export class WarehouseController {
     if (typeof id !== 'string') throw new BadRequestException('Bad id');
     const input = new BlockProductDto(body);
     return this.service.setBlockedProduct(id, input, false);
+  }
+  @Put('/:id/preference-product')
+  @Roles(RoleName.ADMINLOCAL)
+  updateProductPreference(
+    @Param('id') id: string,
+    @Body() body: UpdateProductPreferenceDto,
+  ): Promise<WarehouseResponseDto> {
+    if (typeof id !== 'string') throw new BadRequestException('Bad id');
+    const input = new UpdateProductPreferenceDto(body);
+    return this.service.updateProductPreference(id, input);
   }
 
   @Delete('/:id')

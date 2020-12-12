@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type WarehouseDocument = Warehouse & Document;
 
-export enum WarehouseProductPriority {
+export enum WarehouseProductPreference {
   LOW,
   MEDIUM,
   HIGH,
@@ -12,7 +12,7 @@ export enum WarehouseProductPriority {
 export class WarehouseMetadata {
   @Prop() id: string; // UID
   @Prop() product: string;
-  @Prop() priority: WarehouseProductPriority;
+  @Prop() preference: WarehouseProductPreference;
   @Prop() stock: number;
   @Prop() blocked: boolean;
 }

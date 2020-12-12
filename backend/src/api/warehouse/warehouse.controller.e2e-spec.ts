@@ -12,6 +12,7 @@ import { Document } from 'mongoose';
 import { CreateWarehouseDto } from './dto/create-warehouse-dto';
 import * as moment from 'moment';
 import { WarehouseResponseDto } from './dto/warehouse-response-dto';
+import { WarehouseProductPreference } from '../../db/warehouse-mongo/warehouse-schema';
 
 describe('WarehouseController (e2e)', () => {
   const uidExample = '5fb8ea418ef2703b72dc85cc';
@@ -292,6 +293,7 @@ describe('WarehouseController (e2e)', () => {
     response = await controller.readById(doc.id);
     expect(response.metadata[0].blocked).toBeTruthy();
   });
+
   it('Should unblock product', async () => {
     const product = 'asdf';
     const doc: Document = await createWarehouse(uidExample);
@@ -311,5 +313,94 @@ describe('WarehouseController (e2e)', () => {
     expect(response.metadata[0].blocked).toBeFalsy();
     response = await controller.readById(doc.id);
     expect(response.metadata[0].blocked).toBeFalsy();
+  });
+
+  it('Should not found when unblocking product', async () => {
+    const product = 'asdf';
+    const doc: Document = await createWarehouse(uidExample);
+
+    const response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(1);
+    try {
+      await controller.blockProduct(doc.id, { product: 'nope' });
+      fail();
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.status).toBe(404);
+    }
+  });
+
+  it('Should update product preference', async () => {
+    const product = 'asdf';
+    const preference = WarehouseProductPreference.HIGH;
+    const doc: Document = await createWarehouse(uidExample);
+
+    let response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(1);
+    response = await controller.readById(doc.id);
+    expect(response.metadata[0].preference).toBe(
+      WarehouseProductPreference.MEDIUM,
+    );
+    response = await controller.updateProductPreference(doc.id, {
+      product,
+      preference,
+    });
+    expect(response.metadata[0].preference).toBe(preference);
+    response = await controller.readById(doc.id);
+    expect(response.metadata[0].preference).toBe(preference);
+  });
+
+  it('Should bad preference when updating product preference', async () => {
+    const product = 'asdf';
+    const doc: Document = await createWarehouse(uidExample);
+
+    const response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(1);
+    try {
+      await controller.updateProductPreference(doc.id, {
+        product,
+        preference: 'cualquier cosa' as any,
+      });
+      fail();
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.status).toBe(400);
+      expect(err.message).toBe('Bad preference value');
+    }
+  });
+
+  it('Should not found when updating product preference', async () => {
+    const product = 'asdf';
+    const preference = WarehouseProductPreference.HIGH;
+    const doc: Document = await createWarehouse(uidExample);
+
+    const response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(1);
+    try {
+      await controller.updateProductPreference(doc.id, {
+        product: 'nope',
+        preference,
+      });
+      fail();
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.status).toBe(404);
+    }
   });
 });
