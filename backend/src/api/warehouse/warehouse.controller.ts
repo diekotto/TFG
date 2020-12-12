@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { JwtGuard } from '../guards/roles/jwt.guard';
@@ -21,6 +22,9 @@ import { WarehouseResponseDto } from './dto/warehouse-response-dto';
 import { WarehouseService } from './warehouse.service';
 import { RoleName } from '../../db/role-mongo/role-schema';
 import { CreateWarehouseDto } from './dto/create-warehouse-dto';
+import { AddProductDto } from './dto/add-product-dto';
+import { RetrieveProductDto } from './dto/retrieve-product.dto';
+import { BlockProductDto } from './dto/block-product-dto';
 
 @ApiTags('Warehouse')
 @Controller('warehouse')
@@ -61,6 +65,50 @@ export class WarehouseController {
   create(@Body() body: CreateWarehouseDto): Promise<WarehouseResponseDto> {
     const input: CreateWarehouseDto = new CreateWarehouseDto(body);
     return this.service.create(input);
+  }
+
+  @Put('/:id/add-product')
+  @Roles(RoleName.ADMINLOCAL)
+  addProduct(
+    @Param('id') id: string,
+    @Body() body: AddProductDto,
+  ): Promise<WarehouseResponseDto> {
+    if (typeof id !== 'string') throw new BadRequestException('Bad id');
+    const input = new AddProductDto(body);
+    return this.service.addProduct(id, input);
+  }
+
+  @Put('/:id/retrieve-product')
+  @Roles(RoleName.ADMINLOCAL)
+  retrieveProduct(
+    @Param('id') id: string,
+    @Body() body: RetrieveProductDto,
+  ): Promise<WarehouseResponseDto> {
+    if (typeof id !== 'string') throw new BadRequestException('Bad id');
+    const input = new RetrieveProductDto(body);
+    return this.service.retrieveProduct(id, input);
+  }
+
+  @Put('/:id/block-product')
+  @Roles(RoleName.ADMINLOCAL)
+  blockProduct(
+    @Param('id') id: string,
+    @Body() body: BlockProductDto,
+  ): Promise<WarehouseResponseDto> {
+    if (typeof id !== 'string') throw new BadRequestException('Bad id');
+    const input = new BlockProductDto(body);
+    return this.service.setBlockedProduct(id, input, true);
+  }
+
+  @Put('/:id/unblock-product')
+  @Roles(RoleName.ADMINLOCAL)
+  unblockProduct(
+    @Param('id') id: string,
+    @Body() body: BlockProductDto,
+  ): Promise<WarehouseResponseDto> {
+    if (typeof id !== 'string') throw new BadRequestException('Bad id');
+    const input = new BlockProductDto(body);
+    return this.service.setBlockedProduct(id, input, false);
   }
 
   @Delete('/:id')

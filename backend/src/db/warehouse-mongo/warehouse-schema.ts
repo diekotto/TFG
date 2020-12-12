@@ -10,6 +10,7 @@ export enum WarehouseProductPriority {
 }
 
 export class WarehouseMetadata {
+  @Prop() id: string; // UID
   @Prop() product: string;
   @Prop() priority: WarehouseProductPriority;
   @Prop() stock: number;
@@ -17,8 +18,8 @@ export class WarehouseMetadata {
 }
 
 export class WarehouseProduct {
+  @Prop() id: string; // UID
   @Prop() product: string;
-  @Prop() stock: number;
   @Prop() expiry: Date;
 }
 

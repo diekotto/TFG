@@ -10,6 +10,8 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
 import { Document } from 'mongoose';
 import { CreateWarehouseDto } from './dto/create-warehouse-dto';
+import * as moment from 'moment';
+import { WarehouseResponseDto } from './dto/warehouse-response-dto';
 
 describe('WarehouseController (e2e)', () => {
   const uidExample = '5fb8ea418ef2703b72dc85cc';
@@ -123,5 +125,191 @@ describe('WarehouseController (e2e)', () => {
     await controller.delete(doc.id);
     found = await mongo.findById(doc.id);
     expect(found).toBeFalsy();
+  });
+
+  it('Should add product', async () => {
+    const doc: Document = await createWarehouse(uidExample);
+    const response = await controller.addProduct(doc.id, {
+      product: 'whatever',
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(1);
+  });
+
+  it('Should fail when adding product', async () => {
+    try {
+      await controller.addProduct('not found', {
+        product: 'whatever',
+        expiry: moment().format('YYYY-MM-DD'),
+      });
+      fail();
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.status === 404);
+    }
+  });
+
+  it('Should change stock when adding product', async () => {
+    const doc: Document = await createWarehouse(uidExample);
+    let result: WarehouseResponseDto;
+    for (let i = 0; i < 10; i++) {
+      result = await controller.addProduct(doc.id, {
+        product: 'whatever',
+        expiry: moment().format('YYYY-MM-DD'),
+      });
+      expect(result.metadata[0].stock).toBe(i + 1);
+    }
+    for (let i = result.metadata[0].stock - 1; i >= 0; i--) {
+      result = await controller.retrieveProduct(doc.id, {
+        product: 'whatever',
+        idProduct: result.products[0].id,
+      });
+      if (result.metadata[0]) {
+        expect(result.metadata[0].stock).toBe(i);
+        expect(result.products.length).toBe(i);
+        expect(result.products.length).toBeGreaterThan(0);
+      } else expect(i).toBe(0);
+    }
+  });
+
+  it('Should retrieve a product', async () => {
+    const product = 'asdf';
+    const doc: Document = await createWarehouse(uidExample);
+
+    let response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(1);
+    expect(response.metadata.length).toBe(1);
+    expect(response.metadata[0].stock).toBe(1);
+    const metadataId = response.metadata[0].id;
+
+    response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(2);
+    expect(response.metadata.length).toBe(1);
+    expect(response.metadata[0].id).toBe(metadataId);
+    expect(response.metadata[0].stock).toBe(2);
+    const secondIdProduct = response.products[response.products.length - 1].id;
+
+    response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(3);
+    expect(response.metadata.length).toBe(1);
+    expect(response.metadata[0].id).toBe(metadataId);
+    expect(response.metadata[0].stock).toBe(3);
+
+    response = await controller.retrieveProduct(doc.id, {
+      product,
+      idProduct: secondIdProduct,
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.metadata.length).toBe(1);
+    expect(response.metadata[0].stock).toBe(2);
+    expect(response.products.length).toBe(2);
+    expect(response.products.find((p) => p.id === secondIdProduct)).toBeFalsy();
+  });
+
+  it('Should fail when retrieving product (warehouse)', async () => {
+    try {
+      await controller.retrieveProduct(uidExample, {
+        product: 'whatever',
+        idProduct: 'nope',
+      });
+      fail();
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.message).toContain(uidExample);
+      expect(err.status === 404);
+    }
+  });
+
+  it('Should fail when retrieving product (metadata)', async () => {
+    const product = 'asdf';
+    try {
+      const doc: Document = await createWarehouse(uidExample);
+      const response = await controller.addProduct(doc.id, {
+        product,
+        expiry: moment().format('YYYY-MM-DD'),
+      });
+      expect(Array.isArray(response.products)).toBeTruthy();
+      expect(response.products.length).toBe(1);
+      await controller.retrieveProduct(doc.id, {
+        product: 'nope',
+        idProduct: 'whatever',
+      });
+      fail();
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.message).toContain('warehouse.metadata');
+      expect(err.status === 404);
+    }
+  });
+
+  it('Should fail when retrieving product (product)', async () => {
+    const product = 'asdf';
+    try {
+      const doc: Document = await createWarehouse(uidExample);
+      const response = await controller.addProduct(doc.id, {
+        product,
+        expiry: moment().format('YYYY-MM-DD'),
+      });
+      expect(Array.isArray(response.products)).toBeTruthy();
+      expect(response.products.length).toBe(1);
+      await controller.retrieveProduct(doc.id, {
+        product,
+        idProduct: 'not found',
+      });
+      fail();
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.message).toContain('warehouse.products');
+      expect(err.status === 404);
+    }
+  });
+
+  it('Should block product', async () => {
+    const product = 'asdf';
+    const doc: Document = await createWarehouse(uidExample);
+
+    let response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(1);
+    response = await controller.blockProduct(doc.id, { product });
+    expect(response.metadata[0].blocked).toBeTruthy();
+    response = await controller.readById(doc.id);
+    expect(response.metadata[0].blocked).toBeTruthy();
+  });
+  it('Should unblock product', async () => {
+    const product = 'asdf';
+    const doc: Document = await createWarehouse(uidExample);
+
+    let response = await controller.addProduct(doc.id, {
+      product,
+      expiry: moment().format('YYYY-MM-DD'),
+    });
+    expect(Array.isArray(response.products)).toBeTruthy();
+    expect(response.products.length).toBe(1);
+    response = await controller.blockProduct(doc.id, { product });
+    expect(response.metadata[0].blocked).toBeTruthy();
+    response = await controller.readById(doc.id);
+    expect(response.metadata[0].blocked).toBeTruthy();
+
+    response = await controller.unblockProduct(doc.id, { product });
+    expect(response.metadata[0].blocked).toBeFalsy();
+    response = await controller.readById(doc.id);
+    expect(response.metadata[0].blocked).toBeFalsy();
   });
 });
