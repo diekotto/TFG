@@ -11,7 +11,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "yarn run lint; yarn run pretty:staged",
-      "pre-push": "yarn test"
+      "pre-push": "yarn test;"
     }
   },
   "scripts": {
@@ -25,6 +25,7 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest -i --config ./jest-unit.json",
+    "test:integration": "jest -i --config ./jest-e2e.json",
     "test:watch": "jest -i --watch",
     "test:cov": "jest -i --coverage",
     "test:e2e": "jest -i --config ./test/jest-e2e.json"
