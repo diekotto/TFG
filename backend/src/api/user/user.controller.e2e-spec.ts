@@ -12,7 +12,6 @@ import { UserDto } from './dto/user-dto';
 import { RoleName } from '../../db/role-mongo/role-schema';
 import { NotificationMongoService } from '../../db/notification-mongo/notification-mongo.service';
 
-
 describe('UserController (e2e)', () => {
   let controller: UserController;
   let userMongo: UserMongoService;
