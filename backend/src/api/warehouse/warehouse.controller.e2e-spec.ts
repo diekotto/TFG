@@ -4,20 +4,20 @@ import { WarehouseService } from './warehouse.service';
 import { JwtGuard } from '../guards/roles/jwt.guard';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { WarehouseMongoService } from '../../db/warehouse-mongo/warehouse-mongo.service';
-import { warehouseProviders } from '../../db/warehouse-mongo/warehouse.providers';
-import { ProvidersModule } from '../../db/providers/providers.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
-import { Document } from 'mongoose';
+import { Document, Mongoose } from 'mongoose';
 import { CreateWarehouseDto } from './dto/create-warehouse-dto';
 import * as moment from 'moment';
 import { WarehouseResponseDto } from './dto/warehouse-response-dto';
 import { WarehouseProductPreference } from '../../db/warehouse-mongo/warehouse-schema';
+import { WarehouseMongoModule } from '../../db/warehouse-mongo/warehouse-mongo.module';
 
 describe('WarehouseController (e2e)', () => {
   const uidExample = '5fb8ea418ef2703b72dc85cc';
   let controller: WarehouseController;
   let mongo: WarehouseMongoService;
+  let connection: Mongoose;
 
   async function createWarehouse(id: string): Promise<Document> {
     const headquarter = { _id: id };
@@ -32,13 +32,9 @@ describe('WarehouseController (e2e)', () => {
         ConfigModule.forRoot({
           load: [configuration],
         }),
-        ProvidersModule,
+        WarehouseMongoModule,
       ],
-      providers: [
-        WarehouseMongoService,
-        ...warehouseProviders,
-        WarehouseService,
-      ],
+      providers: [WarehouseService],
       controllers: [WarehouseController],
     })
       .overrideGuard(JwtGuard)
@@ -47,12 +43,17 @@ describe('WarehouseController (e2e)', () => {
       .useValue({})
       .compile();
 
+    connection = module.get<'MONGODB_CONNECTION'>('MONGODB_CONNECTION') as any;
     mongo = module.get<WarehouseMongoService>(WarehouseMongoService);
     controller = module.get<WarehouseController>(WarehouseController);
   });
 
   afterEach(async () => {
     await mongo.deleteManyByConditions({});
+  });
+
+  afterAll(async () => {
+    await connection.connection.close();
   });
 
   it('Should be defined', () => {

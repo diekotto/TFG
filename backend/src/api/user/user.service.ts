@@ -16,12 +16,16 @@ import { AddCommentDto } from './dto/add-comment-dto';
 import { Role, RoleDocument, RoleName } from '../../db/role-mongo/role-schema';
 import { RoleMongoService } from '../../db/role-mongo/role-mongo.service';
 import { hashSync } from 'bcrypt';
+import { NotificationMongoService } from '../../db/notification-mongo/notification-mongo.service';
+import { NotificationDocument } from '../../db/notification-mongo/notification-schema';
+import { NotificationsResponseDto } from './dto/notifications-response-dto';
 
 @Injectable()
 export class UserService {
   constructor(
     private userMongo: UserMongoService,
     private roleMongo: RoleMongoService,
+    private notificationMongo: NotificationMongoService,
   ) {}
 
   async createUser(input: UserDto): Promise<UserDto> {
@@ -45,6 +49,19 @@ export class UserService {
     const user: UserDocument = await this.userMongo.findById(id);
     if (!user) throw new NotFoundException('User not found');
     return UserService.userMapper(user);
+  }
+
+  async readAllNotificationsById(
+    id: string,
+  ): Promise<NotificationsResponseDto[]> {
+    const user: UserDocument = await this.userMongo.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+    const notifications: NotificationDocument[] = await this.notificationMongo.findByConditions(
+      {
+        user: id,
+      },
+    );
+    return notifications.map((n) => NotificationsResponseDto.fromDocument(n));
   }
 
   async activateUser(id: string): Promise<UserDto> {
