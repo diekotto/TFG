@@ -1,23 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WarehouseController } from './warehouse.controller';
 import { WarehouseService } from './warehouse.service';
-import { JwtGuard } from '../guards/roles/jwt.guard';
-import { RolesGuard } from '../guards/roles/roles.guard';
 import { WarehouseMongoService } from '../../db/warehouse-mongo/warehouse-mongo.service';
-import { warehouseProviders } from '../../db/warehouse-mongo/warehouse.providers';
-import { ProvidersModule } from '../../db/providers/providers.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
-import { Document } from 'mongoose';
+import { Document, Mongoose } from 'mongoose';
 import { CreateWarehouseDto } from './dto/create-warehouse-dto';
 import * as moment from 'moment';
 import { WarehouseResponseDto } from './dto/warehouse-response-dto';
 import { WarehouseProductPreference } from '../../db/warehouse-mongo/warehouse-schema';
+import { WarehouseMongoModule } from '../../db/warehouse-mongo/warehouse-mongo.module';
 
 describe('WarehouseController (e2e)', () => {
   const uidExample = '5fb8ea418ef2703b72dc85cc';
   let controller: WarehouseController;
   let mongo: WarehouseMongoService;
+  let connection: Mongoose;
 
   async function createWarehouse(id: string): Promise<Document> {
     const headquarter = { _id: id };
@@ -26,33 +24,29 @@ describe('WarehouseController (e2e)', () => {
     } as any);
   }
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           load: [configuration],
         }),
-        ProvidersModule,
+        WarehouseMongoModule,
       ],
-      providers: [
-        WarehouseMongoService,
-        ...warehouseProviders,
-        WarehouseService,
-      ],
+      providers: [WarehouseService],
       controllers: [WarehouseController],
-    })
-      .overrideGuard(JwtGuard)
-      .useValue({})
-      .overrideGuard(RolesGuard)
-      .useValue({})
-      .compile();
+    }).compile();
 
+    connection = module.get<'MONGODB_CONNECTION'>('MONGODB_CONNECTION') as any;
     mongo = module.get<WarehouseMongoService>(WarehouseMongoService);
     controller = module.get<WarehouseController>(WarehouseController);
   });
 
   afterEach(async () => {
     await mongo.deleteManyByConditions({});
+  });
+
+  afterAll(async () => {
+    await connection.connection.close();
   });
 
   it('Should be defined', () => {
@@ -144,7 +138,7 @@ describe('WarehouseController (e2e)', () => {
         product: 'whatever',
         expiry: moment().format('YYYY-MM-DD'),
       });
-      fail();
+      fail('addProduct shoul fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.status === 404);
@@ -226,7 +220,7 @@ describe('WarehouseController (e2e)', () => {
         product: 'whatever',
         idProduct: 'nope',
       });
-      fail();
+      fail('retrieveProduct should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.message).toContain(uidExample);
@@ -248,7 +242,7 @@ describe('WarehouseController (e2e)', () => {
         product: 'nope',
         idProduct: 'whatever',
       });
-      fail();
+      fail('retrieveProduct should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.message).toContain('warehouse.metadata');
@@ -270,7 +264,7 @@ describe('WarehouseController (e2e)', () => {
         product,
         idProduct: 'not found',
       });
-      fail();
+      fail('retrieveProduct should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.message).toContain('warehouse.products');
@@ -327,7 +321,7 @@ describe('WarehouseController (e2e)', () => {
     expect(response.products.length).toBe(1);
     try {
       await controller.blockProduct(doc.id, { product: 'nope' });
-      fail();
+      fail('blockProduct should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.status).toBe(404);
@@ -373,7 +367,7 @@ describe('WarehouseController (e2e)', () => {
         product,
         preference: 'cualquier cosa' as any,
       });
-      fail();
+      fail('updateProductPreference should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.status).toBe(400);
@@ -397,7 +391,45 @@ describe('WarehouseController (e2e)', () => {
         product: 'nope',
         preference,
       });
-      fail();
+      fail('updateProductPreference should fail');
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.status).toBe(404);
+    }
+  });
+
+  it('Should return one expired product', async () => {
+    const doc: Document = await createWarehouse(uidExample);
+
+    await controller.addProduct(doc.id, {
+      product: 'producto1',
+      expiry: moment().add(1, 'day').format('YYYY-MM-DD'),
+    });
+    await controller.addProduct(doc.id, {
+      product: 'producto1',
+      expiry: moment().subtract(1, 'day').format('YYYY-MM-DD'),
+    });
+    await controller.addProduct(doc.id, {
+      product: 'producto2',
+      expiry: moment().add(1, 'day').format('YYYY-MM-DD'),
+    });
+    const response = await controller.readExpiredProductsById(doc.id);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBe(1);
+  });
+
+  it('Should return empty expired product', async () => {
+    const doc: Document = await createWarehouse(uidExample);
+    const response = await controller.readExpiredProductsById(doc.id);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBe(0);
+  });
+
+  it('Should return not found when reading expired product', async () => {
+    await createWarehouse(uidExample);
+    try {
+      await controller.readExpiredProductsById(uidExample);
+      fail('readExpiredProductsById should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.status).toBe(404);

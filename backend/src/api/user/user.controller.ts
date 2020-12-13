@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -17,6 +18,7 @@ import { Role, RoleName } from '../../db/role-mongo/role-schema';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { Roles } from '../guards/roles/roles.decorator';
 import { JwtGuard } from '../guards/roles/jwt.guard';
+import { NotificationsResponseDto } from './dto/notifications-response-dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -28,26 +30,43 @@ import { JwtGuard } from '../guards/roles/jwt.guard';
   description: 'Entity not found',
 })
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private service: UserService) {}
 
   @Get('/')
   @Roles(RoleName.ADMINLOCAL)
   readAllUsers(): Promise<UserDto[]> {
-    return this.userService.readAllUsers();
+    return this.service.readAllUsers();
   }
 
   @Get('/:id')
   @Roles(RoleName.OWNER, RoleName.ADMINLOCAL)
   async readUserById(@Param('id') id: string): Promise<UserDto> {
-    const result: UserDto = await this.userService.readUserById(id);
+    const result: UserDto = await this.service.readUserById(id);
     delete result.comments;
     return result;
+  }
+
+  @Get('/:id/notifications')
+  @Roles(RoleName.OWNER)
+  readAllNotificationsById(
+    @Param('id') id: string,
+  ): Promise<NotificationsResponseDto[]> {
+    return this.service.readAllNotificationsById(id);
   }
 
   @Post('/')
   @Roles(RoleName.ADMINLOCAL)
   createUser(@Body() body: UserDto): Promise<UserDto> {
-    return this.userService.createUser(new UserDto(body));
+    if (!body.password || body.password.length < 8)
+      throw new BadRequestException('Bad password.');
+    const input = new UserDto({
+      name: body.name,
+      email: body.email,
+      password: body.password,
+      active: false,
+      permissions: [...body.permissions],
+    });
+    return this.service.createUser(input);
   }
 
   @Put('/:id')
@@ -55,19 +74,19 @@ export class UserController {
   updateUser(@Param('id') id: string, @Body() body: UserDto): Promise<UserDto> {
     if (id !== body.id) throw new BadRequestException("Id's does not match");
     const user = new UserDto(body);
-    return this.userService.updateUser(user);
+    return this.service.updateUser(user);
   }
 
   @Put('/:id/activate')
   @Roles(RoleName.ADMINLOCAL)
   activateUser(@Param('id') id: string): Promise<UserDto> {
-    return this.userService.activateUser(id);
+    return this.service.activateUser(id);
   }
 
   @Put('/:id/deactivate')
   @Roles(RoleName.ADMINLOCAL)
   deactivateUser(@Param('id') id: string): Promise<UserDto> {
-    return this.userService.deactivateUser(id);
+    return this.service.deactivateUser(id);
   }
 
   @Put('/:id/role/:roleName')
@@ -78,7 +97,7 @@ export class UserController {
   ): Promise<UserDto> {
     if (!Role.validateRole(roleName))
       throw new BadRequestException('Role invalid');
-    return this.userService.addRoleToUser(id, roleName);
+    return this.service.addRoleToUser(id, roleName);
   }
 
   @Put('/:id/comment')
@@ -87,6 +106,17 @@ export class UserController {
     @Param('id') id: string,
     @Body() body: AddCommentDto,
   ): Promise<UserDto> {
-    return this.userService.addCommentToUser(id, new AddCommentDto(body));
+    return this.service.addCommentToUser(id, new AddCommentDto(body));
+  }
+
+  @Delete('/:id/role/:roleName')
+  @Roles(RoleName.ADMINLOCAL)
+  removeRoleFromUser(
+    @Param('id') id: string,
+    @Param('roleName') roleName: RoleName,
+  ): Promise<UserDto> {
+    if (!Role.validateRole(roleName))
+      throw new BadRequestException('Role invalid');
+    return this.service.removeRoleFromUser(id, roleName);
   }
 }

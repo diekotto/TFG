@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { WarehouseMongoService } from '../../db/warehouse-mongo/warehouse-mongo.service';
-import { WarehouseResponseDto } from './dto/warehouse-response-dto';
+import {
+  WarehouseProductDto,
+  WarehouseResponseDto,
+} from './dto/warehouse-response-dto';
 import {
   Warehouse,
   WarehouseDocument,
@@ -32,6 +35,17 @@ export class WarehouseService {
     if (!warehouse)
       throw new NotFoundException(`Warehouse with id ${id} not found`);
     return WarehouseResponseDto.fromWarehouseDocument(warehouse);
+  }
+
+  async readExpiredProductsById(id: string): Promise<WarehouseProductDto[]> {
+    const warehouse: WarehouseDocument = await this.warehouseMongo.findById(id);
+    if (!warehouse)
+      throw new NotFoundException(`Warehouse with id ${id} not found`);
+    const now = new Date().getTime();
+    warehouse.products = warehouse.products.filter(
+      (p) => p.expiry.getTime() < now,
+    );
+    return WarehouseResponseDto.fromWarehouseDocument(warehouse).products;
   }
 
   async readAllByHeadquarter(

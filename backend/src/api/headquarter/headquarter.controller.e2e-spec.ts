@@ -4,11 +4,13 @@ import { HeadquarterService } from './headquarter.service';
 import { HeadquarterMongoModule } from '../../db/headquarter-mongo/headquarter-mongo.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
+import { Mongoose } from 'mongoose';
 
 describe('HeadquarterController (e2e)', () => {
   let controller: HeadquarterController;
+  let connection: Mongoose;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
@@ -20,7 +22,12 @@ describe('HeadquarterController (e2e)', () => {
       providers: [HeadquarterService],
     }).compile();
 
+    connection = module.get<'MONGODB_CONNECTION'>('MONGODB_CONNECTION') as any;
     controller = module.get<HeadquarterController>(HeadquarterController);
+  });
+
+  afterAll(async () => {
+    await connection.connection.close();
   });
 
   it('should be defined', () => {

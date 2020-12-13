@@ -26,6 +26,7 @@ export class User {
   @Prop() password: string;
   @Prop() active: boolean;
   @Prop() permissions: RoleName[];
+  @Prop() warehouses: string[];
   @Prop() accessHistory: Date[];
   @Prop() actionsHistory: UserAction[];
   @Prop() comments: UserComment[];
@@ -35,12 +36,17 @@ export class User {
   }
 
   static fromUserDto(user: UserDto): User {
+    if (!user.warehouses) user.warehouses = [];
+    if (!user.accessHistory) user.accessHistory = [];
+    if (!user.actionsHistory) user.actionsHistory = [];
+    if (!user.comments) user.comments = [];
     return new User({
       name: user.name,
       email: user.email,
       active: user.active,
       password: user.password,
       permissions: user.permissions.map((p: RoleName) => p),
+      warehouses: user.warehouses.map((w: string) => w),
       accessHistory: user.accessHistory.map((h: string) => new Date(h)),
       actionsHistory: user.actionsHistory.map((h: UserActionDto) => ({
         action: h.action,

@@ -21,6 +21,12 @@ export class WarehouseProductDto {
     format: 'ISO String',
   })
   expiry: string;
+
+  constructor(o: WarehouseProductDto) {
+    this.id = o.id;
+    this.product = o.product;
+    this.expiry = o.expiry;
+  }
 }
 
 export class WarehouseResponseDto {
