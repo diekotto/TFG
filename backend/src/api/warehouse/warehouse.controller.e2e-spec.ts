@@ -144,7 +144,7 @@ describe('WarehouseController (e2e)', () => {
         product: 'whatever',
         expiry: moment().format('YYYY-MM-DD'),
       });
-      fail();
+      fail('addProduct shoul fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.status === 404);
@@ -226,7 +226,7 @@ describe('WarehouseController (e2e)', () => {
         product: 'whatever',
         idProduct: 'nope',
       });
-      fail();
+      fail('retrieveProduct should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.message).toContain(uidExample);
@@ -248,7 +248,7 @@ describe('WarehouseController (e2e)', () => {
         product: 'nope',
         idProduct: 'whatever',
       });
-      fail();
+      fail('retrieveProduct should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.message).toContain('warehouse.metadata');
@@ -270,7 +270,7 @@ describe('WarehouseController (e2e)', () => {
         product,
         idProduct: 'not found',
       });
-      fail();
+      fail('retrieveProduct should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.message).toContain('warehouse.products');
@@ -327,7 +327,7 @@ describe('WarehouseController (e2e)', () => {
     expect(response.products.length).toBe(1);
     try {
       await controller.blockProduct(doc.id, { product: 'nope' });
-      fail();
+      fail('blockProduct should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.status).toBe(404);
@@ -373,7 +373,7 @@ describe('WarehouseController (e2e)', () => {
         product,
         preference: 'cualquier cosa' as any,
       });
-      fail();
+      fail('updateProductPreference should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.status).toBe(400);
@@ -397,7 +397,45 @@ describe('WarehouseController (e2e)', () => {
         product: 'nope',
         preference,
       });
-      fail();
+      fail('updateProductPreference should fail');
+    } catch (err) {
+      expect(err).toBeTruthy();
+      expect(err.status).toBe(404);
+    }
+  });
+
+  it('Should return one expired product', async () => {
+    const doc: Document = await createWarehouse(uidExample);
+
+    await controller.addProduct(doc.id, {
+      product: 'producto1',
+      expiry: moment().add(1, 'day').format('YYYY-MM-DD'),
+    });
+    await controller.addProduct(doc.id, {
+      product: 'producto1',
+      expiry: moment().subtract(1, 'day').format('YYYY-MM-DD'),
+    });
+    await controller.addProduct(doc.id, {
+      product: 'producto2',
+      expiry: moment().add(1, 'day').format('YYYY-MM-DD'),
+    });
+    const response = await controller.readExpiredProductsById(doc.id);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBe(1);
+  });
+
+  it('Should return empty expired product', async () => {
+    const doc: Document = await createWarehouse(uidExample);
+    const response = await controller.readExpiredProductsById(doc.id);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBe(0);
+  });
+
+  it('Should return not found when reading expired product', async () => {
+    await createWarehouse(uidExample);
+    try {
+      await controller.readExpiredProductsById(uidExample);
+      fail('readExpiredProductsById should fail');
     } catch (err) {
       expect(err).toBeTruthy();
       expect(err.status).toBe(404);

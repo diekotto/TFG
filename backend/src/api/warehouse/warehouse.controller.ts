@@ -59,6 +59,12 @@ export class WarehouseController {
     return this.service.readAllByHeadquarter(id);
   }
 
+  @Get('/:id/expired')
+  @Roles()
+  async readExpiredProductsById(@Param('id') id: string): Promise<any[]> {
+    return this.service.readExpiredProductsById(id);
+  }
+
   @Post('/')
   @Roles(RoleName.ADMIN)
   create(@Body() body: CreateWarehouseDto): Promise<WarehouseResponseDto> {
