@@ -5,7 +5,7 @@ import { HeadquarterMongoService } from '../../db/headquarter-mongo/headquarter-
 describe('HeadquarterService', () => {
   let service: HeadquarterService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [HeadquarterService, HeadquarterMongoService],
     })

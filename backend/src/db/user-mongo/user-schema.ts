@@ -36,6 +36,10 @@ export class User {
   }
 
   static fromUserDto(user: UserDto): User {
+    if (!user.warehouses) user.warehouses = [];
+    if (!user.accessHistory) user.accessHistory = [];
+    if (!user.actionsHistory) user.actionsHistory = [];
+    if (!user.comments) user.comments = [];
     return new User({
       name: user.name,
       email: user.email,

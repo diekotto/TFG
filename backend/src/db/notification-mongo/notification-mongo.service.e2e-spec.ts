@@ -1,14 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductController } from './product.controller';
-import { ProductService } from './product.service';
+import { NotificationMongoService } from './notification-mongo.service';
+import { ProvidersModule } from '../providers/providers.module';
+import { notificationProviders } from './notification-providers';
 import { ConfigModule } from '@nestjs/config';
-import { HttpModule } from '@nestjs/common';
-import { ProductMongoModule } from '../../db/product-mongo/product-mongo.module';
 import configuration from '../../config/configuration';
 import { Mongoose } from 'mongoose';
 
-describe('ProductController (e2e)', () => {
-  let controller: ProductController;
+describe('NotificationMongoService (e2e)', () => {
+  let service: NotificationMongoService;
   let connection: Mongoose;
 
   beforeAll(async () => {
@@ -17,15 +16,13 @@ describe('ProductController (e2e)', () => {
         ConfigModule.forRoot({
           load: [configuration],
         }),
-        HttpModule,
-        ProductMongoModule,
+        ProvidersModule,
       ],
-      controllers: [ProductController],
-      providers: [ProductService],
+      providers: [NotificationMongoService, ...notificationProviders],
     }).compile();
 
     connection = module.get<'MONGODB_CONNECTION'>('MONGODB_CONNECTION') as any;
-    controller = module.get<ProductController>(ProductController);
+    service = module.get<NotificationMongoService>(NotificationMongoService);
   });
 
   afterAll(async () => {
@@ -33,6 +30,6 @@ describe('ProductController (e2e)', () => {
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 });

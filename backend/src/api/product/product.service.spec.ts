@@ -7,7 +7,7 @@ import { HttpService } from '@nestjs/common';
 describe('ProductService', () => {
   let service: ProductService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConfigService,

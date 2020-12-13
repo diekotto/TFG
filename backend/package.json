@@ -10,8 +10,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn run lint; yarn run pretty:staged",
-      "pre-push": "yarn test;"
+      "pre-commit": "yarn run lint; yarn run pretty:staged;",
+      "pre-push": "yarn test; yarn test:integration;"
     }
   },
   "scripts": {

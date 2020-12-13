@@ -6,7 +6,7 @@ import { RoleMongoService } from '../../db/role-mongo/role-mongo.service';
 describe('UserService', () => {
   let service: UserService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [UserService, UserMongoService, RoleMongoService],
     })

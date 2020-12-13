@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WarehouseController } from './warehouse.controller';
 import { WarehouseService } from './warehouse.service';
-import { JwtGuard } from '../guards/roles/jwt.guard';
-import { RolesGuard } from '../guards/roles/roles.guard';
 import { WarehouseMongoService } from '../../db/warehouse-mongo/warehouse-mongo.service';
 import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
@@ -26,7 +24,7 @@ describe('WarehouseController (e2e)', () => {
     } as any);
   }
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
@@ -36,12 +34,7 @@ describe('WarehouseController (e2e)', () => {
       ],
       providers: [WarehouseService],
       controllers: [WarehouseController],
-    })
-      .overrideGuard(JwtGuard)
-      .useValue({})
-      .overrideGuard(RolesGuard)
-      .useValue({})
-      .compile();
+    }).compile();
 
     connection = module.get<'MONGODB_CONNECTION'>('MONGODB_CONNECTION') as any;
     mongo = module.get<WarehouseMongoService>(WarehouseMongoService);
