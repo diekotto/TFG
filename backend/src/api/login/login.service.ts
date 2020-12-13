@@ -41,8 +41,9 @@ export class LoginService {
     const secret = this.configService.get('jwtSecret');
     const payload: Partial<JWToken> = {
       id: user.id,
-      roles: user.permissions,
       exp: moment().add(8, 'h').toDate().getTime(),
+      roles: user.permissions,
+      warehouses: user.warehouses,
     };
     return jwt.sign(payload, secret);
   }

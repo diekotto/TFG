@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -47,7 +48,15 @@ export class UserController {
   @Post('/')
   @Roles(RoleName.ADMINLOCAL)
   createUser(@Body() body: UserDto): Promise<UserDto> {
-    return this.userService.createUser(new UserDto(body));
+    if (!body.password || body.password.length < 8)
+      throw new BadRequestException('Bad password.');
+    const input = new UserDto({
+      name: body.name,
+      email: body.email,
+      password: body.password,
+      active: false,
+    });
+    return this.userService.createUser(input);
   }
 
   @Put('/:id')
@@ -88,5 +97,16 @@ export class UserController {
     @Body() body: AddCommentDto,
   ): Promise<UserDto> {
     return this.userService.addCommentToUser(id, new AddCommentDto(body));
+  }
+
+  @Delete('/:id/role/:roleName')
+  @Roles(RoleName.ADMINLOCAL)
+  removeRoleFromUser(
+    @Param('id') id: string,
+    @Param('roleName') roleName: RoleName,
+  ): Promise<UserDto> {
+    if (!Role.validateRole(roleName))
+      throw new BadRequestException('Role invalid');
+    return this.userService.removeRoleFromUser(id, roleName);
   }
 }

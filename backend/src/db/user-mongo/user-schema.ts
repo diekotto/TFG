@@ -26,6 +26,7 @@ export class User {
   @Prop() password: string;
   @Prop() active: boolean;
   @Prop() permissions: RoleName[];
+  @Prop() warehouses: string[];
   @Prop() accessHistory: Date[];
   @Prop() actionsHistory: UserAction[];
   @Prop() comments: UserComment[];
@@ -41,6 +42,7 @@ export class User {
       active: user.active,
       password: user.password,
       permissions: user.permissions.map((p: RoleName) => p),
+      warehouses: user.warehouses.map((w: string) => w),
       accessHistory: user.accessHistory.map((h: string) => new Date(h)),
       actionsHistory: user.actionsHistory.map((h: UserActionDto) => ({
         action: h.action,

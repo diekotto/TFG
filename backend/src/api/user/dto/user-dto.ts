@@ -29,8 +29,14 @@ export class UserDto {
   @ApiProperty({ required: false }) comments: UserCommentDto[];
   @ApiProperty({
     enum: RoleName,
+    required: false,
   })
   permissions: RoleName[];
+  @ApiProperty({
+    description: 'Array of warehouses ids',
+    required: false,
+  })
+  warehouses: string[];
   @ApiProperty({
     format: 'ISO String',
     required: false,

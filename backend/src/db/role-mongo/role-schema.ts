@@ -63,6 +63,10 @@ export class Role {
     const allowed = Role.permissionMap.get(needed);
     return allowed && input.some((role) => allowed.includes(role));
   }
+
+  static multiHeadquarterRole(input: RoleName): boolean {
+    return [RoleName.SUPERADMIN, RoleName.ADMIN].includes(input);
+  }
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);

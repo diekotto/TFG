@@ -100,6 +100,21 @@ export class UserService {
     return UserService.userMapper(user);
   }
 
+  async removeRoleFromUser(
+    userId: string,
+    roleName: RoleName,
+  ): Promise<UserDto> {
+    const user: UserDocument = await this.userMongo.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+    await this.roleMongo.deleteByUserIdAndRoleName(userId, roleName);
+    const rolePos = user.permissions.findIndex((p) => p === roleName);
+    if (rolePos < 0) return UserService.userMapper(user);
+    user.permissions.splice(rolePos, 1);
+    user.unmarkModified('permissions');
+    await user.save();
+    return UserService.userMapper(user);
+  }
+
   static usersMapper(users: UserDocument[]): UserDto[] {
     return users.map(UserService.userMapper);
   }
