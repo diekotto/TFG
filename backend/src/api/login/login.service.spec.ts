@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 describe('LoginService', () => {
   let service: LoginService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [LoginService, UserMongoService, ConfigService],
     })

@@ -21,9 +21,8 @@ export class RolesGuard implements CanActivate {
     if (!roles) throw new InternalServerErrorException('Roles needed in route');
     if (roles.length < 1) return true;
     const req: Request = context.switchToHttp().getRequest();
-    const requester = req.params.id;
     const token: JWToken = req['jwt'];
-    if (roles.includes(RoleName.OWNER)) return requester === token.id;
+    if (roles.includes(RoleName.OWNER)) return req.params.id === token.id;
     return roles
       .filter((role) => role !== RoleName.OWNER)
       .every((role) => Role.hasNeededRole(token.roles, role));

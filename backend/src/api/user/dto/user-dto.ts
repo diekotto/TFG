@@ -24,18 +24,24 @@ export class UserDto {
   @ApiProperty() name: string;
   @ApiProperty() email: string;
   @ApiProperty() password: string;
-  @ApiProperty() active: boolean;
-  @ApiProperty({ required: false }) actionsHistory: UserActionDto[];
-  @ApiProperty({ required: false }) comments: UserCommentDto[];
+  @ApiProperty() active?: boolean;
+  @ApiProperty({ required: false }) actionsHistory?: UserActionDto[];
+  @ApiProperty({ required: false }) comments?: UserCommentDto[];
   @ApiProperty({
     enum: RoleName,
+    required: false,
   })
-  permissions: RoleName[];
+  permissions?: RoleName[];
+  @ApiProperty({
+    description: 'Array of warehouses ids',
+    required: false,
+  })
+  warehouses?: string[];
   @ApiProperty({
     format: 'ISO String',
     required: false,
   })
-  accessHistory: string[];
+  accessHistory?: string[];
 
   constructor(o: Partial<UserDto>) {
     // PARA LA FUNCIONALIDAD DE BORRAR COMENTARIOS

@@ -4,11 +4,13 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
 import { ProvidersModule } from '../providers/providers.module';
 import { roleProviders } from './role.providers';
+import { Mongoose } from 'mongoose';
 
 describe('RoleMongoService (e2e)', () => {
   let service: RoleMongoService;
+  let connection: Mongoose;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
@@ -19,7 +21,12 @@ describe('RoleMongoService (e2e)', () => {
       providers: [RoleMongoService, ...roleProviders],
     }).compile();
 
+    connection = module.get<'MONGODB_CONNECTION'>('MONGODB_CONNECTION') as any;
     service = module.get<RoleMongoService>(RoleMongoService);
+  });
+
+  afterAll(async () => {
+    await connection.connection.close();
   });
 
   it('should be defined', () => {

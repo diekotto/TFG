@@ -5,4 +5,5 @@ export interface JWToken {
   id: string; // ID USER
   exp: number; // POSIX EXPIRY
   roles: RoleName[];
+  warehouses: string[];
 }
