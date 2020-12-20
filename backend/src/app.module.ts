@@ -14,6 +14,7 @@ import { WarehouseMongoModule } from './db/warehouse-mongo/warehouse-mongo.modul
 import { WarehouseModule } from './api/warehouse/warehouse.module';
 import { HeadquarterModule } from './api/headquarter/headquarter.module';
 import { NotificationMongoModule } from './db/notification-mongo/notification-mongo.module';
+import { OrderMongoModule } from './db/order-mongo/order-mongo.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -33,6 +34,7 @@ import configuration from './config/configuration';
     HeadquarterModule,
     WarehouseModule,
     NotificationMongoModule,
+    OrderMongoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
