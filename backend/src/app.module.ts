@@ -15,6 +15,8 @@ import { WarehouseModule } from './api/warehouse/warehouse.module';
 import { HeadquarterModule } from './api/headquarter/headquarter.module';
 import { NotificationMongoModule } from './db/notification-mongo/notification-mongo.module';
 import { OrderMongoModule } from './db/order-mongo/order-mongo.module';
+import { FamilyModule } from './api/family/family.module';
+import { FamilyMongoModule } from './db/family-mongo/family-mongo.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -35,6 +37,8 @@ import configuration from './config/configuration';
     WarehouseModule,
     NotificationMongoModule,
     OrderMongoModule,
+    FamilyModule,
+    FamilyMongoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
