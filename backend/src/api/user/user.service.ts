@@ -127,7 +127,7 @@ export class UserService {
     const rolePos = user.permissions.findIndex((p) => p === roleName);
     if (rolePos < 0) return UserService.userMapper(user);
     user.permissions.splice(rolePos, 1);
-    user.unmarkModified('permissions');
+    user.markModified('permissions');
     await user.save();
     return UserService.userMapper(user);
   }
