@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  backend: 'https://gentle-mesa-79280.herokuapp.com'
 };
 
 /*

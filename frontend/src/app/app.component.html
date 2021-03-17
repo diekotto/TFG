@@ -1,23 +1,2 @@
-<div class="content example-container">
-  <mat-card>
-    <form [formGroup]="myForm" class="myForm">
-      <mat-form-field appearance="standard">
-        <mat-label>Email</mat-label>
-        <input
-          matInput
-          type="email"
-          placeholder="email@example.com"
-          formControlName="email">
-      </mat-form-field>
-      <mat-form-field appearance="standard">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          type="password"
-          placeholder="email@example.com"
-          formControlName="password">
-      </mat-form-field>
-    </form>
-    <button mat-button (click)="login()">Log in</button>
-  </mat-card>
-</div>
+<!-- The routed views render in the <router-outlet>-->
+<router-outlet></router-outlet>
