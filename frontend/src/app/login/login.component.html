@@ -8,7 +8,9 @@
           matInput
           type="email"
           placeholder="email@example.com"
-          formControlName="email">
+          formControlName="email"
+          (keydown.enter)="login()"
+        >
       </mat-form-field>
       <mat-form-field appearance="standard">
         <mat-label>Password</mat-label>
@@ -16,7 +18,9 @@
           matInput
           type="password"
           placeholder="email@example.com"
-          formControlName="password">
+          formControlName="password"
+          (keydown.enter)="login()"
+        >
       </mat-form-field>
     </form>
     <button *ngIf="!loading"
@@ -25,6 +29,9 @@
             mat-button>
       Log in
     </button>
+    <div class="alert alert-danger" *ngIf="loginError">
+      Error en el login
+    </div>
     <mat-progress-spinner *ngIf="loading"
                           class="spinner"
                           mode="indeterminate"
