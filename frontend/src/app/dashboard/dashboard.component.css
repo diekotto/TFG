@@ -1,0 +1,12 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto 0 auto;
+}
+
+.cardTitle {
+  width: 100%;
+}

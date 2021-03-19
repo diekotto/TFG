@@ -1,1 +1,45 @@
-<p>dashboard works!</p>
+<mat-sidenav-container
+  class="sidenav-container" (backdropClick)="close()">
+  <mat-sidenav #sidenav (keydown.escape)="close()" disableClose>
+    <p>
+      <button class="sidenav-button" mat-button (click)="close()">Menú</button>
+    </p>
+    <p>
+      <button class="sidenav-button" mat-button (click)="close()">Panel de control</button>
+    </p>
+    <p>
+      <button class="sidenav-button" mat-button (click)="close()">Caja</button>
+    </p>
+    <p>
+      <button class="sidenav-button" mat-button (click)="close()">Almacén</button>
+    </p>
+    <p>
+      <button class="sidenav-button" mat-button (click)="close()">Familias</button>
+    </p>
+    <p>
+      <button class="sidenav-button" mat-button (click)="logout()">Cerrar sesión</button>
+    </p>
+  </mat-sidenav>
+  <mat-sidenav-content class="sidenav-content">
+    <mat-card class="container">
+      <mat-card-header>
+        <mat-card-title>
+          <div class="cardTitle">Economato social</div>
+          <p>
+            <button mat-button (click)="sidenav.open()">Open</button>
+          </p>
+        </mat-card-title>
+        <mat-card-subtitle>Página principal</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Bloque de datos 1</p>
+        <p>Bloque de datos 2</p>
+        <p>Bloque de datos 3</p>
+        <p>Bloque de datos 4</p>
+        <p>Bloque de datos 5</p>
+        <p>Bloque de datos 6</p>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
