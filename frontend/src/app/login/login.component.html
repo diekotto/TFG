@@ -1,0 +1,34 @@
+<div class="content example-container">
+  <mat-card>
+    <h2>Economato Social</h2>
+    <form [formGroup]="myForm" class="myForm">
+      <mat-form-field appearance="standard">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          placeholder="email@example.com"
+          formControlName="email">
+      </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          type="password"
+          placeholder="email@example.com"
+          formControlName="password">
+      </mat-form-field>
+    </form>
+    <button *ngIf="!loading"
+            (click)="login()"
+            [disabled]="loading"
+            mat-button>
+      Log in
+    </button>
+    <mat-progress-spinner *ngIf="loading"
+                          class="spinner"
+                          mode="indeterminate"
+                          [diameter]="30">
+    </mat-progress-spinner>
+  </mat-card>
+</div>
