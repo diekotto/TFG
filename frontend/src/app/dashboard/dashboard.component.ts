@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnInit {
   @ViewChild('sidenav') sidenav: MatSidenav;
 
+  menuOpen = false;
+
   constructor(
     private userService: UserService,
     private route: Router) { }
@@ -25,5 +27,18 @@ export class DashboardComponent implements OnInit {
   async logout(): Promise<void> {
     this.userService.logout();
     await this.route.navigate(['']);
+  }
+
+  toggleMenu(): void {
+    console.log('toggle menu');
+    this.menuOpen = !this.menuOpen;
+  }
+
+  ngClassContainerMenuOpen(): string {
+    return this.menuOpen ? 'panel-open' : '';
+  }
+
+  ngClassToggleMenuOpen(): string {
+    return this.menuOpen ? 'open' : '';
   }
 }

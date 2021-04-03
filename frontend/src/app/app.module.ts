@@ -14,12 +14,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoginComponent } from './login/login.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MainComponent } from './dashboard/children/main/main.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    LoginComponent
+    LoginComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
