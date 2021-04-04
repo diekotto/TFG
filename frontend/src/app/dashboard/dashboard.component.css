@@ -50,6 +50,11 @@ header {
   opacity: 0.5;
 }
 
+.menu-toggle-loading {
+  float: left;
+  margin-right: 7px;
+}
+
 .menu-toggle-grippy {
   border-bottom: 5px solid #fff;
   border-top: 5px solid #fff;

@@ -15,13 +15,15 @@ import { LoginComponent } from './login/login.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MainComponent } from './dashboard/children/main/main.component';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     LoginComponent,
-    MainComponent
+    MainComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

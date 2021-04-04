@@ -23,16 +23,22 @@
         >
       </mat-form-field>
     </form>
-    <button *ngIf="!loading"
+    <button *ngIf="!loadingLogin && !loading"
             (click)="login()"
-            [disabled]="loading"
+            [disabled]="loginButtonDisabled()"
             mat-button>
       Log in
     </button>
     <div class="alert alert-danger" *ngIf="loginError">
       Error en el login
     </div>
-    <mat-progress-spinner *ngIf="loading"
+    <div class="alert alert-danger" *ngIf="backendError">
+      El sistema parece caído, por favor espere a que se recupere
+    </div>
+    <div class="alert alert-warning" *ngIf="loading">
+      Espere mientras el sistema arranca
+    </div>
+    <mat-progress-spinner *ngIf="loadingLogin || loading"
                           class="spinner"
                           mode="indeterminate"
                           [diameter]="30">

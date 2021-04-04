@@ -5,15 +5,27 @@
         <div class="menu-toggle"
              [ngClass]="ngClassToggleMenuOpen()"
              (click)="toggleMenu()">
+          <span class="menu-toggle-loading">
+            <mat-progress-spinner *ngIf="loading"
+                                  class="spinner"
+                                  mode="indeterminate"
+                                  [diameter]="27">
+          </mat-progress-spinner>
+          </span>
           <span class="menu-toggle-grippy">Toggle</span>
           <span class="menu-toggle-label">Menu</span>
         </div>
       </header>
 
       <section class="banner" role="banner">
+        <div class="alert alert-warning" *ngIf="loading">
+          Espere mientras el sistema arranca
+        </div>
+        <div class="alert alert-danger" *ngIf="backendError">
+          El sistema parece caído, por favor espere a que se recupere
+        </div>
         <router-outlet></router-outlet>
       </section>
-
     </div>
   </div>
   <div class="hidden-panel">

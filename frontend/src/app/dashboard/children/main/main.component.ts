@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DashboardCommunicationService } from '../../services/dashboard-communication/dashboard-communication.service';
 
 @Component({
   selector: 'app-main',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private communication: DashboardCommunicationService
+  ) { }
 
   ngOnInit(): void {
   }
 
+  emitMessageToParent(message: string): void {
+    this.communication.snackBarEmitMessage(message);
+  }
 }

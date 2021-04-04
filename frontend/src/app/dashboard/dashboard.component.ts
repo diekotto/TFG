@@ -1,36 +1,68 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { UserService } from '../services/user.service';
+import { UserService } from '../services/user/user.service';
 import { Router } from '@angular/router';
+import { LoginService } from '../services/login/login.service';
+import { PingService } from '../services/ping/ping.service';
+import { Subscription } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DashboardCommunicationService } from './services/dashboard-communication/dashboard-communication.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('sidenav') sidenav: MatSidenav;
 
   menuOpen = false;
+  loading = false;
+  backendError = false;
+  pingSubscription: Subscription;
 
   constructor(
     private userService: UserService,
-    private route: Router) { }
+    private loginService: LoginService,
+    private pingService: PingService,
+    private communication: DashboardCommunicationService,
+    private route: Router,
+    private snackBar: MatSnackBar
+  ) { }
 
-  ngOnInit(): void {
+  ngOnDestroy(): void {
+    if (this.pingSubscription) {
+      this.pingSubscription.unsubscribe();
+    }
   }
 
-  async close(): Promise<void> {
-    await this.sidenav.close();
+  ngOnInit(): void {
+    this.pingService.onPing.subscribe((alive: boolean) => {
+      this.backendError = !alive;
+    });
+    if (this.pingService.pingCount < 1) {
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+        const alive = this.pingService.alive;
+        if (alive) {
+        } else {
+          this.backendError = true;
+        }
+      }, 1000);
+    }
+    const self = this;
+    this.communication.onSnackBarMessage((message: string) => {
+      self.openSnackBar(message);
+    });
   }
 
   async logout(): Promise<void> {
-    this.userService.logout();
+    await this.loginService.logout();
     await this.route.navigate(['']);
   }
 
   toggleMenu(): void {
-    console.log('toggle menu');
     this.menuOpen = !this.menuOpen;
   }
 
@@ -40,5 +72,11 @@ export class DashboardComponent implements OnInit {
 
   ngClassToggleMenuOpen(): string {
     return this.menuOpen ? 'open' : '';
+  }
+
+  openSnackBar(message: string, action = 'Cerrar'): void {
+    this.snackBar.open(message, action, {
+      duration: 5000,
+    });
   }
 }
