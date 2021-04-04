@@ -45,14 +45,24 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.pingSubscription = this.pingService.onPing.subscribe((alive: boolean) => {
       if (!alive) {
         this.backendError = true;
+        this.loading = false;
         this.openSnackBar('Error: El sistema parece caído');
       } else {
         this.backendError = false;
       }
     });
-    setTimeout(() => {
-      this.loading = !this.pingService.alive;
-    }, 1000);
+    const checkBackendAlive = () => {
+      setTimeout(() => {
+        if (this.backendError) {
+          return;
+        }
+        this.loading = !this.pingService.alive;
+        if (this.loading) {
+          checkBackendAlive();
+        }
+      }, 2000);
+    };
+    checkBackendAlive();
   }
 
   async login(): Promise<void> {

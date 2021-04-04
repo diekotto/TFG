@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  backend: 'https://gentle-mesa-79280.herokuapp.com'
+  backend: 'https://economato-social-api.herokuapp.com'
 };
 
 /*

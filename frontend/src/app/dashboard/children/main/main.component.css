@@ -1,0 +1,27 @@
+.dashboard-card {
+  margin: 0 auto 0 auto;
+  width: 85%;
+  min-width: 350px;
+  padding-bottom: 35px;
+  padding-top: 35px;
+}
+
+.container {
+  margin-top: 3em;
+}
+
+h1 {
+  font-size: 4.375rem;
+  margin-bottom: 1em;
+}
+
+@media (max-width: 900px) {
+  .dashboard-card {
+    margin: 5% auto 0 auto;
+    width: 85%;
+  }
+
+  h1 {
+    line-height: normal;
+  }
+}
