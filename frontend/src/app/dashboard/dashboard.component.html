@@ -39,12 +39,22 @@
       <nav class="hidden-panel-nav">
         <h3>Navegación</h3>
         <ul>
-          <li><a href="#" title="Home">Home</a></li>
-          <li><a href="#" title="Pedidos">Pedidos</a></li>
-          <li><a href="#" title="Caja">Caja</a></li>
-          <li><a href="#" title="Almacén">Almacén</a></li>
-          <li><a href="#" title="Contacto">Contacto</a></li>
-          <li><a routerLink="/" title="Logout" (click)="logout()">Logout</a></li>
+          <li><a routerLink="/dashboard" title="Home" (click)="toggleMenu()">Home</a></li>
+          <li><a routerLink="/dashboard/cash" title="Caja" (click)="toggleMenu()">Caja</a></li>
+          <li><a routerLink="/dashboard/reception" title="Pedidos" (click)="toggleMenu()">Pedidos</a></li>
+          <li><a routerLink="/dashboard/warehouse" title="Almacén" (click)="toggleMenu()">Almacén</a></li>
+          <li><a routerLink="/dashboard/family" title="Familias" (click)="toggleMenu()">Familias</a></li>
+          <li><a routerLink="/dashboard/profile" title="Perfil" (click)="toggleMenu()">Perfil</a></li>
+          <li><a routerLink="/dashboard/about" title="Contacto" (click)="toggleMenu()">Contacto</a></li>
+          <li><a routerLink="/" title="Logout" (click)="logout()">Cerrar sesión</a></li>
+        </ul>
+      </nav>
+
+      <nav class="hidden-panel-nav">
+        <h3>Administración</h3>
+        <ul>
+          <li><a routerLink="/dashboard/user-manager" title="Usuarios" (click)="toggleMenu()">Usuarios</a></li>
+          <li><a routerLink="/dashboard/warehouse-manager" title="Almacenes" (click)="toggleMenu()">Almacenes</a></li>
         </ul>
       </nav>
 

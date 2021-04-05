@@ -27,7 +27,7 @@
       <button *ngIf="!loadingLogin && !loading"
               (click)="login()"
               [disabled]="loginButtonDisabled()"
-              mat-button>
+              mat-raised-button color="primary">
         Log in
       </button>
       <div class="alert alert-danger" *ngIf="loginError">

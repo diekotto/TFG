@@ -1,0 +1,56 @@
+<div class="container">
+  <mat-card class="user-manager-card">
+    <h1 class="banner">Mantenimiento de usuarios</h1>
+    <div class="user-manager-buttons">
+      <a routerLink="/dashboard/user-manager-create" mat-raised-button color="primary">Crear usuario</a>
+    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <mat-accordion class="user-manager-accordion">
+      <mat-expansion-panel [expanded]="!loading">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Usuarios
+          </mat-panel-title>
+          <mat-panel-description *ngIf="!loading">
+            {{users.length}} usuarios en la plataforma
+            <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-list class="list">
+          <mat-list-item *ngFor="let user of users">
+            <mat-icon mat-list-icon [color]="user.active ? 'primary': 'accent'">account_circle</mat-icon>
+            <h4 mat-line>{{user.name}}</h4>
+            <p mat-line> {{user.email}} </p>
+            <a [routerLink]="'/dashboard/user-manager/'+user.id">
+              <mat-icon mat-list-icon color="primary">edit</mat-icon>
+            </a>
+            <a class="user-manager-add-message">
+              <mat-icon mat-list-icon color="primary">message</mat-icon>
+            </a>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Administradores
+          </mat-panel-title>
+          <mat-panel-description *ngIf="!loading">
+            {{admins.length}} administradores en la plataforma
+            <mat-icon>account_box</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-list class="list">
+          <mat-list-item *ngFor="let user of admins">
+            <mat-icon mat-list-icon [color]="user.active ? 'primary': 'accent'">account_box</mat-icon>
+            <h4 mat-line>{{user.name}}</h4>
+            <p mat-line> {{user.email}} </p>
+            <a [routerLink]="'/dashboard/user-manager/'+user.id">
+              <mat-icon mat-list-icon>edit</mat-icon>
+            </a>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+</div>
