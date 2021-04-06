@@ -4,10 +4,81 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { LoggedInGuard } from './guards/logged-in.guard';
 import { NotLoggedInGuard } from './guards/not-logged-in.guard';
+import { MainComponent } from './dashboard/children/main/main.component';
+import { ProfileComponent } from './dashboard/children/profile/profile.component';
+import { UserManagerComponent } from './dashboard/children/user-manager/user-manager.component';
+import { WarehouseManagerComponent } from './dashboard/children/warehouse-manager/warehouse-manager.component';
+import { AdminGuard } from './guards/admin.guard';
+import { ReceptionComponent } from './dashboard/children/reception/reception.component';
+import { ReceptionGuard } from './guards/reception.guard';
+import { FamilyComponent } from './dashboard/children/family/family.component';
+import { FamilyGuard } from './guards/family.guard';
+import { WarehouseComponent } from './dashboard/children/warehouse/warehouse.component';
+import { WarehouseGuard } from './guards/warehouse.guard';
+import { CashComponent } from './dashboard/children/cash/cash.component';
+import { CashGuard } from './guards/cash.guard';
+import { AboutComponent } from './about/about.component';
+import { UserManagerDetailComponent } from './dashboard/children/user-manager-detail/user-manager-detail.component';
+import { UserManagerCreateComponent } from './dashboard/children/user-manager-create/user-manager-create.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent, canActivate: [NotLoggedInGuard] },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [LoggedInGuard], },
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [NotLoggedInGuard]
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [LoggedInGuard],
+    children: [{
+      path: '',
+      component: MainComponent
+    }, {
+      path: 'about',
+      component: AboutComponent
+    }, {
+      path: 'profile',
+      component: ProfileComponent
+    }, {
+      path: 'reception',
+      component: ReceptionComponent,
+      canActivate: [ReceptionGuard]
+    }, {
+      path: 'family',
+      component: FamilyComponent,
+      canActivate: [FamilyGuard]
+    }, {
+      path: 'warehouse',
+      component: WarehouseComponent,
+      canActivate: [WarehouseGuard]
+    }, {
+      path: 'cash',
+      component: CashComponent,
+      canActivate: [CashGuard]
+    }, {
+      path: 'user-manager',
+      component: UserManagerComponent,
+      canActivate: [AdminGuard]
+    }, {
+      path: 'user-manager-create',
+      component: UserManagerCreateComponent,
+      canActivate: [AdminGuard]
+    }, {
+      path: 'user-manager/:id',
+      component: UserManagerDetailComponent,
+      canActivate: [AdminGuard]
+    }, {
+      path: 'warehouse-manager',
+      component: WarehouseManagerComponent,
+      canActivate: [AdminGuard]
+    },
+    ]
+  },
+  {
+    path: 'about',
+    component: AboutComponent
+  },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
 

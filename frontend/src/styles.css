@@ -6,12 +6,22 @@ html, body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #f1f1f1;
+  background: #ffd59b;
+  background: linear-gradient(#ffd59b, #fda651), #ffd59b;
+  font-size: 1em !important;
+  color: #2d2d2d;
+}
+
+h1 {
+  font-family: 'Lato', sans-serif !important;
+}
+
+button {
+  font-size: 1em !important;
 }
 
 .sidenav-content {
-  background-color: #f1f1f1;
+  background-color: transparent;
 }
 
 .sidenav-button {
@@ -22,6 +32,7 @@ body {
   position: relative;
   padding: .75rem 1.25rem;
   margin-bottom: 1rem;
+  margin-top: 1rem;
   border: 1px solid transparent;
   border-radius: .25rem;
 }

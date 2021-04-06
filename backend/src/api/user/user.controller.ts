@@ -63,7 +63,7 @@ export class UserController {
       name: body.name,
       email: body.email,
       password: body.password,
-      active: false,
+      active: !!body.active,
       permissions: [...body.permissions],
     });
     return this.service.createUser(input);

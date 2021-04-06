@@ -1,41 +1,49 @@
 <div class="content example-container">
-  <mat-card>
-    <h2>Economato Social</h2>
-    <form [formGroup]="myForm" class="myForm">
-      <mat-form-field appearance="standard">
-        <mat-label>Email</mat-label>
-        <input
-          matInput
-          type="email"
-          placeholder="email@example.com"
-          formControlName="email"
-          (keydown.enter)="login()"
-        >
-      </mat-form-field>
-      <mat-form-field appearance="standard">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          type="password"
-          placeholder="email@example.com"
-          formControlName="password"
-          (keydown.enter)="login()"
-        >
-      </mat-form-field>
-    </form>
-    <button *ngIf="!loading"
-            (click)="login()"
-            [disabled]="loading"
-            mat-button>
-      Log in
-    </button>
-    <div class="alert alert-danger" *ngIf="loginError">
-      Error en el login
+  <mat-card class="login-card">
+    <h1>Economato Social</h1>
+    <div class="content-form">
+      <form [formGroup]="myForm" class="myForm">
+        <mat-form-field appearance="standard">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            placeholder="email@example.com"
+            formControlName="email"
+            (keydown.enter)="login()"
+          >
+        </mat-form-field>
+        <mat-form-field appearance="standard">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            placeholder="email@example.com"
+            formControlName="password"
+            (keydown.enter)="login()"
+          >
+        </mat-form-field>
+      </form>
+      <button *ngIf="!loadingLogin && !loading"
+              (click)="login()"
+              [disabled]="loginButtonDisabled()"
+              mat-raised-button color="primary">
+        Log in
+      </button>
+      <div class="alert alert-danger" *ngIf="loginError">
+        Error en el login
+      </div>
+      <div class="alert alert-danger" *ngIf="backendError">
+        El sistema parece caído, por favor espere a que se recupere
+      </div>
+      <div class="alert alert-warning" *ngIf="loading">
+        Espere mientras el sistema arranca
+      </div>
+      <mat-progress-spinner *ngIf="loadingLogin || loading"
+                            class="spinner"
+                            mode="indeterminate"
+                            [diameter]="30">
+      </mat-progress-spinner>
     </div>
-    <mat-progress-spinner *ngIf="loading"
-                          class="spinner"
-                          mode="indeterminate"
-                          [diameter]="30">
-    </mat-progress-spinner>
   </mat-card>
 </div>

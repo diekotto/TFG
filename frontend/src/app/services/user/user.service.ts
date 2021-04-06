@@ -11,8 +11,13 @@ export class UserService {
     try {
       this.reload();
     } catch (err) {
+      console.log(err);
       console.log('Login needed');
     }
+  }
+
+  get jwt(): string {
+    return this.user.jwt;
   }
 
   setCurrent(obj: any): void {
@@ -62,11 +67,47 @@ export class UserService {
     console.log('Loggedin:', !!this.user);
     return !!this.user;
   }
+
+  isSuperAdmin(): boolean {
+    return this.user.permissions.includes(RoleName.SUPERADMIN);
+  }
+
+  isAdmin(): boolean {
+    return this.user.permissions.findIndex((r: RoleName) => {
+      return r === RoleName.SUPERADMIN || r === RoleName.ADMIN;
+    }) > -1;
+  }
+
+  isAdminLocal(): boolean {
+    return this.user.permissions.findIndex((r: RoleName) => {
+      return r === RoleName.SUPERADMIN || r === RoleName.ADMIN || r === RoleName.ADMINLOCAL;
+    }) > -1;
+  }
+
+  isReception(): boolean {
+    return this.user.permissions.includes(RoleName.RECEPCION)
+      || this.isAdminLocal();
+  }
+
+  isCash(): boolean {
+    return this.user.permissions.includes(RoleName.CAJA)
+      || this.isAdminLocal();
+  }
+
+  isWarehouse(): boolean {
+    return this.user.permissions.includes(RoleName.ALMACEN)
+      || this.isAdminLocal();
+  }
+
+  isFamily(): boolean {
+    return this.user.permissions.includes(RoleName.FAMILIAR)
+      || this.isAdminLocal();
+  }
 }
 
 export interface User {
-  jwt: string;
-  jwtExpiry: Date;
+  jwt?: string;
+  jwtExpiry?: Date;
   accessHistory: Date[];
   actionsHistory: UserAction[];
   active: boolean;
@@ -74,7 +115,7 @@ export interface User {
   email: string;
   id: string;
   name: string;
-  permissions: string[];
+  permissions: RoleName[];
 }
 
 export interface UserAction {
@@ -85,4 +126,14 @@ export interface UserAction {
 export interface UserComment {
   author: string;
   comment: string;
+}
+
+export enum RoleName {
+  SUPERADMIN = 'superadmin',
+  ADMIN = 'admin',
+  ADMINLOCAL = 'adminlocal',
+  ALMACEN = 'almacen',
+  RECEPCION = 'recepcion',
+  FAMILIAR = 'familiar',
+  CAJA = 'caja',
 }

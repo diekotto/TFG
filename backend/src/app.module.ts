@@ -17,6 +17,7 @@ import { NotificationMongoModule } from './db/notification-mongo/notification-mo
 import { OrderMongoModule } from './db/order-mongo/order-mongo.module';
 import { FamilyModule } from './api/family/family.module';
 import { FamilyMongoModule } from './db/family-mongo/family-mongo.module';
+import { AliveModule } from './api/alive/alive.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -39,6 +40,7 @@ import configuration from './config/configuration';
     OrderMongoModule,
     FamilyModule,
     FamilyMongoModule,
+    AliveModule,
   ],
   controllers: [AppController],
   providers: [AppService],

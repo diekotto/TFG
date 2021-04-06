@@ -1,45 +1,78 @@
-<mat-sidenav-container
-  class="sidenav-container" (backdropClick)="close()">
-  <mat-sidenav #sidenav (keydown.escape)="close()" disableClose>
-    <p>
-      <button class="sidenav-button" mat-button (click)="close()">Menú</button>
-    </p>
-    <p>
-      <button class="sidenav-button" mat-button (click)="close()">Panel de control</button>
-    </p>
-    <p>
-      <button class="sidenav-button" mat-button (click)="close()">Caja</button>
-    </p>
-    <p>
-      <button class="sidenav-button" mat-button (click)="close()">Almacén</button>
-    </p>
-    <p>
-      <button class="sidenav-button" mat-button (click)="close()">Familias</button>
-    </p>
-    <p>
-      <button class="sidenav-button" mat-button (click)="logout()">Cerrar sesión</button>
-    </p>
-  </mat-sidenav>
-  <mat-sidenav-content class="sidenav-content">
-    <mat-card class="container">
-      <mat-card-header>
-        <mat-card-title>
-          <div class="cardTitle">Economato social</div>
-          <p>
-            <button mat-button (click)="sidenav.open()">Open</button>
-          </p>
-        </mat-card-title>
-        <mat-card-subtitle>Página principal</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>Bloque de datos 1</p>
-        <p>Bloque de datos 2</p>
-        <p>Bloque de datos 3</p>
-        <p>Bloque de datos 4</p>
-        <p>Bloque de datos 5</p>
-        <p>Bloque de datos 6</p>
-      </mat-card-content>
-    </mat-card>
+<div class="dashboard">
+  <div class="dashboard-body" [ngClass]="ngClassContainerMenuOpen()">
+    <div class="container">
+      <header>
+        <div class="menu-toggle"
+             [ngClass]="ngClassToggleMenuOpen()"
+             (click)="toggleMenu()">
+          <span class="menu-toggle-loading">
+            <mat-progress-spinner *ngIf="loading"
+                                  class="spinner"
+                                  mode="indeterminate"
+                                  [diameter]="27">
+          </mat-progress-spinner>
+          </span>
+          <span class="menu-toggle-grippy">Toggle</span>
+          <span class="menu-toggle-label">Menu</span>
+        </div>
+      </header>
 
-  </mat-sidenav-content>
-</mat-sidenav-container>
+      <section class="banner" role="banner">
+        <div class="alert alert-warning" *ngIf="loading">
+          Espere mientras el sistema arranca
+        </div>
+        <div class="alert alert-danger" *ngIf="backendError">
+          El sistema parece caído, por favor espere a que se recupere
+        </div>
+        <router-outlet></router-outlet>
+      </section>
+    </div>
+  </div>
+  <div class="hidden-panel">
+
+    <span class="hidden-panel-close" (click)="toggleMenu()">
+      X
+    </span>
+
+    <div class="hidden-panel-content">
+
+      <nav class="hidden-panel-nav">
+        <h3>Navegación</h3>
+        <ul>
+          <li><a routerLink="/dashboard" title="Home" (click)="toggleMenu()">Home</a></li>
+          <li><a routerLink="/dashboard/cash" title="Caja" (click)="toggleMenu()">Caja</a></li>
+          <li><a routerLink="/dashboard/reception" title="Pedidos" (click)="toggleMenu()">Pedidos</a></li>
+          <li><a routerLink="/dashboard/warehouse" title="Almacén" (click)="toggleMenu()">Almacén</a></li>
+          <li><a routerLink="/dashboard/family" title="Familias" (click)="toggleMenu()">Familias</a></li>
+          <li><a routerLink="/dashboard/profile" title="Perfil" (click)="toggleMenu()">Perfil</a></li>
+          <li><a routerLink="/dashboard/about" title="Contacto" (click)="toggleMenu()">Contacto</a></li>
+          <li><a routerLink="/" title="Logout" (click)="logout()">Cerrar sesión</a></li>
+        </ul>
+      </nav>
+
+      <nav class="hidden-panel-nav">
+        <h3>Administración</h3>
+        <ul>
+          <li><a routerLink="/dashboard/user-manager" title="Usuarios" (click)="toggleMenu()">Usuarios</a></li>
+          <li><a routerLink="/dashboard/warehouse-manager" title="Almacenes" (click)="toggleMenu()">Almacenes</a></li>
+        </ul>
+      </nav>
+
+      <div class="hidden-panel-text">
+        <p>
+          Esta aplicación es un trabajo de fin de grado
+          hecha para el economato social de Cáritas en Alicante,
+          a través de la Universidad de Alicante.
+        </p>
+      </div>
+
+      <div class="hidden-panel-credits">
+        <span>Coded by <a href="https://github.com/DiegoMGar/TFG" title="Diego Maroto">Diego Maroto</a>.</span>
+        <span>Fronted with <a href="https://angular.io/" title="Angular 11">Angular 11</a>.</span>
+        <span>Backend with <a href="https://nestjs.com/" title="NestJS">NestJS</a>.</span>
+        <span>Hosted by <a href="https://www.heroku.com/" title="Heroku">Heroku</a>.</span>
+      </div>
+
+    </div>
+  </div>
+</div>

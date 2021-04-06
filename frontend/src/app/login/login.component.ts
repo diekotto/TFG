@@ -1,35 +1,68 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { environment } from '../../environments/environment';
-import { UserService } from '../services/user.service';
+import { UserService } from '../services/user/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoginService } from '../services/login/login.service';
+import { PingService } from '../services/ping/ping.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   myForm: FormGroup;
   loading = true;
+  loadingLogin = false;
   loginError = false;
+  backendError = false;
+  pingSubscription: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
     private userService: UserService,
+    private loginService: LoginService,
+    private pingService: PingService,
     private snackBar: MatSnackBar
   ) {}
+
+  ngOnDestroy(): void {
+    if (this.pingSubscription) {
+      this.pingSubscription.unsubscribe();
+    }
+  }
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
     });
-    this.loading = false;
+    this.pingSubscription = this.pingService.onPing.subscribe((alive: boolean) => {
+      if (!alive) {
+        this.backendError = true;
+        this.loading = false;
+        this.openSnackBar('Error: El sistema parece caído');
+      } else {
+        this.backendError = false;
+      }
+    });
+    const checkBackendAlive = () => {
+      setTimeout(() => {
+        if (this.backendError) {
+          return;
+        }
+        this.loading = !this.pingService.alive;
+        if (this.loading) {
+          checkBackendAlive();
+        }
+      }, 2000);
+    };
+    checkBackendAlive();
   }
 
   async login(): Promise<void> {
@@ -37,12 +70,10 @@ export class LoginComponent implements OnInit {
       console.log('Invalid form');
       return;
     }
-    this.loading = true;
+    this.loadingLogin = true;
     this.loginError = false;
-    let response: any;
     try {
-      response = await this.http.post(environment.backend + '/login', this.myForm.value).toPromise();
-      this.userService.setCurrent({ jwt: response.jwt, ...response.user });
+      await this.loginService.login(this.myForm.value);
       await this.router.navigate(['dashboard']);
       console.log('Navigated');
     } catch (err) {
@@ -50,12 +81,16 @@ export class LoginComponent implements OnInit {
       this.loginError = true;
       this.openSnackBar('Email y/o contraseña erróneos');
     }
-    this.loading = false;
+    this.loadingLogin = false;
   }
 
   openSnackBar(message: string, action = 'Cerrar'): void {
     this.snackBar.open(message, action, {
       duration: 5000,
     });
+  }
+
+  loginButtonDisabled(): boolean {
+    return (this.loading || this.loadingLogin) && !this.backendError;
   }
 }
