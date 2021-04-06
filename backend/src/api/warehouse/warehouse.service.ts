@@ -57,9 +57,9 @@ export class WarehouseService {
   }
 
   async create(input: CreateWarehouseDto): Promise<WarehouseResponseDto> {
-    // TODO: PREGUNTAR A LA SEDE SI EXISTE
     const schema: Warehouse = {
       headquarter: input.headquarter,
+      name: input.name,
     } as Warehouse;
     const warehouseDocument = await this.warehouseMongo.create(schema);
     return WarehouseResponseDto.fromWarehouseDocument(warehouseDocument);

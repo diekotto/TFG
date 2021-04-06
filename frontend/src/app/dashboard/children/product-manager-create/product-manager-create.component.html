@@ -1,0 +1,97 @@
+<div class="container">
+  <mat-card class="product-manager-create-card">
+    <h1 class="banner">Creación de productos</h1>
+    <div class="product-manager-scan-container">
+      <zxing-scanner
+        *ngIf="scanEnabled"
+        [formats]="allowedScanFormats"
+        (scanSuccess)="scanSuccessHandler($event)"
+      ></zxing-scanner>
+    </div>
+    <div class="form-container">
+      <form class="product-manager-create-form" [formGroup]="myForm">
+        <mat-grid-list cols="2" rowHeight="85px">
+          <mat-grid-tile>
+            <mat-form-field appearance="standard">
+              <mat-label>Nombre</mat-label>
+              <input
+                matInput
+                type="text"
+                placeholder="Nombre del producto"
+                formControlName="name"
+              >
+            </mat-form-field>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <mat-form-field appearance="standard">
+              <mat-label>Ean del producto</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="ean"
+                [disabled]="true"
+              >
+            </mat-form-field>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </form>
+      <div class="product-manager-create-buttons">
+        <button
+          class="product-manager-create-button"
+          mat-raised-button color="primary"
+          (click)="onClickScanEnable()"
+        >
+          {{scanEnabled ? disableScannerTxt : enableScannerTxt}}
+        </button>
+        <button
+          class="product-manager-cancel-button"
+          mat-raised-button color="accent"
+          (click)="onCLickShowProductDetails()"
+          *ngIf="myForm.get('ean').value"
+        >
+          {{displayProductDetail ? notDisplayProductDetailTxt : displayProductDetailTxt}}
+        </button>
+      </div>
+      <div class="product-manager-create-buttons" *ngIf="productDetail && displayProductDetail">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              Detalle del producto
+            </mat-expansion-panel-header>
+            <mat-panel-description>
+              Datos de Open Food Facts
+            </mat-panel-description>
+            <ul style="text-align: left;">
+              <li>Nombre: {{productDetail.name}}</li>
+              <li>Categorías: {{productDetail.categories}}</li>
+              <li>Ingredientes: {{productDetail.ingredients}}</li>
+              <li>Alérgenos: {{productDetail.allergens}}</li>
+              <li>Etiquetas: {{productDetail.labels}}</li>
+              <li>Cantidad: {{productDetail.quantity}}</li>
+            </ul>
+            <img src="{{productDetail.imageUrl}}" alt="Imagen producto">
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="product-manager-create-buttons">
+        <button
+          class="product-manager-create-button"
+          mat-raised-button color="primary"
+          (click)="submitForm()"
+          [disabled]="submitFormDisabled()"
+        >
+          Crear
+          <mat-progress-spinner *ngIf="loading"
+                                class="product-manager-create-spinner"
+                                mode="indeterminate"
+                                [diameter]="17">
+          </mat-progress-spinner>
+        </button>
+        <a class="product-manager-cancel-button" routerLink="/dashboard/product-manager" mat-raised-button
+           color="accent">
+          Cancelar
+        </a>
+      </div>
+    </div>
+  </mat-card>
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RoleName, UserService } from '../../../services/user/user.service';
+import { RoleName } from '../../../services/user/user.service';
 import { UserManagerCreateService } from './user-manager-create.service';
 import { DashboardCommunicationService } from '../../services/dashboard-communication/dashboard-communication.service';
 
@@ -13,11 +13,10 @@ export class UserManagerCreateComponent implements OnInit {
 
   myForm: FormGroup;
   permissions: string[] = [];
-  loading = true;
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
     private service: UserManagerCreateService,
     private communicationService: DashboardCommunicationService,
   ) { }
@@ -37,17 +36,19 @@ export class UserManagerCreateComponent implements OnInit {
   }
 
   submitFormDisabled(): boolean {
-    return !this.myForm.valid;
+    return !this.myForm.valid || this.loading;
   }
 
   async submitForm(): Promise<void> {
-    if (!this.myForm.valid) {
+    if (this.submitFormDisabled()) {
       return;
     }
     this.loading = true;
-    await this.service.createUser(this.myForm.value);
-    this.myForm.reset();
-    this.communicationService.snackBarEmitMessage('Usuario creado correctamente');
-    this.loading = false;
+    setTimeout(async () => {
+      await this.service.createUser(this.myForm.value);
+      this.myForm.reset();
+      this.communicationService.snackBarEmitMessage('Usuario creado correctamente');
+      this.loading = false;
+    }, 1500);
   }
 }

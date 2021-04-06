@@ -1,0 +1,40 @@
+<div class="container">
+  <mat-card class="warehouse-manager-create-card">
+    <h1 class="banner">Creación de almacenes</h1>
+    <div class="form-container">
+      <form class="warehouse-manager-create-form" [formGroup]="myForm">
+        <mat-grid-list cols="1" rowHeight="85px">
+          <mat-grid-tile>
+            <mat-form-field appearance="standard">
+              <mat-label>Nombre</mat-label>
+              <input
+                matInput
+                type="text"
+                placeholder="Nombre del almacén"
+                formControlName="name"
+              >
+            </mat-form-field>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </form>
+      <div class="warehouse-manager-create-buttons">
+        <button
+          class="warehouse-manager-create-button"
+          mat-raised-button color="primary"
+          (click)="submitForm()"
+          [disabled]="submitFormDisabled()"
+        >
+          Crear
+          <mat-progress-spinner *ngIf="loading"
+                                class="warehouse-manager-create-spinner"
+                                mode="indeterminate"
+                                [diameter]="17">
+          </mat-progress-spinner>
+        </button>
+        <a class="warehouse-manager-cancel-button" routerLink="/dashboard/warehouse-manager" mat-raised-button color="accent">
+          Cancelar
+        </a>
+      </div>
+    </div>
+  </mat-card>
+</div>

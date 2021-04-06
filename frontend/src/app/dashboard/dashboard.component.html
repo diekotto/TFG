@@ -39,22 +39,61 @@
       <nav class="hidden-panel-nav">
         <h3>Navegación</h3>
         <ul>
-          <li><a routerLink="/dashboard" title="Home" (click)="toggleMenu()">Home</a></li>
-          <li><a routerLink="/dashboard/cash" title="Caja" (click)="toggleMenu()">Caja</a></li>
-          <li><a routerLink="/dashboard/reception" title="Pedidos" (click)="toggleMenu()">Pedidos</a></li>
-          <li><a routerLink="/dashboard/warehouse" title="Almacén" (click)="toggleMenu()">Almacén</a></li>
-          <li><a routerLink="/dashboard/family" title="Familias" (click)="toggleMenu()">Familias</a></li>
-          <li><a routerLink="/dashboard/profile" title="Perfil" (click)="toggleMenu()">Perfil</a></li>
-          <li><a routerLink="/dashboard/about" title="Contacto" (click)="toggleMenu()">Contacto</a></li>
-          <li><a routerLink="/" title="Logout" (click)="logout()">Cerrar sesión</a></li>
+          <li>
+            <a routerLink="/dashboard" title="Home" (click)="toggleMenu()">
+              Home
+            </a>
+          </li>
+          <li *ngIf="userService.isWarehouse()">
+            <a routerLink="/dashboard/warehouse" title="Almacén" (click)="toggleMenu()">
+              Almacén
+            </a>
+          </li>
+          <li *ngIf="userService.isReception()">
+            <a routerLink="/dashboard/reception" title="Pedidos" (click)="toggleMenu()">
+              Pedidos
+            </a>
+          </li>
+          <li *ngIf="userService.isFamily()">
+            <a routerLink="/dashboard/family" title="Familias" (click)="toggleMenu()">
+              Familias
+            </a>
+          </li>
+          <li *ngIf="userService.isCash()">
+            <a routerLink="/dashboard/cash" title="Caja" (click)="toggleMenu()">
+              Caja
+            </a>
+          </li>
+          <li>
+            <a routerLink="/dashboard/profile" title="Perfil" (click)="toggleMenu()">
+              Perfil
+            </a>
+          </li>
+          <li>
+            <a routerLink="/" title="Logout" (click)="logout()">
+              Cerrar sesión
+            </a>
+          </li>
         </ul>
       </nav>
 
-      <nav class="hidden-panel-nav">
+      <nav class="hidden-panel-nav" *ngIf="userService.isAdminLocal()">
         <h3>Administración</h3>
         <ul>
-          <li><a routerLink="/dashboard/user-manager" title="Usuarios" (click)="toggleMenu()">Usuarios</a></li>
           <li><a routerLink="/dashboard/warehouse-manager" title="Almacenes" (click)="toggleMenu()">Almacenes</a></li>
+          <li><a routerLink="/dashboard/product-manager" title="Productos" (click)="toggleMenu()">Productos</a></li>
+          <li><a routerLink="/dashboard/user-manager" title="Usuarios" (click)="toggleMenu()">Usuarios</a></li>
+        </ul>
+      </nav>
+
+      <nav class="hidden-panel-nav" *ngIf="userService.isAdminLocal()">
+        <h3>Servicio técnico</h3>
+        <ul>
+          <li>
+            <a routerLink="/dashboard/about" title="Contacto" (click)="toggleMenu()">
+              Contacto
+            </a>
+          </li>
         </ul>
       </nav>
 

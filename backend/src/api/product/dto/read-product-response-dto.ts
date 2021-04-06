@@ -4,6 +4,8 @@ import { ProductDocument } from '../../../db/product-mongo/product-schema';
 export class ReadProductResponseDto {
   @ApiProperty() id: string;
   @ApiProperty() name: string;
+  @ApiProperty() alias: string;
+  @ApiProperty() ean: string;
   @ApiProperty() quantity: string;
   @ApiProperty() category: string;
   @ApiProperty() ingredients: string;
