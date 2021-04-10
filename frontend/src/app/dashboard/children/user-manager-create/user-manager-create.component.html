@@ -18,6 +18,7 @@
                 type="text"
                 placeholder="El nombre completo"
                 formControlName="name"
+                maxlength="256"
               >
             </mat-form-field>
           </mat-grid-tile>
@@ -29,6 +30,7 @@
                 type="email"
                 placeholder="email@example.com"
                 formControlName="email"
+                maxlength="100"
               >
             </mat-form-field>
           </mat-grid-tile>
@@ -41,6 +43,7 @@
                 placeholder="********"
                 formControlName="password"
                 autocomplete="false"
+                maxlength="256"
               >
               <mat-hint>Mínimo 8 de longitud</mat-hint>
             </mat-form-field>

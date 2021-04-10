@@ -1,0 +1,173 @@
+<div class="container">
+  <mat-card class="product-manager-detail-card">
+    <h1 class="banner">Edición de productos</h1>
+    <mat-progress-bar mode="indeterminate" *ngIf="loadingProduct"></mat-progress-bar>
+    <div *ngIf="!loadingProduct">
+      <div class="form-container">
+        <form class="product-manager-detail-form" [formGroup]="myForm">
+          <mat-grid-list cols="2" rowHeight="85px">
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Ean del producto</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="ean_disabled"
+                >
+                <mat-hint>Este campo es indispensable</mat-hint>
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Código del producto</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="code"
+                  maxlength="50"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Nombre</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  placeholder="Nombre del producto"
+                  formControlName="name"
+                  maxlength="30"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Precio del producto</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  step="any"
+                  formControlName="price"
+                  maxlength="10"
+                  (keyup)="onPriceKeyUp()"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Límite a 10€</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="limit10e"
+                  maxlength="10"
+                  (keyup)="onLimitUpdated()"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Límite a 13€</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="limit13e"
+                  maxlength="10"
+                  (keyup)="onLimitUpdated()"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Límite a 17€</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="limit17e"
+                  maxlength="10"
+                  (keyup)="onLimitUpdated()"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Límite a 22€</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="limit22e"
+                  maxlength="10"
+                  (keyup)="onLimitUpdated()"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Límite a 27€</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="limit27e"
+                  maxlength="10"
+                  (keyup)="onLimitUpdated()"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <mat-form-field appearance="standard">
+                <mat-label>Límite a 32€</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="limit32e"
+                  maxlength="10"
+                  (keyup)="onLimitUpdated()"
+                >
+              </mat-form-field>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </form>
+      </div>
+      <div class="product-manager-detail-buttons">
+        <button
+          class="product-manager-detail-button"
+          mat-raised-button color="primary"
+          (click)="submitForm()"
+          [disabled]="submitFormDisabled()"
+        >
+          Guardar cambios
+          <mat-progress-spinner *ngIf="loading"
+                                class="product-manager-detail-spinner"
+                                mode="indeterminate"
+                                [diameter]="17">
+          </mat-progress-spinner>
+        </button>
+        <a class="product-manager-cancel-button" routerLink="/dashboard/product-manager" mat-raised-button
+           color="accent">
+          Cancelar
+        </a>
+      </div>
+      <div class="product-manager-detail-buttons" *ngIf="product.ean">
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>
+            Detalle del producto
+          </mat-expansion-panel-header>
+          <mat-panel-description>
+            Datos automáticos usando Open Food Facts
+          </mat-panel-description>
+          <ul style="text-align: left;">
+            <li>Nombre: {{product.name}}</li>
+            <li>Categorías: {{product.categories}}</li>
+            <li>Ingredientes: {{product.ingredients}}</li>
+            <li>Alérgenos: {{product.allergens}}</li>
+            <li>Etiquetas: {{product.labels}}</li>
+            <li>Cantidad: {{product.quantity}}</li>
+          </ul>
+          <img src="{{product.imageUrl}}" alt="Imagen producto">
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    </div>
+  </mat-card>
+</div>

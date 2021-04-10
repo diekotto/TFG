@@ -1,0 +1,97 @@
+.reception-buttons {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+
+.reception-buttons > div {
+  margin: 20px 0;
+}
+
+.reception-button {
+  min-width: 200px;
+  max-width: 300px;
+  width: 100%;
+}
+
+.reception-next-step-button {
+  min-width: 200px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.reception-family-info {
+  text-align: left;
+  padding-top: 35px;
+  margin-bottom: 35px;
+  width: 100%;
+  display: block;
+}
+
+.reception-family-info > div > div {
+  margin-top: 10px;
+}
+
+.reception-family-info > div > div > p {
+  vertical-align: middle;
+  margin: 0;
+  line-height: 34px;
+}
+
+.reception-family-info-chip-list {
+  display: inline-flex;
+}
+
+.reception-family-info-span {
+  margin-left: 20px;
+  line-height: 24px;
+}
+
+.reception-family-info-span.divider {
+  color: #7d7d7d;
+}
+
+.reception-family-info-span:first-child {
+  margin-left: 0;
+}
+
+.reception-spinner {
+  margin-left: 15px;
+  display: inline;
+}
+
+.reception-products-form {
+  width: 100%;
+  margin-top: 60px;
+}
+
+.reception-card {
+  padding-bottom: 35px;
+  padding-top: 35px;
+}
+
+.container {
+  margin-top: 3em;
+}
+
+h1 {
+  font-size: 3.375rem;
+  margin-bottom: 1em;
+  line-height: normal;
+}
+
+.form-first-step {
+  padding-top: 50px;
+}
+
+.selectables-first-step-button-toggle {
+  margin-top: 30px;
+}
+
+.selectables-first-step-slide-toggle {
+  margin-top: 40px;
+}
+
+.table td, .table th {
+  vertical-align: middle;
+}

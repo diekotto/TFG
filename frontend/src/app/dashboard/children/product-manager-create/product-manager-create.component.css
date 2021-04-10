@@ -1,0 +1,50 @@
+.product-manager-create-buttons {
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 50px;
+}
+
+.product-manager-create-button {
+  margin-right: 30px;
+  width: 200px;
+}
+
+.product-manager-scan-button {
+  width: 200px;
+}
+
+.product-manager-cancel-button {
+  min-width: 200px;
+}
+
+.product-manager-create-spinner {
+  margin-left: 15px;
+  display: inline;
+}
+
+.product-manager-create-card {
+  padding-bottom: 35px;
+  padding-top: 35px;
+}
+
+.product-manager-scan-container {
+  width: 50%;
+  margin: 0 auto 30px auto;
+}
+
+.container {
+  margin-top: 3em;
+}
+
+h1 {
+  font-size: 3.375rem;
+  margin-bottom: 1em;
+  line-height: normal;
+}
+
+@media (max-width: 900px) {
+  .product-manager-scan-container {
+    width: 100%;
+    margin: 0 auto 30px auto;
+  }
+}

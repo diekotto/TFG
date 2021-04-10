@@ -1,0 +1,75 @@
+<div class="container">
+  <mat-card class="product-manager-card">
+    <h1 class="banner">Mantenimiento de productos</h1>
+    <div class="product-manager-buttons">
+      <a routerLink="/dashboard/product-manager-create" mat-raised-button color="primary">Crear producto</a>
+    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <mat-accordion class="product-manager-accordion">
+      <mat-expansion-panel [expanded]="!loading">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Productos
+          </mat-panel-title>
+          <mat-panel-description *ngIf="!loading">
+            {{products.length}} productos en la plataforma
+            <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="table-responsive-md">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Código</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">OpenFood</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let p of products">
+              <th scope="row">
+                <mat-icon mat-list-icon color="primary">restaurant</mat-icon>
+              </th>
+              <td>{{p.code}}</td>
+              <td>{{p.alias}}</td>
+              <td>{{p.name}}</td>
+              <td>{{p.pvp}}€</td>
+              <td>
+                <div *ngIf="!deleting[p._id]">
+                  <a [routerLink]="'/dashboard/product-manager/'+p.ean" mat-stroked-button color="accent">
+                    <mat-icon mat-list-icon color="primary">edit</mat-icon>
+                  </a>
+                  <button mat-stroked-button color="accent" (click)="onClickPrepareDelete(p._id)">
+                    <mat-icon>
+                      delete_forever
+                    </mat-icon>
+                  </button>
+                </div>
+                <div *ngIf="deleting[p._id]">
+                  <button
+                    mat-stroked-button color="accent"
+                    (click)="onClickDeleteButton(p._id, p.ean)">
+                    <mat-icon>
+                      done
+                    </mat-icon>
+                  </button>
+                  <button
+                    mat-stroked-button color="accent"
+                    (click)="onClickCancelDelete(p._id)">
+                    <mat-icon>
+                      cancel
+                    </mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+</div>

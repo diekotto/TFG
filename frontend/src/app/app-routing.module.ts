@@ -13,13 +13,18 @@ import { ReceptionComponent } from './dashboard/children/reception/reception.com
 import { ReceptionGuard } from './guards/reception.guard';
 import { FamilyComponent } from './dashboard/children/family/family.component';
 import { FamilyGuard } from './guards/family.guard';
-import { WarehouseComponent } from './dashboard/children/warehouse/warehouse.component';
 import { WarehouseGuard } from './guards/warehouse.guard';
 import { CashComponent } from './dashboard/children/cash/cash.component';
 import { CashGuard } from './guards/cash.guard';
 import { AboutComponent } from './about/about.component';
 import { UserManagerDetailComponent } from './dashboard/children/user-manager-detail/user-manager-detail.component';
 import { UserManagerCreateComponent } from './dashboard/children/user-manager-create/user-manager-create.component';
+import { WarehouseManagerCreateComponent } from './dashboard/children/warehouse-manager-create/warehouse-manager-create.component';
+import { WarehouseManagerDetailComponent } from './dashboard/children/warehouse-manager-detail/warehouse-manager-detail.component';
+import { WarehouseComponent } from './dashboard/children/warehouse/warehouse.component';
+import { ProductManagerComponent } from './dashboard/children/product-manager/product-manager.component';
+import { ProductManagerCreateComponent } from './dashboard/children/product-manager-create/product-manager-create.component';
+import { ProductManagerDetailComponent } from './dashboard/children/product-manager-detail/product-manager-detail.component';
 
 const routes: Routes = [
   {
@@ -71,6 +76,26 @@ const routes: Routes = [
     }, {
       path: 'warehouse-manager',
       component: WarehouseManagerComponent,
+      canActivate: [AdminGuard]
+    }, {
+      path: 'warehouse-manager-create',
+      component: WarehouseManagerCreateComponent,
+      canActivate: [AdminGuard]
+    }, {
+      path: 'warehouse-manager/:id',
+      component: WarehouseManagerDetailComponent,
+      canActivate: [AdminGuard]
+    }, {
+      path: 'product-manager',
+      component: ProductManagerComponent,
+      canActivate: [AdminGuard]
+    }, {
+      path: 'product-manager-create',
+      component: ProductManagerCreateComponent,
+      canActivate: [AdminGuard]
+    }, {
+      path: 'product-manager/:ean',
+      component: ProductManagerDetailComponent,
       canActivate: [AdminGuard]
     },
     ]

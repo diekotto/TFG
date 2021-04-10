@@ -12,7 +12,7 @@ export class UserManagerCreateService {
               private userService: UserService) { }
 
   createUser(user: any): Promise<any> {
-    if (user.active) {
+    if (user.admin) {
       user.permissions.push(RoleName.ADMINLOCAL);
     }
     delete user.admin;

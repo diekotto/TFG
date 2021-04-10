@@ -1,1 +1,32 @@
-<p>warehouse-manager works!</p>
+<div class="container">
+  <mat-card class="warehouse-manager-card">
+    <h1 class="banner">Mantenimiento de almacenes</h1>
+    <div class="warehouse-manager-buttons">
+      <a routerLink="/dashboard/warehouse-manager-create" mat-raised-button color="primary">Crear almacén</a>
+    </div>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <mat-accordion class="warehouse-manager-accordion">
+      <mat-expansion-panel [expanded]="!loading">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Usuarios
+          </mat-panel-title>
+          <mat-panel-description *ngIf="!loading">
+            {{warehouses.length}} almacenes en la plataforma
+            <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-list class="list">
+          <mat-list-item *ngFor="let w of warehouses">
+            <mat-icon mat-list-icon color="primary">store_mall_directory</mat-icon>
+            <h4 mat-line>{{w.name}}</h4>
+            <p mat-line> {{w.createdAt}} </p>
+            <a [routerLink]="'/dashboard/warehouse-manager/'+w.id">
+              <mat-icon mat-list-icon color="primary">edit</mat-icon>
+            </a>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card>
+</div>

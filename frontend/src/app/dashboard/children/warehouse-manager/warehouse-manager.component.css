@@ -1,0 +1,37 @@
+.warehouse-manager-buttons {
+  text-align: right;
+  margin-bottom: 30px;
+}
+
+.warehouse-manager-card {
+  padding-bottom: 35px;
+  padding-top: 35px;
+}
+
+.warehouse-manager-add-message {
+  cursor: pointer;
+}
+
+.warehouse-manager-accordion .mat-expansion-panel-header-title,
+.warehouse-manager-accordion .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.warehouse-manager-accordion .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list {
+  text-align: left;
+}
+
+.container {
+  margin-top: 3em;
+}
+
+h1 {
+  font-size: 3.375rem;
+  margin-bottom: 1em;
+  line-height: normal;
+}

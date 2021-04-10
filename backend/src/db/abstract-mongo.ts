@@ -2,6 +2,8 @@ import { Document } from 'mongoose';
 import { Model } from 'mongoose';
 
 export abstract class AbstractMongo<C, D extends Document> {
+  private defaultProjection = { __v: false };
+
   protected constructor(protected model: Model<D>) {}
 
   async create(input: C): Promise<D> {
@@ -11,11 +13,11 @@ export abstract class AbstractMongo<C, D extends Document> {
   }
 
   async findAll(): Promise<D[]> {
-    return this.model.find();
+    return this.model.find({}, this.defaultProjection);
   }
 
   async findById(id: string): Promise<D> {
-    return this.model.findById(id);
+    return this.model.findById(id, this.defaultProjection);
   }
 
   async findBy(k: string, v: any): Promise<D[]> {
@@ -31,11 +33,11 @@ export abstract class AbstractMongo<C, D extends Document> {
   }
 
   async findByConditions(conditions: { [key: string]: any }): Promise<D[]> {
-    return this.model.find(conditions as any);
+    return this.model.find(conditions as any, this.defaultProjection);
   }
 
   async findOneByConditions(conditions: { [key: string]: any }): Promise<D> {
-    return this.model.findOne(conditions as any);
+    return this.model.findOne(conditions as any, this.defaultProjection);
   }
 
   async deleteOneByConditions(conditions: {

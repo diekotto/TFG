@@ -22,7 +22,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   pingSubscription: Subscription;
 
   constructor(
-    private userService: UserService,
+    public userService: UserService,
     private loginService: LoginService,
     private pingService: PingService,
     private communication: DashboardCommunicationService,
