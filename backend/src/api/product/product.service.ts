@@ -2,6 +2,7 @@ import {
   HttpService,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductMongoService } from '../../db/product-mongo/product-mongo.service';
 import { ReadProductResponseDto } from './dto/read-product-response-dto';
@@ -13,6 +14,7 @@ import { AxiosResponse } from 'axios';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '../../config/configuration';
 import { OpenfoodMongoService } from '../../db/openfood-mongo/openfood-mongo.service';
+import { CreateProductResponseDto } from './dto/create-product-response-dto';
 
 @Injectable()
 export class ProductService {
@@ -58,6 +60,37 @@ export class ProductService {
       );
     }
     return ReadProductResponseDto.fromProductDocument(product);
+  }
+
+  async updateByEan(
+    ean: string,
+    input: CreateProductResponseDto,
+  ): Promise<ReadProductResponseDto> {
+    const product: ProductDocument = await this.productsMongo.findOneBy(
+      'ean',
+      ean,
+    );
+    if (!product) {
+      throw new NotFoundException(`Product with ean ${ean} not found`);
+    }
+    product.alias = input.alias;
+    product.limits = input.limits;
+    product.pvp = input.pvp;
+    product.code = input.code;
+    await product.save();
+    return ReadProductResponseDto.fromProductDocument(product);
+  }
+
+  async deleteByEan(ean: string): Promise<void> {
+    const product: ProductDocument = await this.productsMongo.findOneBy(
+      'ean',
+      ean,
+    );
+    if (!product) {
+      throw new NotFoundException(`Product with ean ${ean} not found`);
+    }
+    await this.productsMongo.deleteOneByConditions({ ean });
+    return;
   }
 
   private static fromOpenFoodToProduct(response: any): Product {

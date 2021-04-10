@@ -1,7 +1,7 @@
-import { Injectable, EventEmitter } from '@angular/core';
-import { UserService } from '../../../services/user/user.service';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { UserService } from '../../../services/user/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +9,7 @@ import { environment } from '../../../../environments/environment';
 export class ProductService {
 
   private products: Product[] = [];
-  private openfoodProduct: Product;
-
-  openfoodEmitter = new EventEmitter<Product>();
+  private openFoodProduct: Product;
 
   constructor(
     private userService: UserService,
@@ -37,24 +35,65 @@ export class ProductService {
       },
     }).toPromise()
       .then((data: any) => {
-        this.openfoodProduct = data;
-        this.openfoodEmitter.emit(data);
+        this.openFoodProduct = data;
         return Promise.resolve(data);
       });
+  }
+
+  async deleteProductById(ean: string): Promise<void> {
+    await this.http.delete(environment.backend + '/product/' + ean, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`
+      },
+    }).toPromise();
+    const index = this.products.findIndex((p: Product) => p.ean === ean);
+    this.products.splice(index, 1);
   }
 
   getAll(): Product[] {
     return this.products;
   }
 
-  create(product: Product): void {
-    throw new Error('Not implemented yet');
+  updateByEan(input: any): Promise<Product> {
+    const product: CreateProductResponseDto = {
+      ean: input.ean,
+      alias: input.name,
+      code: input.code,
+      pvp: input.price,
+      limits: [
+        { price: 10, quantity: input.limit10e },
+        { price: 13, quantity: input.limit13e },
+        { price: 17, quantity: input.limit17e },
+        { price: 22, quantity: input.limit22e },
+        { price: 27, quantity: input.limit27e },
+        { price: 32, quantity: input.limit32e },
+      ]
+    };
+    return this.http.put(environment.backend + '/product/' + input.ean,
+      product,
+      {
+        headers: {
+          Authorization: `Bearer ${this.userService.jwt}`
+        },
+      }).toPromise().then((data: any) => {
+      return Promise.resolve(data);
+    });
   }
 }
 
+export interface CreateProductResponseDto {
+  ean: string;
+  alias: string;
+  limits: ProductLimits[];
+  pvp: number;
+  code: string; // Inner code for every warehouse
+}
+
 export interface Product {
-  id: string;
+  _id: string;
+  ean: string;
   name: string;
+  alias: string;
   quantity: string; // peso o unidades
   categories: string;
   ingredients: string;

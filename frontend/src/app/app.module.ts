@@ -18,7 +18,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -86,7 +89,10 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     MatGridListModule,
     MatSelectModule,
     MatSlideToggleModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatStepperModule,
+    MatChipsModule,
+    MatButtonToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

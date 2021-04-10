@@ -17,9 +17,7 @@ export class ProductManagerCreateComponent implements OnInit {
   enableScannerTxt = 'Activar escáner';
   disableScannerTxt = 'Desactivar escáner';
   productDetail: Product;
-  displayProductDetail = false;
-  displayProductDetailTxt = 'Ver ficha del producto';
-  notDisplayProductDetailTxt = 'Ocultar ficha del producto';
+  priceLimits = [10, 13, 17, 22, 27, 32];
 
   constructor(
     private fb: FormBuilder,
@@ -29,8 +27,20 @@ export class ProductManagerCreateComponent implements OnInit {
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
+      ean_disabled: [{
+        value: '',
+        disabled: true,
+      }],
+      ean: ['', Validators.required],
       name: ['', Validators.required],
-      ean: ['']
+      code: ['', Validators.required],
+      price: [0.00, Validators.required],
+      [`limit${this.priceLimits[0]}e`]: [0],
+      [`limit${this.priceLimits[1]}e`]: [0],
+      [`limit${this.priceLimits[2]}e`]: [0],
+      [`limit${this.priceLimits[3]}e`]: [0],
+      [`limit${this.priceLimits[4]}e`]: [0],
+      [`limit${this.priceLimits[5]}e`]: [0],
     });
   }
 
@@ -39,15 +49,14 @@ export class ProductManagerCreateComponent implements OnInit {
   }
 
   async submitForm(): Promise<void> {
-    // TODO: quitar este bloqueo
-    if (this.submitFormDisabled() || true) {
+    if (this.submitFormDisabled()) {
       return;
     }
     this.loading = true;
     setTimeout(async () => {
-      await this.service.create(this.myForm.value);
+      await this.service.updateByEan(this.myForm.value);
       this.myForm.reset();
-      this.communicationService.snackBarEmitMessage('Almacén creado correctamente');
+      this.communicationService.snackBarEmitMessage('Producto guardado correctamente');
       this.loading = false;
     }, 1500);
   }
@@ -58,6 +67,7 @@ export class ProductManagerCreateComponent implements OnInit {
     setTimeout(async () => {
       this.productDetail = await this.service.fetchByEan(result);
       this.myForm.get('ean').setValue(result);
+      this.myForm.get('ean_disabled').setValue(result);
       this.loading = false;
     }, 1000);
   }
@@ -66,7 +76,25 @@ export class ProductManagerCreateComponent implements OnInit {
     this.scanEnabled = !this.scanEnabled;
   }
 
-  onCLickShowProductDetails(): void {
-    this.displayProductDetail = !this.displayProductDetail;
+  onPriceKeyUp(): void {
+    const price = this.myForm.get('price').value;
+    const regex = /^(\d+)[.,](\d*)$/;
+    const g = regex.exec(price);
+    if (regex.test(price) && g[2] && g[2].length > 2) {
+      this.myForm.get('price').setValue(Number(`${g[1]}.${g[2].substring(0, 2)}`));
+    }
+  }
+
+  onLimitUpdated(): void {
+    let lastPrice = 0;
+    this.priceLimits.forEach((p: number) => {
+      let currentPrice = this.myForm.get(`limit${p}e`).value;
+      this.myForm.get(`limit${p}e`).setValue(Number(currentPrice));
+      if (currentPrice < lastPrice) {
+        this.myForm.get(`limit${p}e`).setValue(lastPrice);
+        currentPrice = lastPrice;
+      }
+      lastPrice = currentPrice;
+    });
   }
 }

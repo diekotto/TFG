@@ -35,7 +35,7 @@ header {
   color: #2d2d2d;
   padding: 3em 5%;
   position: relative;
-  width: 90%;
+  width: 100%;
   z-index: 2;
 }
 
@@ -87,6 +87,7 @@ header {
   background: #333;
   color: #666;
   font-size: 0.875rem;
+  min-height: 900px;
   height: 100%;
   position: absolute;
   right: 0;
@@ -200,11 +201,11 @@ header {
   width: 50%;
 }
 
-.container:before, header:before, .menu-toggle:before, .container:after, header:after, .menu-toggle:after {
+.main-container:before, header:before, .menu-toggle:before, .main-container:after, header:after, .menu-toggle:after {
   content: "";
   display: table;
 }
 
-.container:after, header:after, .menu-toggle:after {
+.main-container:after, header:after, .menu-toggle:after {
   clear: both;
 }

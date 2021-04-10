@@ -10,6 +10,7 @@ body {
   background: linear-gradient(#ffd59b, #fda651), #ffd59b;
   font-size: 1em !important;
   color: #2d2d2d;
+  min-height: 900px;
 }
 
 h1 {
@@ -20,6 +21,10 @@ button {
   font-size: 1em !important;
 }
 
+.container > mat-card {
+  min-width: 260px !important;
+}
+
 .sidenav-content {
   background-color: transparent;
 }
@@ -28,29 +33,7 @@ button {
   width: 100%;
 }
 
-.alert {
-  position: relative;
-  padding: .75rem 1.25rem;
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-  border: 1px solid transparent;
-  border-radius: .25rem;
-}
-
-.alert-success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
-}
-
-.alert-warning {
-  color: #856404;
-  background-color: #fff3cd;
-  border-color: #ffeeba;
-}
-
-.alert-danger {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
+.material-icons {
+  display: inline-flex;
+  vertical-align: top;
 }

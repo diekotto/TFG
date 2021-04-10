@@ -10,6 +10,7 @@ export class ProductManagerComponent implements OnInit {
 
   loading = true;
   products: Product[] = [];
+  deleting: { [index: string]: boolean } = {};
 
   constructor(
     private service: ProductService
@@ -19,10 +20,23 @@ export class ProductManagerComponent implements OnInit {
     setTimeout(() => {
       this.service.fetchAll()
         .then((data: Product[]) => {
-          this.products = data;
+          this.products = data.filter((p: Product) => p.alias);
           this.loading = false;
         });
     }, 1000);
   }
 
+  onClickPrepareDelete(id: string): void {
+    this.deleting[id] = true;
+  }
+
+  onClickCancelDelete(id: string): void {
+    delete this.deleting[id];
+  }
+
+  async onClickDeleteButton(id: string, ean: string): Promise<void> {
+    delete this.deleting[id];
+    await this.service.deleteProductById(ean);
+    this.products = this.service.getAll();
+  }
 }

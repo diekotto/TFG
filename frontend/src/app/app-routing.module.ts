@@ -94,7 +94,7 @@ const routes: Routes = [
       component: ProductManagerCreateComponent,
       canActivate: [AdminGuard]
     }, {
-      path: 'product-manager/:id',
+      path: 'product-manager/:ean',
       component: ProductManagerDetailComponent,
       canActivate: [AdminGuard]
     },

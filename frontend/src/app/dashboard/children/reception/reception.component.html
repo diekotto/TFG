@@ -1,1 +1,361 @@
-<p>reception works!</p>
+<div class="container">
+  <mat-card class="reception-card">
+    <h1 class="banner">Creación de pedidos</h1>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <mat-horizontal-stepper [linear]="linearStepper" #stepper *ngIf="!loading">
+      <!-- STEP 1 -->
+      <mat-step [stepControl]="firstStepControl">
+        <!-- Busca la familia para saber si ha estado este mes -->
+        <ng-template matStepLabel>Buscar familia</ng-template>
+        <mat-divider></mat-divider>
+
+        <!-- Información de la familia buscada -->
+        <div class="reception-family-info" *ngIf="family.name">
+          <div class="row">
+            <div class="col-md-2">
+              <p>
+                {{family.name}}
+              </p>
+            </div>
+            <div class="col-md-2">
+              <p>{{family.credential}}</p>
+            </div>
+            <div class="col-md-2">
+              <p>Exp: {{family.expedient}}</p>
+            </div>
+            <div class="col-md-4">
+              <mat-chip-list class="reception-family-info-chip-list">
+                <mat-chip>
+                  {{family.visits}} visitas
+                </mat-chip>
+                <mat-chip>
+                  Límite {{family.limit}}€
+                </mat-chip>
+                <mat-chip
+                  *ngIf="family.special"
+                  color="primary" selected>
+                  Especial
+                  <mat-icon color="accent">star</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+            <div class="col-md-2">
+              <button mat-stroked-button color="primary">Resumen</button>
+            </div>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+
+        <!-- Formulario recogida de infomación -->
+        <form [formGroup]="firstStepForm" class="form-first-step" *ngIf="!family.name">
+          <div class="row">
+            <div class="col-md-4">
+              <mat-form-field appearance="standard">
+                <mat-label>Nombre</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="name"
+                >
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="standard">
+                <mat-label>Nº Expediente</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="expedient"
+                >
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="standard">
+                <mat-label>Credencial</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="credential"
+                >
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 selectables-first-step-button-toggle">
+              <h3>Límite de la familia</h3>
+              <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+                <mat-button-toggle
+                  *ngFor="let limit of limitsAvailable"
+                  value="{{limit}}"
+                  (click)="onClickLimitButton(limit)"
+                >{{limit}}€
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+            <div class="col-md-4 selectables-first-step-slide-toggle">
+              <mat-slide-toggle formControlName="special">
+                Es especial
+              </mat-slide-toggle>
+            </div>
+          </div>
+        </form>
+
+        <!-- Botones búsqueda de familia -->
+        <div class="reception-buttons row" *ngIf="!family.name">
+          <div class="col-md-12">
+            <p>
+              <button
+                class="reception-button"
+                mat-raised-button color="primary"
+                (click)="searchFamily()"
+                [disabled]="searchFamilyDisabled()"
+              >
+                Buscar
+                <mat-progress-spinner *ngIf="searching"
+                                      class="reception-spinner"
+                                      mode="indeterminate"
+                                      [diameter]="17">
+                </mat-progress-spinner>
+              </button>
+            </p>
+          </div>
+        </div>
+
+        <!-- Botones del step -->
+        <div class="reception-buttons row" *ngIf="family.name">
+          <div class="col-md-6">
+            <button
+              class="reception-next-step-button"
+              mat-raised-button
+              color="accent"
+              (click)="onClickReset()"
+            >
+              Reiniciar
+            </button>
+          </div>
+          <div class="col-md-6">
+            <button
+              class="reception-next-step-button"
+              mat-raised-button
+              matStepperNext
+              color="primary"
+              [disabled]="!firstStepControl.valid"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      </mat-step>
+
+      <!-- STEP 2 -->
+      <mat-step [stepControl]="secondStepControl">
+        <!-- Añadir productos a entregar -->
+        <ng-template matStepLabel>Añadir productos</ng-template>
+        <mat-divider></mat-divider>
+
+        <!-- Información de la familia buscada -->
+        <div class="reception-family-info">
+          <div class="row">
+            <div class="col-md-2">
+              <p>
+                {{family.name}}
+              </p>
+            </div>
+            <div class="col-md-2">
+              <p>{{family.credential}}</p>
+            </div>
+            <div class="col-md-2">
+              <p>Exp: {{family.expedient}}</p>
+            </div>
+            <div class="col-md-4">
+              <mat-chip-list class="reception-family-info-chip-list">
+                <mat-chip>
+                  {{family.visits}} visitas
+                </mat-chip>
+                <mat-chip>
+                  Límite {{family.limit}}€
+                </mat-chip>
+                <mat-chip
+                  *ngIf="family.special"
+                  color="primary" selected>
+                  Especial
+                  <mat-icon color="accent">star</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+            <div class="col-md-2">
+              <button mat-stroked-button color="primary">Resumen</button>
+            </div>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+
+        <!-- Botón vaciar pedido -->
+        <div class="reception-buttons" style="text-align: right">
+          <button
+            mat-stroked-button
+            color="accent"
+            (click)="onClickClearReception()"
+            [disabled]="!secondStepControl.valid"
+          >
+            Vaciar pedido
+          </button>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="reception-products-form table-responsive-md">
+          <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Código</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Máximo</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let product of productsForm.controls">
+              <th scope="row">
+                <mat-icon>local_grocery_store</mat-icon>
+              </th>
+              <td>{{product.get('code').value}}</td>
+              <td>{{product.get('name').value}}</td>
+              <td>
+                <button
+                  mat-button
+                  color="accent"
+                  (click)="modifyProductAmount(product.get('amount'),
+                     -1,
+                    getMaxProducts(product.get('limits').value))"
+                  [disabled]="product.get('amount').value <= 0"
+                >
+                  -1
+                </button>
+                <button mat-stroked-button>{{product.get('amount').value}}</button>
+                <button
+                  style="width: 30px;"
+                  mat-button
+                  color="primary"
+                  (click)="modifyProductAmount(product.get('amount'),
+                    1,
+                    getMaxProducts(product.get('limits').value))"
+                  [disabled]="product.get('amount').value >= getMaxProducts(product.get('limits').value)"
+                >
+                  +1
+                </button>
+              </td>
+              <td>{{getMaxProducts(product.get('limits').value)}}</td>
+              <td>{{product.get('pvp').value}}€</td>
+              <td>{{product.get('pvp').value * product.get('amount').value}}€</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Botones del step -->
+        <div class="reception-buttons row">
+          <div class="col-md-6">
+            <button
+              class="reception-next-step-button"
+              mat-raised-button
+              color="accent"
+              (click)="onClickReset()"
+            >
+              Reiniciar
+            </button>
+          </div>
+          <div class="col-md-6">
+            <button
+              class="reception-next-step-button"
+              mat-raised-button
+              matStepperNext
+              color="primary"
+              [disabled]="!secondStepControl.valid"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      </mat-step>
+
+      <!-- STEP 3 -->
+      <mat-step>
+        <!-- Revisar factura e imprimir -->
+        <ng-template matStepLabel>Done</ng-template>
+        <mat-divider></mat-divider>
+
+        <!-- Información de la familia buscada -->
+        <div class="reception-family-info">
+          <div class="row">
+            <div class="col-md-2">
+              <p>
+                {{family.name}}
+              </p>
+            </div>
+            <div class="col-md-2">
+              <p>{{family.credential}}</p>
+            </div>
+            <div class="col-md-2">
+              <p>Exp: {{family.expedient}}</p>
+            </div>
+            <div class="col-md-4">
+              <mat-chip-list class="reception-family-info-chip-list">
+                <mat-chip>
+                  {{family.visits}} visitas
+                </mat-chip>
+                <mat-chip>
+                  Límite {{family.limit}}€
+                </mat-chip>
+                <mat-chip
+                  *ngIf="family.special"
+                  color="primary" selected>
+                  Especial
+                  <mat-icon color="accent">star</mat-icon>
+                </mat-chip>
+              </mat-chip-list>
+            </div>
+            <div class="col-md-2">
+              <button mat-stroked-button color="primary">Resumen</button>
+            </div>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="row" *ngIf="generatingInvoice">
+          <div class="col-md-12">
+            <div class="alert alert-danger">
+              Not implemented yet
+            </div>
+          </div>
+        </div>
+        <!-- Botones del step -->
+        <div class="reception-buttons row">
+          <!-- Botones del step -->
+          <div class="col-md-6">
+            <button
+              class="reception-next-step-button"
+              mat-raised-button
+              matStepperPrevious
+              color="accent">
+              Anterior
+            </button>
+          </div>
+          <div class="col-md-6">
+            <button
+              class="reception-next-step-button"
+              mat-raised-button
+              matStepperNext
+              color="primary"
+              (click)="onClickGenerateInvoice()"
+            >
+              Generar factura
+            </button>
+          </div>
+        </div>
+      </mat-step>
+
+    </mat-horizontal-stepper>
+  </mat-card>
+</div>
