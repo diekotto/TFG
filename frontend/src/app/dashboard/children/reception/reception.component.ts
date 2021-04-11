@@ -13,7 +13,7 @@ import { ReceptionService } from '../../services/reception/reception.service';
 export class ReceptionComponent implements OnInit {
   @ViewChild('stepper') stepper: MatHorizontalStepper;
 
-  linearStepper = true;
+  linearStepper = false;
   limitsAvailable = [10, 13, 17, 22, 27, 32];
   firstStepControl: FormGroup;
   secondStepControl: FormGroup;
@@ -24,6 +24,7 @@ export class ReceptionComponent implements OnInit {
   loading = true;
   family: FamilyResume = this.defaultFamilyData();
   generatingInvoice = false;
+  displayLimitSurpassed = false;
 
   constructor(
     private fb: FormBuilder,
@@ -55,18 +56,6 @@ export class ReceptionComponent implements OnInit {
     });
   }
 
-  fetchAllProducts(): Promise<Product[]> {
-    return this.productService.fetchAll();
-  }
-
-  onClickLimitButton(limit: number): void {
-    this.firstStepForm.get('limit').setValue(limit);
-  }
-
-  getMaxProducts(limits: ProductLimits[]): number {
-    return limits.find((l: ProductLimits) => l.price === this.family.limit).quantity;
-  }
-
   initForms(): void {
     this.firstStepControl = this.fb.group({
       familySearched: [false, Validators.requiredTrue],
@@ -74,6 +63,7 @@ export class ReceptionComponent implements OnInit {
 
     this.secondStepControl = this.fb.group({
       productsAdded: [false, Validators.requiredTrue],
+      limitNotSurpassed: [true, Validators.requiredTrue]
     });
 
     this.firstStepForm = this.fb.group({
@@ -85,8 +75,21 @@ export class ReceptionComponent implements OnInit {
     });
 
     this.secondStepForm = this.fb.group({
-      products: this.productsForm
+      products: this.productsForm,
+      total: [0, Validators.required],
     });
+  }
+
+  fetchAllProducts(): Promise<Product[]> {
+    return this.productService.fetchAll();
+  }
+
+  onClickLimitButton(limit: number): void {
+    this.firstStepForm.get('limit').setValue(limit);
+  }
+
+  getMaxProducts(limits: ProductLimits[]): number {
+    return limits.find((l: ProductLimits) => l.price === this.family.limit).quantity;
   }
 
   addProduct(id: string, code: string, name: string, amount: number, limits: ProductLimits[], pvp: number): void {
@@ -109,6 +112,7 @@ export class ReceptionComponent implements OnInit {
     if (this.searchFamilyDisabled()) {
       return;
     }
+    this.onClickClearReception();
     this.searching = true;
     setTimeout(() => {
       this.searching = false;
@@ -124,25 +128,47 @@ export class ReceptionComponent implements OnInit {
       return;
     }
     product.setValue(newValue);
-    this.secondStepControl.get('productsAdded').setValue(
-      this.secondStepForm.get('products').value
-        .reduce((prev: number, cur: { amount: number }) => prev + cur.amount, 0) > 0
-    );
+    const productCount = this.secondStepForm.get('products').value
+      .reduce((prev: number, cur: { amount: number }) => prev + cur.amount, 0);
+    this.secondStepControl.get('productsAdded').setValue(productCount > 0);
+    const pvpSum = this.sumPvpProductsAdded();
+    this.secondStepForm.get('total').setValue(pvpSum);
+    this.secondStepControl.get('limitNotSurpassed').setValue(pvpSum <= this.family.limit);
+    this.displayLimitSurpassed = pvpSum > this.family.limit;
+  }
+
+  getSurpassedPvp(): number {
+    return this.sumPvpProductsAdded() - this.family.limit;
+  }
+
+  sumPvpProductsAdded(): number {
+    if (!this.secondStepForm) {
+      return 0;
+    }
+    return this.secondStepForm.get('products').value
+      .reduce((prev: number, cur: { amount: number, pvp: number }) => prev + (cur.amount * cur.pvp), 0);
   }
 
   onClickClearReception(): void {
     this.secondStepControl.get('productsAdded').setValue(false);
+    this.secondStepControl.get('limitNotSurpassed').setValue(true);
     this.productsForm.controls.forEach((c: AbstractControl) => {
       c.get('amount').setValue(0);
     });
+    this.secondStepForm.get('total').setValue(0);
+    this.displayLimitSurpassed = false;
   }
 
   onClickReset(): void {
+    this.resetFamilyForms();
+    this.onClickClearReception();
+    this.stepper.reset();
+  }
+
+  resetFamilyForms(): void {
     this.firstStepControl.get('familySearched').setValue(false);
     this.firstStepForm.reset();
     this.family = this.defaultFamilyData();
-    this.onClickClearReception();
-    this.stepper.reset();
   }
 
   defaultFamilyData(): FamilyResume {
@@ -158,6 +184,18 @@ export class ReceptionComponent implements OnInit {
 
   onClickGenerateInvoice(): void {
     this.generatingInvoice = true;
+  }
+
+  formatNumber(input: number): string {
+    return input.toFixed(2);
+  }
+
+  decideColorGrayClass(input: number): string {
+    return input <= 0 ? 'color-grey' : '';
+  }
+
+  disabledClearReceptionButton(): boolean {
+    return !this.secondStepControl.valid && !this.displayLimitSurpassed;
   }
 }
 

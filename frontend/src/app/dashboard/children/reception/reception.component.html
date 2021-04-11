@@ -130,7 +130,7 @@
               color="accent"
               (click)="onClickReset()"
             >
-              Reiniciar
+              Cancelar
             </button>
           </div>
           <div class="col-md-6">
@@ -196,15 +196,24 @@
             mat-stroked-button
             color="accent"
             (click)="onClickClearReception()"
-            [disabled]="!secondStepControl.valid"
+            [disabled]="disabledClearReceptionButton()"
           >
             Vaciar pedido
           </button>
         </div>
 
         <!-- Tabla de productos -->
-        <div class="reception-products-form table-responsive-md">
-          <table class="table table-striped table-sm">
+        <div class="reception-products-form table-responsive-md table-hover">
+          <div class="row">
+            <div class="col-md-12">
+              <p class="text-right">
+                <button mat-stroked-button color="primary">
+                  Total acumulado: {{formatNumber(secondStepForm.get('total').value)}}€
+                </button>
+              </p>
+            </div>
+          </div>
+          <table class="table table-sm">
             <thead>
             <tr>
               <th scope="col">#</th>
@@ -217,7 +226,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let product of productsForm.controls">
+            <tr *ngFor="let product of productsForm.controls" [ngClass]="
+            product.get('amount').value > 0 &&
+            getSurpassedPvp() > 0 ?
+            'table-warning' : ''">
               <th scope="row">
                 <mat-icon>local_grocery_store</mat-icon>
               </th>
@@ -248,14 +260,23 @@
                 </button>
               </td>
               <td>{{getMaxProducts(product.get('limits').value)}}</td>
-              <td>{{product.get('pvp').value}}€</td>
-              <td>{{product.get('pvp').value * product.get('amount').value}}€</td>
+              <td>{{formatNumber(product.get('pvp').value)}}€</td>
+              <td [ngClass]="decideColorGrayClass(product.get('pvp').value * product.get('amount').value)">
+                {{formatNumber(product.get('pvp').value * product.get('amount').value)}}€
+              </td>
             </tr>
             </tbody>
           </table>
         </div>
 
         <!-- Botones del step -->
+        <div class="row" *ngIf="displayLimitSurpassed">
+          <div class="col-md-12">
+            <div class="alert alert-danger">
+              Se ha sobrepasado el límite de gasto por {{formatNumber(getSurpassedPvp())}}€
+            </div>
+          </div>
+        </div>
         <div class="reception-buttons row">
           <div class="col-md-6">
             <button
@@ -264,7 +285,7 @@
               color="accent"
               (click)="onClickReset()"
             >
-              Reiniciar
+              Cancelar
             </button>
           </div>
           <div class="col-md-6">

@@ -62,7 +62,7 @@
 
 .reception-products-form {
   width: 100%;
-  margin-top: 60px;
+  margin-top: 30px;
 }
 
 .reception-card {
@@ -94,4 +94,8 @@ h1 {
 
 .table td, .table th {
   vertical-align: middle;
+}
+
+.color-grey {
+  color: #999999;
 }
