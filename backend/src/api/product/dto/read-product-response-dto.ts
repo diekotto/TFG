@@ -18,6 +18,8 @@ export class ReadProductResponseDto {
   @ApiProperty() limits: ProductLimits[];
   @ApiProperty() pvp: number;
   @ApiProperty() code: string; // Inner code for every warehouse
+  @ApiProperty() type: string;
+  @ApiProperty() chargeableOutBudget: boolean;
   @ApiProperty() warehouse: string;
 
   constructor(o: ReadProductResponseDto) {

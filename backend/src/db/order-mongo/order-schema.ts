@@ -3,12 +3,38 @@ import { Document } from 'mongoose';
 
 export type OrderDocument = Order & Document;
 
-@Schema()
-export class Order {
-  @Prop() headquarter: string; // foreign key headquarter collection
-  @Prop() family: string; // foreign key family collection
-  @Prop() products: string[]; // foreign keys product collection
+export class ProductResume {
+  @Prop() id: string;
+  @Prop() ean: string;
+  @Prop() code: string;
+  @Prop() name: string;
   @Prop() amount: number;
+  @Prop() pvp: number;
+}
+
+@Schema({
+  strict: false,
+})
+export class Order {
+  @Prop({
+    index: true,
+  })
+  code: string; // Code for easy human identification
+  @Prop() headquarter: string; // foreign key headquarter collection
+  @Prop() familyName: string;
+  @Prop({
+    index: true,
+  })
+  expedient: string;
+  @Prop({
+    index: true,
+  })
+  credential: string;
+  @Prop() special: boolean;
+  @Prop() products: ProductResume[]; // list of ean products
+  @Prop() pvp: number;
+  @Prop() type: string;
+  @Prop() chargeableOutBudgetSelected: boolean;
   @Prop() createdAt: Date;
   @Prop() updatedAt: Date;
   @Prop() charged: boolean;

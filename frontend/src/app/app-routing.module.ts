@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { InvoiceComponent } from './invoice/invoice.component';
 import { LoginComponent } from './login/login.component';
 import { LoggedInGuard } from './guards/logged-in.guard';
 import { NotLoggedInGuard } from './guards/not-logged-in.guard';
@@ -31,6 +32,11 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     canActivate: [NotLoggedInGuard]
+  },
+  {
+    path: 'invoice/:id',
+    component: InvoiceComponent,
+    canActivate: [LoggedInGuard]
   },
   {
     path: 'dashboard',
@@ -94,7 +100,7 @@ const routes: Routes = [
       component: ProductManagerCreateComponent,
       canActivate: [AdminGuard]
     }, {
-      path: 'product-manager/:ean',
+      path: 'product-manager/:id',
       component: ProductManagerDetailComponent,
       canActivate: [AdminGuard]
     },

@@ -1,4 +1,5 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import '@angular/common/locales/global/es';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
@@ -43,6 +44,7 @@ import { ProductManagerComponent } from './dashboard/children/product-manager/pr
 import { ProductManagerCreateComponent } from './dashboard/children/product-manager-create/product-manager-create.component';
 import { ProductManagerDetailComponent } from './dashboard/children/product-manager-detail/product-manager-detail.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { InvoiceComponent } from './invoice/invoice.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,8 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     WarehouseManagerDetailComponent,
     ProductManagerComponent,
     ProductManagerCreateComponent,
-    ProductManagerDetailComponent
+    ProductManagerDetailComponent,
+    InvoiceComponent
   ],
   imports: [
     BrowserModule,
@@ -92,9 +95,9 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     MatBottomSheetModule,
     MatStepperModule,
     MatChipsModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
   ],
-  providers: [],
+  providers: [{ provide: LOCALE_ID, useValue: 'es' }],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -39,6 +39,6 @@ export class WarehouseManagerCreateComponent implements OnInit {
       this.myForm.reset();
       this.communicationService.snackBarEmitMessage('Almacén creado correctamente');
       this.loading = false;
-    }, 1500);
+    }, 500);
   }
 }

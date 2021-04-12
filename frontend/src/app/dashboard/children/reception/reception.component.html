@@ -4,50 +4,15 @@
     <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
     <mat-horizontal-stepper [linear]="linearStepper" #stepper *ngIf="!loading">
       <!-- STEP 1 -->
-      <mat-step [stepControl]="firstStepControl">
+      <mat-step [stepControl]="firstStepControl"
+                [completed]="firstStepControl.get('familySearched').value"
+                [editable]="false">
         <!-- Busca la familia para saber si ha estado este mes -->
         <ng-template matStepLabel>Buscar familia</ng-template>
         <mat-divider></mat-divider>
 
-        <!-- Información de la familia buscada -->
-        <div class="reception-family-info" *ngIf="family.name">
-          <div class="row">
-            <div class="col-md-2">
-              <p>
-                {{family.name}}
-              </p>
-            </div>
-            <div class="col-md-2">
-              <p>{{family.credential}}</p>
-            </div>
-            <div class="col-md-2">
-              <p>Exp: {{family.expedient}}</p>
-            </div>
-            <div class="col-md-4">
-              <mat-chip-list class="reception-family-info-chip-list">
-                <mat-chip>
-                  {{family.visits}} visitas
-                </mat-chip>
-                <mat-chip>
-                  Límite {{family.limit}}€
-                </mat-chip>
-                <mat-chip
-                  *ngIf="family.special"
-                  color="primary" selected>
-                  Especial
-                  <mat-icon color="accent">star</mat-icon>
-                </mat-chip>
-              </mat-chip-list>
-            </div>
-            <div class="col-md-2">
-              <button mat-stroked-button color="primary">Resumen</button>
-            </div>
-          </div>
-        </div>
-        <mat-divider></mat-divider>
-
         <!-- Formulario recogida de infomación -->
-        <form [formGroup]="firstStepForm" class="form-first-step" *ngIf="!family.name">
+        <form [formGroup]="firstStepForm" class="form-first-step">
           <div class="row">
             <div class="col-md-4">
               <mat-form-field appearance="standard">
@@ -121,42 +86,21 @@
           </div>
         </div>
 
-        <!-- Botones del step -->
-        <div class="reception-buttons row" *ngIf="family.name">
-          <div class="col-md-6">
-            <button
-              class="reception-next-step-button"
-              mat-raised-button
-              color="accent"
-              (click)="onClickReset()"
-            >
-              Cancelar
-            </button>
-          </div>
-          <div class="col-md-6">
-            <button
-              class="reception-next-step-button"
-              mat-raised-button
-              matStepperNext
-              color="primary"
-              [disabled]="!firstStepControl.valid"
-            >
-              Siguiente
-            </button>
-          </div>
-        </div>
+        <!-- No hay botones del step, el paso es programático al buscar la familia -->
       </mat-step>
 
       <!-- STEP 2 -->
-      <mat-step [stepControl]="secondStepControl">
+      <mat-step [stepControl]="secondStepControl"
+                [completed]="secondStepControl.get('productsAdded').value"
+                [editable]="!invoice">
         <!-- Añadir productos a entregar -->
         <ng-template matStepLabel>Añadir productos</ng-template>
         <mat-divider></mat-divider>
 
         <!-- Información de la familia buscada -->
-        <div class="reception-family-info">
+        <div class="reception-family-info" *ngIf="family.name">
           <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-3">
               <p>
                 {{family.name}}
               </p>
@@ -167,13 +111,16 @@
             <div class="col-md-2">
               <p>Exp: {{family.expedient}}</p>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
               <mat-chip-list class="reception-family-info-chip-list">
                 <mat-chip>
                   {{family.visits}} visitas
                 </mat-chip>
-                <mat-chip>
-                  Límite {{family.limit}}€
+                <mat-chip *ngIf="family.limit !== family.originalLimit">
+                  Límite restringido a {{family.limit}}€ de {{family.originalLimit}}€
+                </mat-chip>
+                <mat-chip *ngIf="family.limit === family.originalLimit">
+                  Límite {{family.originalLimit}}€
                 </mat-chip>
                 <mat-chip
                   *ngIf="family.special"
@@ -183,10 +130,63 @@
                 </mat-chip>
               </mat-chip-list>
             </div>
-            <div class="col-md-2">
-              <button mat-stroked-button color="primary">Resumen</button>
-            </div>
           </div>
+        </div>
+        <div class="reception-family-info-accordion" *ngIf="family.name">
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let related of familyRelatedInvoices; let i = index;">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{related.familyName}} - {{related.credential}} - exp:{{related.expedient}}
+                </mat-panel-title>
+                <mat-panel-description>
+                  El {{related.createdAt | date: 'd MMMM y'}} consumió {{related.pvp}}€
+                  en {{related.products.length}} productos
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <div class="reception-products-form table-responsive-md table-striped">
+                <div class="row">
+                  <div class="col-md-12">
+                    <p class="text-right">
+                      <button
+                        mat-stroked-button color="accent"
+                        (click)="toggleRelatedInvoiceRestrictions(i, related._id)"
+                      >
+                        {{enabledRelatedInvoices[related._id] ? disableRelatedInvoiceTxt : enableRelatedInvoiceTxt}}
+                      </button>
+                      <button mat-stroked-button color="primary">
+                        {{formatNumber(related.pvp)}}€ en {{related.products.length}} productos
+                      </button>
+                    </p>
+                  </div>
+                </div>
+                <table class="table table-sm">
+                  <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Código</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let product of related.products">
+                    <th scope="row">
+                      <mat-icon>local_grocery_store</mat-icon>
+                    </th>
+                    <td>{{product.code}}</td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.amount}}</td>
+                    <td>{{formatNumber(product.pvp)}}€</td>
+                    <td>{{formatNumber(product.pvp * product.amount)}}€</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
         </div>
         <mat-divider></mat-divider>
 
@@ -208,7 +208,8 @@
             <div class="col-md-12">
               <p class="text-right">
                 <button mat-stroked-button color="primary">
-                  Total acumulado: {{formatNumber(secondStepForm.get('total').value)}}€
+                  Acumulado {{formatNumber(secondStepForm.get('total').value)}}€
+                  en {{secondStepForm.get('productsCount').value}} productos
                 </button>
               </p>
             </div>
@@ -226,22 +227,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let product of productsForm.controls" [ngClass]="
-            product.get('amount').value > 0 &&
-            getSurpassedPvp() > 0 ?
-            'table-warning' : ''">
+            <tr *ngFor="let product of productsForm.controls" [ngClass]="productTableTrColorClass(product)">
               <th scope="row">
-                <mat-icon>local_grocery_store</mat-icon>
+                <mat-icon>{{productService.productTypeIcon(product.get('type').value)}}</mat-icon>
               </th>
               <td>{{product.get('code').value}}</td>
-              <td>{{product.get('name').value}}</td>
+              <td>
+                {{product.get('name').value}}
+                <button
+                  *ngIf="product.get('chargeableOutBudget').value"
+                  (click)="toggleChargeableOutBudget(product)"
+                  mat-icon-button
+                  [color]="colorChargeableOutBudget(product)"
+                >
+                  <mat-icon>star</mat-icon>
+                </button>
+              </td>
               <td>
                 <button
                   mat-button
                   color="accent"
-                  (click)="modifyProductAmount(product.get('amount'),
-                     -1,
-                    getMaxProducts(product.get('limits').value))"
+                  (click)="modifyProductAmount(product.get('amount'),-1)"
                   [disabled]="product.get('amount').value <= 0"
                 >
                   -1
@@ -251,15 +257,13 @@
                   style="width: 30px;"
                   mat-button
                   color="primary"
-                  (click)="modifyProductAmount(product.get('amount'),
-                    1,
-                    getMaxProducts(product.get('limits').value))"
-                  [disabled]="product.get('amount').value >= getMaxProducts(product.get('limits').value)"
+                  (click)="modifyProductAmount(product.get('amount'),1)"
+                  [disabled]="product.get('amount').value >= getMaxProducts(product.get('limits').value, product.get('id').value)"
                 >
                   +1
                 </button>
               </td>
-              <td>{{getMaxProducts(product.get('limits').value)}}</td>
+              <td>{{getMaxProducts(product.get('limits').value, product.get('id').value)}}</td>
               <td>{{formatNumber(product.get('pvp').value)}}€</td>
               <td [ngClass]="decideColorGrayClass(product.get('pvp').value * product.get('amount').value)">
                 {{formatNumber(product.get('pvp').value * product.get('amount').value)}}€
@@ -295,6 +299,7 @@
               matStepperNext
               color="primary"
               [disabled]="!secondStepControl.valid"
+              (click)="prepareInvoice()"
             >
               Siguiente
             </button>
@@ -305,13 +310,13 @@
       <!-- STEP 3 -->
       <mat-step>
         <!-- Revisar factura e imprimir -->
-        <ng-template matStepLabel>Done</ng-template>
+        <ng-template matStepLabel>Revisión del pedido</ng-template>
         <mat-divider></mat-divider>
 
         <!-- Información de la familia buscada -->
-        <div class="reception-family-info">
+        <div class="reception-family-info" *ngIf="family.name">
           <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-3">
               <p>
                 {{family.name}}
               </p>
@@ -322,13 +327,16 @@
             <div class="col-md-2">
               <p>Exp: {{family.expedient}}</p>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
               <mat-chip-list class="reception-family-info-chip-list">
                 <mat-chip>
                   {{family.visits}} visitas
                 </mat-chip>
-                <mat-chip>
-                  Límite {{family.limit}}€
+                <mat-chip *ngIf="family.limit !== family.originalLimit">
+                  Límite restringido a {{family.limit}}€ de {{family.originalLimit}}€
+                </mat-chip>
+                <mat-chip *ngIf="family.limit === family.originalLimit">
+                  Límite {{family.originalLimit}}€
                 </mat-chip>
                 <mat-chip
                   *ngIf="family.special"
@@ -338,23 +346,103 @@
                 </mat-chip>
               </mat-chip-list>
             </div>
-            <div class="col-md-2">
-              <button mat-stroked-button color="primary">Resumen</button>
-            </div>
           </div>
+        </div>
+        <div class="reception-family-info-accordion" *ngIf="family.name">
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let related of familyRelatedInvoices">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{related.familyName}} - {{related.credential}} - exp:{{related.expedient}}
+                </mat-panel-title>
+                <mat-panel-description>
+                  El {{related.createdAt | date: 'd MMMM y'}} consumió {{related.pvp}}€
+                  en {{related.products.length}} productos
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <div class="reception-products-form table-responsive-md table-striped">
+                <div class="row">
+                  <div class="col-md-12">
+                    <p class="text-right">
+                      <button mat-stroked-button color="primary">
+                        {{formatNumber(related.pvp)}}€ en {{related.products.length}} productos
+                      </button>
+                    </p>
+                  </div>
+                </div>
+                <table class="table table-sm">
+                  <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Código</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let product of related.products">
+                    <th scope="row">
+                      <mat-icon>local_grocery_store</mat-icon>
+                    </th>
+                    <td>{{product.code}}</td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.amount}}</td>
+                    <td>{{formatNumber(product.pvp)}}€</td>
+                    <td>{{formatNumber(product.pvp * product.amount)}}€</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
         </div>
         <mat-divider></mat-divider>
-        <div class="row" *ngIf="generatingInvoice">
-          <div class="col-md-12">
-            <div class="alert alert-danger">
-              Not implemented yet
+
+        <!-- Tabla de productos -->
+        <div class="reception-invoice-form table-responsive-md table-hover">
+          <div class="row">
+            <div class="col-md-12">
+              <p class="text-right">
+                <button mat-stroked-button color="primary">
+                  Total acumulado: {{formatNumber(secondStepForm.get('total').value)}}€
+                </button>
+              </p>
             </div>
           </div>
+          <table class="table table-sm table-striped">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Código</th>
+              <th scope="col">Ean</th>
+              <th scope="col">Producto</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let product of productsInvoice">
+              <th scope="row">
+                <mat-icon>local_grocery_store</mat-icon>
+              </th>
+              <td>{{product.code}}</td>
+              <td>{{product.ean}}</td>
+              <td>{{product.name}}</td>
+              <td>{{product.amount}}</td>
+              <td>{{formatNumber(product.pvp)}}€</td>
+              <td>{{formatNumber(product.pvp * product.amount)}}€</td>
+            </tr>
+            </tbody>
+          </table>
         </div>
+
         <!-- Botones del step -->
         <div class="reception-buttons row">
           <!-- Botones del step -->
-          <div class="col-md-6">
+          <div class="col-md-6" *ngIf="!invoice">
             <button
               class="reception-next-step-button"
               mat-raised-button
@@ -363,15 +451,32 @@
               Anterior
             </button>
           </div>
+          <div class="col-md-6" *ngIf="invoice">
+            <button
+              class="reception-next-step-button"
+              mat-raised-button
+              matStepperPrevious
+              color="accent"
+              (click)="onClickReset()"
+            >
+              Borrar todo y empezar
+            </button>
+          </div>
           <div class="col-md-6">
             <button
               class="reception-next-step-button"
               mat-raised-button
               matStepperNext
               color="primary"
-              (click)="onClickGenerateInvoice()"
+              (click)="generateInvoice()"
+              [disabled]="generatingInvoice"
             >
-              Generar factura
+              {{invoice ? openInvoiceTxt : generateInvoiceTxt}}
+              <mat-progress-spinner *ngIf="generatingInvoice"
+                                    class="reception-spinner"
+                                    mode="indeterminate"
+                                    [diameter]="17">
+              </mat-progress-spinner>
             </button>
           </div>
         </div>

@@ -35,61 +35,82 @@ export class ProductService {
     );
   }
 
-  async readByEan(ean: string): Promise<ReadProductResponseDto> {
-    let product: ProductDocument = await this.productsMongo.findOneBy(
-      'ean',
-      ean,
-    );
-    if (!product) {
-      const response: AxiosResponse = await this.httpClient
-        .get(this.openFoodUrl.replace('{{ean}}', ean), {
-          headers: {
-            'User-Agent': this.config.get('openFoodUserAgent'),
-          },
-        })
-        .toPromise();
+  async readById(id: string): Promise<ProductDocument> {
+    const product = await this.productsMongo.findById(id);
+    if (!product) throw new NotFoundException('Product not found');
+    return product;
+  }
+
+  async readByEan(ean: string): Promise<any> {
+    const response: AxiosResponse = await this.httpClient
+      .get(this.openFoodUrl.replace('{{ean}}', ean), {
+        headers: {
+          'User-Agent': this.config.get('openFoodUserAgent'),
+        },
+      })
+      .toPromise();
+    if (!response.data.product) {
       await this.openfoodMongo.create({
         ...response.data,
         createdAt: new Date(),
       });
-      if (!response.data.product) {
-        throw new InternalServerErrorException('Error requesting to openfood');
-      }
-      product = await this.productsMongo.create(
-        ProductService.fromOpenFoodToProduct(response.data.product),
-      );
+      throw new InternalServerErrorException('Error requesting to openfood');
     }
-    return ReadProductResponseDto.fromProductDocument(product);
+    return response.data.product;
   }
 
-  async updateByEan(
-    ean: string,
+  async create(
     input: CreateProductResponseDto,
   ): Promise<ReadProductResponseDto> {
-    const product: ProductDocument = await this.productsMongo.findOneBy(
-      'ean',
-      ean,
+    let product = {} as Product;
+    product.alias = input.alias;
+    product.limits = input.limits;
+    product.pvp = input.pvp;
+    product.code = input.code;
+    product.type = input.type;
+    product.chargeableOutBudget = input.chargeableOutBudget;
+    let openFoodResponse = {};
+    if (product.ean) {
+      try {
+        openFoodResponse = await this.readByEan(input.ean);
+        product.ean = input.ean;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    product = {
+      ...ProductService.fromOpenFoodToProduct(openFoodResponse),
+      ...product,
+    };
+    return ReadProductResponseDto.fromProductDocument(
+      await this.productsMongo.create(product),
     );
+  }
+
+  async updateById(
+    id: string,
+    input: CreateProductResponseDto,
+  ): Promise<ReadProductResponseDto> {
+    const product: ProductDocument = await this.productsMongo.findById(id);
     if (!product) {
-      throw new NotFoundException(`Product with ean ${ean} not found`);
+      throw new NotFoundException(`Product with id ${id} not found`);
     }
     product.alias = input.alias;
     product.limits = input.limits;
     product.pvp = input.pvp;
     product.code = input.code;
+    product.type = input.type;
+    product.chargeableOutBudget = input.chargeableOutBudget;
     await product.save();
     return ReadProductResponseDto.fromProductDocument(product);
   }
 
-  async deleteByEan(ean: string): Promise<void> {
-    const product: ProductDocument = await this.productsMongo.findOneBy(
-      'ean',
-      ean,
-    );
+  async deleteById(id: string): Promise<void> {
+    const product: ProductDocument = await this.productsMongo.findById(id);
     if (!product) {
-      throw new NotFoundException(`Product with ean ${ean} not found`);
+      throw new NotFoundException(`Product with id ${id} not found`);
     }
-    await this.productsMongo.deleteOneByConditions({ ean });
+    await this.productsMongo.deleteOneByConditions({ _id: product._id });
     return;
   }
 

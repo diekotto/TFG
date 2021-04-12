@@ -20,7 +20,7 @@ export class WarehouseManagerComponent implements OnInit {
           this.warehouses = data;
           this.loading = false;
         });
-    }, 1000);
+    }, 500);
   }
 
 }

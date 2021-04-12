@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } else {
           this.backendError = true;
         }
-      }, 1000);
+      }, 500);
     }
     const self = this;
     this.communication.onSnackBarMessage((message: string) => {

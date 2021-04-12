@@ -1,0 +1,52 @@
+<div class="container">
+  <mat-card class="invoice-card">
+    <h2>Nº {{code}}</h2>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <!-- Información de la familia buscada -->
+    <div class="invoice-family-info" *ngIf="!loading">
+      <h2>{{invoice.familyName}} - {{invoice.credential}}</h2>
+      <p *ngIf="invoice.special">Familia especial: {{invoice.special ? 'Sí' : 'No'}}</p>
+      <p>{{firstLetterUpperCase(emitted | date: 'EEEE')}}, {{emitted | date: 'd MMMM y'}}</p>
+      <p>Expediente {{invoice.expedient}}</p>
+    </div>
+    <hr>
+    <!-- Tabla de productos -->
+    <div class="invoice-invoice-form table-responsive-md table-hover" *ngIf="!loading">
+      <div class="row">
+        <div class="col-md-12">
+          <h2 class="text-right">
+            <strong>Total: {{formatNumber(invoice.pvp)}}€</strong>
+          </h2>
+        </div>
+      </div>
+      <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Código</th>
+          <th scope="col">Ean</th>
+          <th scope="col">Producto</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Precio</th>
+          <th scope="col">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let product of invoice.products">
+          <th scope="row">
+            <mat-icon mat-list-icon>
+            {{productService.productTypeIcon(product.type)}}
+            </mat-icon>
+          </th>
+          <td>{{product.code}}</td>
+          <td>{{product.ean}}</td>
+          <td>{{product.name}}</td>
+          <td>{{product.amount}}</td>
+          <td>{{formatNumber(product.pvp)}}€</td>
+          <td>{{formatNumber(product.pvp * product.amount)}}€</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-card>
+</div>

@@ -33,9 +33,10 @@ h1, h2, h3, h4, h5, h6 {
 
 header {
   color: #2d2d2d;
-  padding: 3em 5%;
-  position: relative;
-  width: 100%;
+  padding-top: 3em;
+  padding-right: 5%;
+  position: absolute;
+  right: 0;
   z-index: 2;
 }
 

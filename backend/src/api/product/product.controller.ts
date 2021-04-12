@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -39,28 +40,42 @@ export class ProductController {
     return this.productService.readAll();
   }
 
-  @Get('/:ean')
+  @Get('/:id')
+  @Roles()
+  readById(@Param('id') id: string): Promise<any> {
+    return this.productService.readById(id);
+  }
+
+  @Get('/ean/:ean')
   @Roles(RoleName.ALMACEN)
-  readByEan(@Param('ean') ean: string): Promise<ReadProductResponseDto> {
+  readByEan(@Param('ean') ean: string): Promise<any> {
     return this.productService.readByEan(ean);
   }
 
-  @Put('/:ean')
+  @Post('/')
   @Roles(RoleName.ALMACEN)
-  updateProduct(
-    @Param('ean') ean: string,
+  create(
     @Body() body: CreateProductResponseDto,
   ): Promise<ReadProductResponseDto> {
-    return this.productService.updateByEan(
-      ean,
+    return this.productService.create(new CreateProductResponseDto(body));
+  }
+
+  @Put('/:id')
+  @Roles(RoleName.ALMACEN)
+  updateProduct(
+    @Param('id') id: string,
+    @Body() body: CreateProductResponseDto,
+  ): Promise<ReadProductResponseDto> {
+    return this.productService.updateById(
+      id,
       new CreateProductResponseDto(body),
     );
   }
 
-  @Delete('/:ean')
+  @Delete('/:id')
   @Roles(RoleName.ALMACEN)
   @ApiAcceptedResponse()
-  deleteProduct(@Param('ean') ean: string): Promise<void> {
-    return this.productService.deleteByEan(ean);
+  deleteProduct(@Param('id') ean: string): Promise<void> {
+    return this.productService.deleteById(ean);
   }
 }

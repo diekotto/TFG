@@ -7,6 +7,8 @@ export class CreateProductResponseDto {
   @ApiProperty() limits: ProductLimits[];
   @ApiProperty() pvp: number;
   @ApiProperty() code: string; // Inner code for every warehouse
+  @ApiProperty() type: string;
+  @ApiProperty() chargeableOutBudget: boolean;
 
   constructor(o: CreateProductResponseDto) {
     Object.assign(this, o);

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DashboardCommunicationService } from '../../services/dashboard-communication/dashboard-communication.service';
-import { Product, ProductLimits, ProductService } from '../../services/product/product.service';
+import { Product, ProductLimits, ProductService, ProductType } from '../../services/product/product.service';
 
 @Component({
   selector: 'app-product-manager-detail',
@@ -12,11 +12,12 @@ import { Product, ProductLimits, ProductService } from '../../services/product/p
 export class ProductManagerDetailComponent implements OnInit {
 
   loadingProduct = true;
-  ean: string;
+  id: string;
   product: Product;
   myForm: FormGroup;
   loading = false;
   priceLimits = [10, 13, 17, 22, 27, 32];
+  productTypes = Object.values(ProductType);
 
   constructor(
     private fb: FormBuilder,
@@ -26,21 +27,20 @@ export class ProductManagerDetailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => this.initDetail(params.ean));
+    this.route.params.subscribe(params => this.initDetail(params.id));
   }
 
-  async initDetail(ean: string): Promise<void> {
-    this.ean = ean;
-    this.product = await this.service.fetchByEan(ean);
+  async initDetail(id: string): Promise<void> {
+    this.id = id;
+    this.product = await this.service.fetchById(id);
     this.myForm = this.fb.group({
-      ean_disabled: [{
-        value: ean,
-        disabled: true,
-      }],
-      ean: [ean, Validators.required],
+      _id: [this.id],
+      ean: [{ value: this.product.ean, disabled: true }],
       name: [this.product.alias, Validators.required],
       code: [this.product.code, Validators.required],
       price: [this.product.pvp, Validators.required],
+      type: [this.product.type, Validators.required],
+      chargeableOutBudget: [this.product.chargeableOutBudget, Validators.required],
       [`limit${this.priceLimits[0]}e`]: [
         this.product.limits.find((l: ProductLimits) =>
           l.price === this.priceLimits[0]).quantity
@@ -79,10 +79,10 @@ export class ProductManagerDetailComponent implements OnInit {
     }
     this.loading = true;
     setTimeout(async () => {
-      await this.service.updateByEan(this.myForm.value);
+      await this.service.updateById(this.myForm.value);
       this.communicationService.snackBarEmitMessage('Producto guardado correctamente');
       this.loading = false;
-    }, 1500);
+    }, 500);
   }
 
   onPriceKeyUp(): void {
