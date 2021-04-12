@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Product, ProductService } from '../../services/product/product.service';
+import { Product, ProductService, ProductType } from '../../services/product/product.service';
 
 @Component({
   selector: 'app-product-manager',
@@ -10,20 +10,24 @@ export class ProductManagerComponent implements OnInit {
 
   loading = true;
   products: Product[] = [];
+  hygiene: Product[] = [];
+  children: Product[] = [];
+  untyped: Product[] = [];
   deleting: { [index: string]: boolean } = {};
 
   constructor(
-    private service: ProductService
+    public service: ProductService
   ) { }
 
   ngOnInit(): void {
     setTimeout(() => {
       this.service.fetchAll()
         .then((data: Product[]) => {
-          this.products = data.filter((p: Product) => p.alias);
+          const sortedData = this.sortProducts(data.filter((p: Product) => p.alias));
+          [this.products, this.hygiene, this.children, this.untyped] = this.sliceByProductType(sortedData);
           this.loading = false;
         });
-    }, 1000);
+    }, 500);
   }
 
   onClickPrepareDelete(id: string): void {
@@ -34,9 +38,30 @@ export class ProductManagerComponent implements OnInit {
     delete this.deleting[id];
   }
 
-  async onClickDeleteButton(id: string, ean: string): Promise<void> {
+  async onClickDeleteButton(id: string): Promise<void> {
     delete this.deleting[id];
-    await this.service.deleteProductById(ean);
-    this.products = this.service.getAll();
+    await this.service.deleteProductById(id);
+    const sortedData = this.sortProducts(this.service.getAll());
+    [this.products, this.hygiene, this.children, this.untyped] = this.sliceByProductType(sortedData);
+  }
+
+  sortProducts(products: Product[]): Product[] {
+    return products.sort((a, b) => {
+      if (a.alias < b.alias) {
+        return -1;
+      }
+      if (a.alias > b.alias) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  sliceByProductType(input: Product[]): Product[][] {
+    const products: Product[] = input.filter((p: Product) => p.type === ProductType.ALIMENTACION);
+    const hygiene: Product[] = input.filter((p: Product) => p.type === ProductType.HIGIENE);
+    const children: Product[] = input.filter((p: Product) => p.type === ProductType.PEQUES);
+    const untyped: Product[] = input.filter((p: Product) => !this.service.productTypeIsValid(p.type));
+    return [products, hygiene, children, untyped];
   }
 }

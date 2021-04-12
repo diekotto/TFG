@@ -1,5 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 
+@media print {
+  html, body {
+    height: 100% !important;
+    overflow: auto;
+    min-height: auto;
+  }
+}
+
 html, body {
   height: 100%;
 }

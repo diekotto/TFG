@@ -4,20 +4,22 @@
     <mat-progress-bar mode="indeterminate" *ngIf="loadingProduct"></mat-progress-bar>
     <div *ngIf="!loadingProduct">
       <div class="form-container">
-        <form class="product-manager-detail-form" [formGroup]="myForm">
-          <mat-grid-list cols="2" rowHeight="85px">
-            <mat-grid-tile>
+        <form class="product-manager-create-form" [formGroup]="myForm">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Datos del producto</h2>
+            </div>
+            <div class="col-md-6">
               <mat-form-field appearance="standard">
                 <mat-label>Ean del producto</mat-label>
                 <input
                   matInput
                   type="text"
-                  formControlName="ean_disabled"
+                  formControlName="ean"
                 >
-                <mat-hint>Este campo es indispensable</mat-hint>
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="col-md-6">
               <mat-form-field appearance="standard">
                 <mat-label>Código del producto</mat-label>
                 <input
@@ -27,8 +29,8 @@
                   maxlength="50"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="col-md-6">
               <mat-form-field appearance="standard">
                 <mat-label>Nombre</mat-label>
                 <input
@@ -39,8 +41,8 @@
                   maxlength="30"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="col-md-6">
               <mat-form-field appearance="standard">
                 <mat-label>Precio del producto</mat-label>
                 <input
@@ -49,11 +51,32 @@
                   step="any"
                   formControlName="price"
                   maxlength="10"
-                  (keyup)="onPriceKeyUp()"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Límites</h2>
+            </div>
+            <div class="col-md-12">
+              <mat-checkbox
+                formControlName="chargeableOutBudget"
+              >Este producto se puede cobrar fuera del presupuesto.
+              </mat-checkbox>
+            </div>
+            <div class="col-md-12">
+              <mat-form-field appearance="standard">
+                <mat-label>Tipo de producto</mat-label>
+                <mat-select formControlName="type">
+                  <mat-option
+                    *ngFor="let type of productTypes" [value]="type">
+                    {{type}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
               <mat-form-field appearance="standard">
                 <mat-label>Límite a 10€</mat-label>
                 <input
@@ -61,11 +84,10 @@
                   type="number"
                   formControlName="limit10e"
                   maxlength="10"
-                  (keyup)="onLimitUpdated()"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="col-md-4">
               <mat-form-field appearance="standard">
                 <mat-label>Límite a 13€</mat-label>
                 <input
@@ -73,11 +95,10 @@
                   type="number"
                   formControlName="limit13e"
                   maxlength="10"
-                  (keyup)="onLimitUpdated()"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="col-md-4">
               <mat-form-field appearance="standard">
                 <mat-label>Límite a 17€</mat-label>
                 <input
@@ -85,11 +106,10 @@
                   type="number"
                   formControlName="limit17e"
                   maxlength="10"
-                  (keyup)="onLimitUpdated()"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="col-md-4">
               <mat-form-field appearance="standard">
                 <mat-label>Límite a 22€</mat-label>
                 <input
@@ -97,11 +117,10 @@
                   type="number"
                   formControlName="limit22e"
                   maxlength="10"
-                  (keyup)="onLimitUpdated()"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="col-md-4">
               <mat-form-field appearance="standard">
                 <mat-label>Límite a 27€</mat-label>
                 <input
@@ -109,11 +128,10 @@
                   type="number"
                   formControlName="limit27e"
                   maxlength="10"
-                  (keyup)="onLimitUpdated()"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
+            </div>
+            <div class="col-md-4">
               <mat-form-field appearance="standard">
                 <mat-label>Límite a 32€</mat-label>
                 <input
@@ -121,11 +139,10 @@
                   type="number"
                   formControlName="limit32e"
                   maxlength="10"
-                  (keyup)="onLimitUpdated()"
                 >
               </mat-form-field>
-            </mat-grid-tile>
-          </mat-grid-list>
+            </div>
+          </div>
         </form>
       </div>
       <div class="product-manager-detail-buttons">
@@ -148,26 +165,26 @@
         </a>
       </div>
       <div class="product-manager-detail-buttons" *ngIf="product.ean">
-      <mat-accordion>
-        <mat-expansion-panel [expanded]="true">
-          <mat-expansion-panel-header>
-            Detalle del producto
-          </mat-expansion-panel-header>
-          <mat-panel-description>
-            Datos automáticos usando Open Food Facts
-          </mat-panel-description>
-          <ul style="text-align: left;">
-            <li>Nombre: {{product.name}}</li>
-            <li>Categorías: {{product.categories}}</li>
-            <li>Ingredientes: {{product.ingredients}}</li>
-            <li>Alérgenos: {{product.allergens}}</li>
-            <li>Etiquetas: {{product.labels}}</li>
-            <li>Cantidad: {{product.quantity}}</li>
-          </ul>
-          <img src="{{product.imageUrl}}" alt="Imagen producto">
-        </mat-expansion-panel>
-      </mat-accordion>
-    </div>
+        <mat-accordion>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              Detalle del producto
+            </mat-expansion-panel-header>
+            <mat-panel-description>
+              Datos automáticos usando Open Food Facts
+            </mat-panel-description>
+            <ul style="text-align: left;">
+              <li>Nombre: {{product.name}}</li>
+              <li>Categorías: {{product.categories}}</li>
+              <li>Ingredientes: {{product.ingredients}}</li>
+              <li>Alérgenos: {{product.allergens}}</li>
+              <li>Etiquetas: {{product.labels}}</li>
+              <li>Cantidad: {{product.quantity}}</li>
+            </ul>
+            <img src="{{product.imageUrl}}" alt="Imagen producto">
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
     </div>
   </mat-card>
 </div>

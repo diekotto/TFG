@@ -49,6 +49,6 @@ export class UserManagerCreateComponent implements OnInit {
       this.myForm.reset();
       this.communicationService.snackBarEmitMessage('Usuario creado correctamente');
       this.loading = false;
-    }, 1500);
+    }, 500);
   }
 }

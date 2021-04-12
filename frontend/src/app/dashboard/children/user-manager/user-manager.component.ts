@@ -22,6 +22,6 @@ export class UserManagerComponent implements OnInit {
         this.admins = this.service.splitAdmins();
         this.loading = false;
       });
-    }, 1000);
+    }, 500);
   }
 }

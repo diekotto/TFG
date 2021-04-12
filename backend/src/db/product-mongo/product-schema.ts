@@ -17,6 +17,8 @@ export class Product {
   @Prop() limits: ProductLimits[];
   @Prop() pvp: number;
   @Prop() code: string; // Inner code for every warehouse
+  @Prop() type: string;
+  @Prop() chargeableOutBudget: boolean;
   @Prop() warehouse: string;
 
   constructor(o: Product) {

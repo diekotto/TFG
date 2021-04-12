@@ -29,7 +29,7 @@ export class ProductService {
   }
 
   async fetchByEan(ean: string): Promise<Product> {
-    return this.http.get(environment.backend + '/product/' + ean, {
+    return this.http.get(environment.backend + '/product/ean/' + ean, {
       headers: {
         Authorization: `Bearer ${this.userService.jwt}`
       },
@@ -40,26 +40,22 @@ export class ProductService {
       });
   }
 
-  async deleteProductById(ean: string): Promise<void> {
-    await this.http.delete(environment.backend + '/product/' + ean, {
+  async fetchById(id: string): Promise<Product> {
+    return this.http.get<Product>(environment.backend + '/product/' + id, {
       headers: {
         Authorization: `Bearer ${this.userService.jwt}`
       },
     }).toPromise();
-    const index = this.products.findIndex((p: Product) => p.ean === ean);
-    this.products.splice(index, 1);
   }
 
-  getAll(): Product[] {
-    return this.products;
-  }
-
-  updateByEan(input: any): Promise<Product> {
+  async create(input: any): Promise<Product> {
     const product: CreateProductResponseDto = {
       ean: input.ean,
       alias: input.name,
       code: input.code,
       pvp: input.price,
+      type: input.type,
+      chargeableOutBudget: input.chargeableOutBudget,
       limits: [
         { price: 10, quantity: input.limit10e },
         { price: 13, quantity: input.limit13e },
@@ -69,7 +65,7 @@ export class ProductService {
         { price: 32, quantity: input.limit32e },
       ]
     };
-    return this.http.put(environment.backend + '/product/' + input.ean,
+    return this.http.post(environment.backend + '/product',
       product,
       {
         headers: {
@@ -79,6 +75,65 @@ export class ProductService {
       return Promise.resolve(data);
     });
   }
+
+  async updateById(input: any): Promise<Product> {
+    const product: CreateProductResponseDto = {
+      ean: input.ean,
+      alias: input.name,
+      code: input.code,
+      pvp: input.price,
+      type: input.type,
+      chargeableOutBudget: input.chargeableOutBudget,
+      limits: [
+        { price: 10, quantity: input.limit10e },
+        { price: 13, quantity: input.limit13e },
+        { price: 17, quantity: input.limit17e },
+        { price: 22, quantity: input.limit22e },
+        { price: 27, quantity: input.limit27e },
+        { price: 32, quantity: input.limit32e },
+      ]
+    };
+    return this.http.put(environment.backend + '/product/' + input._id,
+      product,
+      {
+        headers: {
+          Authorization: `Bearer ${this.userService.jwt}`
+        },
+      }).toPromise().then((data: any) => {
+      return Promise.resolve(data);
+    });
+  }
+
+  async deleteProductById(id: string): Promise<void> {
+    await this.http.delete(environment.backend + '/product/' + id, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`
+      },
+    }).toPromise();
+    const index = this.products.findIndex((p: Product) => p._id === id);
+    this.products.splice(index, 1);
+  }
+
+  getAll(): Product[] {
+    return this.products;
+  }
+
+  productTypeIcon(input: ProductType | string): string {
+    switch (input) {
+      case ProductType.ALIMENTACION:
+        return 'restaurant';
+      case ProductType.HIGIENE:
+        return 'hotel';
+      case ProductType.PEQUES:
+        return 'child_friendly';
+      default:
+        return 'all_inclusive';
+    }
+  }
+
+  productTypeIsValid(input: ProductType | string): boolean {
+    return Object.values(ProductType).includes(input as any);
+  }
 }
 
 export interface CreateProductResponseDto {
@@ -87,6 +142,8 @@ export interface CreateProductResponseDto {
   limits: ProductLimits[];
   pvp: number;
   code: string; // Inner code for every warehouse
+  type: string;
+  chargeableOutBudget: boolean;
 }
 
 export interface Product {
@@ -103,10 +160,18 @@ export interface Product {
   limits: ProductLimits[];
   pvp: number;
   code: string; // Inner code for every warehouse
+  type: ProductType;
+  chargeableOutBudget: boolean;
   warehouse: string;
 }
 
 export interface ProductLimits {
   price: number;
   quantity: number;
+}
+
+export enum ProductType {
+  ALIMENTACION = 'Alimentación',
+  HIGIENE = 'Higiene',
+  PEQUES = 'Peques'
 }

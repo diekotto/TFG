@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ThemePalette } from '@angular/material/core';
 import { MatHorizontalStepper } from '@angular/material/stepper';
 import { DashboardCommunicationService } from '../../services/dashboard-communication/dashboard-communication.service';
 import { Product, ProductLimits, ProductService } from '../../services/product/product.service';
-import { ReceptionService } from '../../services/reception/reception.service';
+import { FamilyResume, InvoiceDto, ProductResume, ReceptionService } from '../../services/reception/reception.service';
 
 @Component({
   selector: 'app-reception',
@@ -13,23 +14,32 @@ import { ReceptionService } from '../../services/reception/reception.service';
 export class ReceptionComponent implements OnInit {
   @ViewChild('stepper') stepper: MatHorizontalStepper;
 
-  linearStepper = false;
+  // TODO: Botón de activar o desactivar que las facturas restrinjan el pedido actual enableRelatedInvoiceRestrictions
+  linearStepper = true;
   limitsAvailable = [10, 13, 17, 22, 27, 32];
   firstStepControl: FormGroup;
   secondStepControl: FormGroup;
   firstStepForm: FormGroup;
   secondStepForm: FormGroup;
   productsForm = this.fb.array([]);
+  productsInvoice: ProductResume[] = [];
   searching = false;
   loading = true;
   family: FamilyResume = this.defaultFamilyData();
+  familyRelatedInvoices: InvoiceDto[] = [];
+  enabledRelatedInvoices: { [index: string]: InvoiceDto } = {};
+  enableRelatedInvoiceTxt = 'Activar restricciones';
+  disableRelatedInvoiceTxt = 'Desactivar restricciones';
   generatingInvoice = false;
+  invoice: InvoiceDto = null;
   displayLimitSurpassed = false;
+  generateInvoiceTxt = 'Generar factura';
+  openInvoiceTxt = 'Abrir factura';
 
   constructor(
     private fb: FormBuilder,
     private service: ReceptionService,
-    private productService: ProductService,
+    public productService: ProductService,
     private communicationService: DashboardCommunicationService,
   ) { }
 
@@ -37,17 +47,27 @@ export class ReceptionComponent implements OnInit {
     this.fetchAllProducts()
       .then((products: Product[]) => {
         const sorted = products.sort((a: Product, b: Product) => {
-          if (a.alias < b.alias) {
-            return -1;
+          if (a.type === b.type) {
+            if (a.alias < b.alias) {
+              return -1;
+            }
+            if (a.alias > b.alias) {
+              return 1;
+            }
+            return 0;
+          } else {
+            if (a.type < b.type) {
+              return -1;
+            }
+            if (a.type > b.type) {
+              return 1;
+            }
+            return 0;
           }
-          if (a.alias > b.alias) {
-            return 1;
-          }
-          return 0;
         });
         sorted.forEach((p: Product) => {
           if (p.alias) {
-            this.addProduct(p._id, p.code, p.alias, 0, p.limits, p.pvp);
+            this.addProduct(p);
           }
         });
         return this.initForms();
@@ -77,6 +97,7 @@ export class ReceptionComponent implements OnInit {
     this.secondStepForm = this.fb.group({
       products: this.productsForm,
       total: [0, Validators.required],
+      productsCount: [0],
     });
   }
 
@@ -88,20 +109,54 @@ export class ReceptionComponent implements OnInit {
     this.firstStepForm.get('limit').setValue(limit);
   }
 
-  getMaxProducts(limits: ProductLimits[]): number {
-    return limits.find((l: ProductLimits) => l.price === this.family.limit).quantity;
+  getMaxProducts(limits: ProductLimits[], productId: string): number {
+    let subtractLimit = 0;
+    Object.keys(this.enabledRelatedInvoices).forEach((i: string) => {
+      const product = this.enabledRelatedInvoices[i].products.find((p: ProductResume) => p.id === productId);
+      if (product) {
+        subtractLimit += product.amount;
+      }
+    });
+    return limits.find((l: ProductLimits) => {
+      return l.price === this.family.originalLimit;
+    }).quantity - subtractLimit;
   }
 
-  addProduct(id: string, code: string, name: string, amount: number, limits: ProductLimits[], pvp: number): void {
+  addProduct(p: Product, amount = 0): void {
     this.productsForm.push(
       this.fb.group({
-        id: [id, Validators.required],
-        code: [code, Validators.required],
-        name: [name, Validators.required],
+        id: [p._id, Validators.required],
+        code: [p.code, Validators.required],
+        ean: [p.ean, Validators.required],
+        name: [p.alias, Validators.required],
         amount: [amount, [Validators.required, Validators.min(0)]],
-        limits: this.fb.array(limits),
-        pvp: [pvp, Validators.required]
+        limits: this.fb.array(p.limits),
+        pvp: [p.pvp, Validators.required],
+        type: [p.type],
+        chargeableOutBudget: [p.chargeableOutBudget],
+        chargeableOutBudgetSelected: [false]
       }));
+  }
+
+  toggleChargeableOutBudget(control: AbstractControl): void {
+    if (control.get('chargeableOutBudget').value) {
+      control.get('chargeableOutBudgetSelected').setValue(!control.get('chargeableOutBudgetSelected').value);
+    }
+    this.modifyProductAmount(control.get('amount'), 0);
+  }
+
+  colorChargeableOutBudget(control: AbstractControl): ThemePalette {
+    return control.get('chargeableOutBudgetSelected').value ?
+      'accent' : '' as ThemePalette;
+  }
+
+  productTableTrColorClass(control: AbstractControl): string {
+    if (control.get('amount').value > 0 && control.get('chargeableOutBudgetSelected').value) {
+      return 'table-primary';
+    }
+    return control.get('amount').value > 0 &&
+    this.getSurpassedPvp() > 0 ?
+      'table-warning' : '';
   }
 
   searchFamilyDisabled(): boolean {
@@ -114,39 +169,71 @@ export class ReceptionComponent implements OnInit {
     }
     this.onClickClearReception();
     this.searching = true;
-    setTimeout(() => {
-      this.searching = false;
-      this.family = this.firstStepForm.value;
-      this.family.visits = 0;
-      this.firstStepControl.get('familySearched').setValue(true);
-    }, 3000);
+    setTimeout(async () => {
+      try {
+        const temp = this.firstStepForm.value;
+        this.familyRelatedInvoices = await this.service.findFamilyCurrentMonth(temp.credential, temp.expedient);
+        this.family = temp;
+        this.family.originalLimit = this.family.limit;
+        this.family.visits = this.familyRelatedInvoices.length;
+      } catch (e) {
+        this.family.visits = 0;
+        this.communicationService.snackBarEmitMessage('Ha habido un error buscando la familiar en el sistema');
+      }
+      this.familyRelatedInvoices.forEach((rel: InvoiceDto, i: number) => {
+        this.toggleRelatedInvoiceRestrictions(i, rel._id);
+      });
+      setTimeout(() => {
+        this.firstStepControl.get('familySearched').setValue(true);
+        this.stepper.next();
+        this.searching = false;
+      }, 500);
+    }, 500);
   }
 
-  modifyProductAmount(product: AbstractControl, amount: number, limit: number): void {
-    const newValue = product.value + amount;
-    if (newValue < 0 || newValue > limit) {
-      return;
-    }
-    product.setValue(newValue);
+  modifyProductAmount(amountControl: AbstractControl, amount: number): void {
+    const newValue = amountControl.value + amount;
+    amountControl.setValue(newValue);
     const productCount = this.secondStepForm.get('products').value
       .reduce((prev: number, cur: { amount: number }) => prev + cur.amount, 0);
     this.secondStepControl.get('productsAdded').setValue(productCount > 0);
     const pvpSum = this.sumPvpProductsAdded();
-    this.secondStepForm.get('total').setValue(pvpSum);
+    const pvpSumOutBudget = this.sumPvpProductsOutBudgetAdded();
+    this.secondStepForm.get('total').setValue(pvpSum + pvpSumOutBudget);
+    this.secondStepForm.get('productsCount').setValue(this.secondStepForm.get('productsCount').value + amount);
     this.secondStepControl.get('limitNotSurpassed').setValue(pvpSum <= this.family.limit);
     this.displayLimitSurpassed = pvpSum > this.family.limit;
   }
 
   getSurpassedPvp(): number {
-    return this.sumPvpProductsAdded() - this.family.limit;
+    const pvpSum = this.sumPvpProductsAdded();
+    return pvpSum - this.family.limit;
   }
 
   sumPvpProductsAdded(): number {
     if (!this.secondStepForm) {
       return 0;
     }
-    return this.secondStepForm.get('products').value
-      .reduce((prev: number, cur: { amount: number, pvp: number }) => prev + (cur.amount * cur.pvp), 0);
+    return Number(this.secondStepForm.get('products').value
+      .reduce((prev: number, cur: Product & { amount: number, chargeableOutBudgetSelected: boolean }) => {
+        if (cur.chargeableOutBudget && cur.chargeableOutBudgetSelected) {
+          return prev;
+        }
+        return prev + (cur.amount * cur.pvp);
+      }, 0).toFixed(2));
+  }
+
+  sumPvpProductsOutBudgetAdded(): number {
+    if (!this.secondStepForm) {
+      return 0;
+    }
+    return Number(this.secondStepForm.get('products').value
+      .reduce((prev: number, cur: Product & { amount: number, chargeableOutBudgetSelected: boolean }) => {
+        if (cur.chargeableOutBudget && cur.chargeableOutBudgetSelected) {
+          return prev + (cur.amount * cur.pvp);
+        }
+        return prev;
+      }, 0).toFixed(2));
   }
 
   onClickClearReception(): void {
@@ -154,8 +241,10 @@ export class ReceptionComponent implements OnInit {
     this.secondStepControl.get('limitNotSurpassed').setValue(true);
     this.productsForm.controls.forEach((c: AbstractControl) => {
       c.get('amount').setValue(0);
+      c.get('chargeableOutBudgetSelected').setValue(false);
     });
     this.secondStepForm.get('total').setValue(0);
+    this.invoice = null;
     this.displayLimitSurpassed = false;
   }
 
@@ -169,6 +258,8 @@ export class ReceptionComponent implements OnInit {
     this.firstStepControl.get('familySearched').setValue(false);
     this.firstStepForm.reset();
     this.family = this.defaultFamilyData();
+    this.familyRelatedInvoices = [];
+    this.enabledRelatedInvoices = {};
   }
 
   defaultFamilyData(): FamilyResume {
@@ -178,12 +269,9 @@ export class ReceptionComponent implements OnInit {
       credential: '',
       special: false,
       visits: 0,
-      limit: 10
+      limit: 10,
+      originalLimit: 10,
     };
-  }
-
-  onClickGenerateInvoice(): void {
-    this.generatingInvoice = true;
   }
 
   formatNumber(input: number): string {
@@ -197,13 +285,52 @@ export class ReceptionComponent implements OnInit {
   disabledClearReceptionButton(): boolean {
     return !this.secondStepControl.valid && !this.displayLimitSurpassed;
   }
-}
 
-interface FamilyResume {
-  name: string;
-  expedient: string;
-  credential: string;
-  special: boolean;
-  visits: number;
-  limit: number;
+  prepareInvoice(): void {
+    this.productsInvoice = this.productsForm.controls
+      .filter((p: AbstractControl) => p.get('amount').value > 0)
+      .map((p: AbstractControl): ProductResume => {
+        return {
+          id: p.get('id').value,
+          code: p.get('code').value,
+          ean: p.get('ean').value,
+          name: p.get('name').value,
+          amount: p.get('amount').value,
+          pvp: p.get('pvp').value,
+          type: p.get('type').value,
+          chargeableOutBudgetSelected: p.get('chargeableOutBudgetSelected').value,
+        };
+      });
+  }
+
+  async generateInvoice(): Promise<void> {
+    if (this.invoice) {
+      window.open('invoice/' + this.invoice._id);
+      return;
+    }
+    this.generatingInvoice = true;
+    this.firstStepControl.get('familySearched').setValue(false);
+    this.secondStepControl.get('productsAdded').setValue(false);
+    setTimeout(async () => {
+      this.invoice = await this.service.createInvoice(this.family, this.productsInvoice);
+      window.open('invoice/' + this.invoice._id);
+      this.generatingInvoice = false;
+    }, 500);
+  }
+
+  toggleRelatedInvoiceRestrictions(i: number, id: string): void {
+    if (this.enabledRelatedInvoices[id]) {
+      this.family.limit = Number((this.family.limit + this.enabledRelatedInvoices[id].pvp).toFixed(2));
+      delete this.enabledRelatedInvoices[id];
+    } else {
+      this.enabledRelatedInvoices[id] = this.familyRelatedInvoices[i];
+      this.family.limit = Number((this.family.limit - this.enabledRelatedInvoices[id].pvp).toFixed(2));
+    }
+    // falsy AbstractControl made to just call the modify with 0 amount and an empty control.
+    const falsyAbstractControl = {
+      value: 0,
+      setValue: () => {}
+    };
+    this.modifyProductAmount(falsyAbstractControl as any, 0);
+  }
 }
