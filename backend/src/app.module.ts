@@ -20,6 +20,7 @@ import { FamilyMongoModule } from './db/family-mongo/family-mongo.module';
 import { AliveModule } from './api/alive/alive.module';
 import { OpenfoodMongoModule } from './db/openfood-mongo/openfood-mongo.module';
 import { InvoiceModule } from './api/invoice/invoice.module';
+import { WebsocketsModule } from './websockets/websockets.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -45,6 +46,7 @@ import configuration from './config/configuration';
     AliveModule,
     OpenfoodMongoModule,
     InvoiceModule,
+    WebsocketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
