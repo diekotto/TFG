@@ -32,6 +32,21 @@ import { RoleName } from '../../db/role-mongo/role-schema';
 export class InvoiceController {
   constructor(private service: InvoiceService) {}
 
+  @Get('/today')
+  @Roles(RoleName.RECEPCION)
+  readToday(): Promise<OrderDocument[]> {
+    return this.service.readToday();
+  }
+
+  @Get('/from/:from/to/:to')
+  @Roles(RoleName.RECEPCION)
+  readDateRange(
+    @Param('from') from: string,
+    @Param('to') to: string,
+  ): Promise<OrderDocument[]> {
+    return this.service.readDateRange(+from, +to);
+  }
+
   @Get('/:id')
   @Roles(RoleName.RECEPCION)
   readById(@Param('id') id: string): Promise<OrderDocument> {
