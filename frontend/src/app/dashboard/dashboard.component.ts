@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.pingService.onPing.subscribe((alive: boolean) => {
+    this.pingSubscription = this.pingService.onPing.subscribe((alive: boolean) => {
       this.backendError = !alive;
     });
     if (this.pingService.pingCount < 1) {

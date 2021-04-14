@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  backend: 'https://economato-social-api.herokuapp.com'
+  backend: 'http://localhost:3000',
+  backendWs: 'ws://localhost:3000',
 };
 
 /*

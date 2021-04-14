@@ -37,7 +37,7 @@ export class Order {
   @Prop() chargeableOutBudgetSelected: boolean;
   @Prop() createdAt: Date;
   @Prop() updatedAt: Date;
-  @Prop() charged: boolean;
+  @Prop() paid: boolean;
   @Prop() deleted: boolean;
 }
 

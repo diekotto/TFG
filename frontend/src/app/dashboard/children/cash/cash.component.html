@@ -1,1 +1,13 @@
-<p>cash works!</p>
+<h2>cash works!</h2>
+<hr>
+<form [formGroup]="myForm">
+  <input formControlName="invoiceId">
+</form>
+<button mat-stroked-button (click)="sendMessage()">Send Message</button>
+<hr>
+<p>Messages: {{messages.length}}</p>
+<ul>
+  <li *ngFor="let msg of messages">
+    {{msg.event}} - ID: {{msg.data.invoiceId}} - Action: {{msg.data.action}}
+  </li>
+</ul>

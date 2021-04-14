@@ -37,13 +37,17 @@ export class PingService {
       return;
     }
     PingService.timer = setTimeout(() => {
-      this.ping().then((pinged: boolean) => {
-        this.onPing.emit(pinged);
-        this.backendStatus = pinged;
-        this.initTimeout();
-        PingService.timer = null;
-      });
+      this.pingAndManage();
     }, 60000);
+  }
+
+  pingAndManage(): void {
+    this.ping().then((pinged: boolean) => {
+      this.onPing.emit(pinged);
+      this.backendStatus = pinged;
+      this.initTimeout();
+      PingService.timer = null;
+    });
   }
 
   private async ping(): Promise<boolean> {
