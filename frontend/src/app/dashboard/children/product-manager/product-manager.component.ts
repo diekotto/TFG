@@ -31,6 +31,7 @@ export class ProductManagerComponent implements OnInit {
   }
 
   onClickPrepareDelete(id: string): void {
+    this.deleting = {};
     this.deleting[id] = true;
   }
 

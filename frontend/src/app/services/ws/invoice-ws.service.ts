@@ -5,26 +5,31 @@ import { PingService } from '../ping/ping.service';
 @Injectable({
   providedIn: 'root'
 })
-export class InvoicesService {
+export class InvoiceWsService {
 
-  private socket: WebSocket;
+  static socket: WebSocket;
   readonly invoiceSubscription = new EventEmitter<WsMessage>();
+  private connectionClosed = true;
 
   constructor(private pingService: PingService) {
+    this.initSocket();
     this.pingService.onPing.subscribe((alive: boolean) => {
-      if (alive && this.socket.CLOSED) {
+      if (alive) {
         this.initSocket();
       }
     });
-    this.initSocket();
   }
 
   private initSocket(): void {
+    if (!this.connectionClosed) {
+      return;
+    }
+    this.connectionClosed = false;
     // TODO: Habría que generalizarlo en caso de tener más servicios de ws
-    this.socket = new WebSocket(environment.backendWs);
-    this.socket.onopen = () => {
+    InvoiceWsService.socket = new WebSocket(environment.backendWs);
+    InvoiceWsService.socket.onopen = () => {
       console.log('WS connected');
-      this.socket.onmessage = (message: MessageEvent) => {
+      InvoiceWsService.socket.onmessage = (message: MessageEvent) => {
         console.log(message.data);
         let data;
         try {
@@ -34,10 +39,11 @@ export class InvoicesService {
         }
         this.invoiceSubscription.emit(data);
       };
-    };
-    this.socket.onclose = () => {
-      console.log('El websocket se ha cerrado');
-      this.pingService.pingAndManage();
+      InvoiceWsService.socket.onclose = () => {
+        console.log('El websocket se ha cerrado');
+        this.connectionClosed = true;
+        this.pingService.pingAndManage();
+      };
     };
   }
 
@@ -47,12 +53,17 @@ export class InvoicesService {
       data,
     });
     console.log('Sending: ', message);
-    this.socket.send(message);
+    InvoiceWsService.socket.send(message);
   }
 }
 
+export enum WsTopics {
+  INVOICES = 'invoices',
+  UNKNOWN = 'unknown',
+}
+
 export interface WsMessage {
-  event: string;
+  event: WsTopics;
   data: InvoiceMessage;
 }
 

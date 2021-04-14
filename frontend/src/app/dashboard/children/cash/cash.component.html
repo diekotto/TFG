@@ -1,13 +1,273 @@
-<h2>cash works!</h2>
-<hr>
-<form [formGroup]="myForm">
-  <input formControlName="invoiceId">
-</form>
-<button mat-stroked-button (click)="sendMessage()">Send Message</button>
-<hr>
-<p>Messages: {{messages.length}}</p>
-<ul>
-  <li *ngFor="let msg of messages">
-    {{msg.event}} - ID: {{msg.data.invoiceId}} - Action: {{msg.data.action}}
-  </li>
-</ul>
+<div class="container">
+  <mat-card class="cash-card">
+    <h1 class="banner">Caja</h1>
+    <mat-divider></mat-divider>
+
+    <!-- Búsqueda por rango de fechas -->
+    <form [formGroup]="myForm">
+      <div class="row cash-date-range">
+        <div class="col-md-12">
+          <h2>Búsqueda por rango de fechas:</h2>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input
+                formControlName="from"
+                matInput
+                [matDatepicker]="pickerFrom"
+                [max]="myForm.get('to').value"
+                placeholder="Desde">
+            <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFrom></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field>
+            <input
+                formControlName="to"
+                matInput
+                [matDatepicker]="pickerTo"
+                [min]="myForm.get('from').value"
+                placeholder="Hasta">
+            <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+            <mat-datepicker #pickerTo></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4" style="margin-top: 10px;">
+          <button
+              mat-stroked-button
+              (click)="searchByDateRange()"
+              [disabled]="!myForm.valid"
+          >Buscar facturas
+          </button>
+        </div>
+      </div>
+    </form>
+    <mat-divider></mat-divider>
+
+    <!-- Tabla de facturas -->
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <div class="cash-invoices-list">
+      <mat-accordion class="cash-accordion">
+        <!-- Facturas abiertas -->
+        <mat-expansion-panel [expanded]="invoices.length > 0">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Facturas abiertas
+            </mat-panel-title>
+            <mat-panel-description>
+              {{invoices.length}} facturas x {{invoicesResume[0].total | currency: 'EUR'}}
+              <mat-icon mat-list-icon>style</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="table-responsive-md table-hover">
+            <table class="table table-sm">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Código</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Especial</th>
+                <th scope="col">Precio</th>
+                <th scope="col" *ngIf="showingRange">Fecha</th>
+                <th scope="col">Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let p of invoices" [ngClass]="p.special ? 'table-warning': ''">
+                <th scope="row">
+                  <mat-icon mat-list-icon>{{p.special ? 'star' : 'style'}}</mat-icon>
+                </th>
+                <td>{{p.code}}</td>
+                <td>{{p.familyName}}</td>
+                <td><strong>{{p.special ? 'Sí' : 'No'}}</strong></td>
+                <td>{{p.pvp | currency: 'EUR'}}</td>
+                <td *ngIf="showingRange">{{p.createdAt | date: dateFormatTable}}</td>
+                <td>
+                  <div *ngIf="!invoicesPaying[p._id] && !invoicesClosing[p._id]">
+                    <a
+                        [routerLink]="'/invoice/'+p._id"
+                        target="_blank"
+                        mat-stroked-button
+                    >
+                      <mat-icon>print</mat-icon>
+                    </a>
+                    <button
+                        mat-stroked-button
+                        color="primary"
+                        (click)="toggleClickPreparePaying(p._id)"
+                    >
+                      <mat-icon>attach_money</mat-icon>
+                    </button>
+                    <button
+                        mat-stroked-button
+                        color="accent"
+                        (click)="toggleClickPrepareClosing(p._id)"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                  <div *ngIf="invoicesPaying[p._id] || invoicesClosing[p._id]">
+                    <button
+                        mat-stroked-button color="accent"
+                        (click)="clickPayOrClose(p._id)">
+                      <mat-icon>
+                        done
+                      </mat-icon>
+                    </button>
+                    <button
+                        mat-stroked-button color="accent"
+                        (click)="cancelPayOrClose()">
+                      <mat-icon>
+                        cancel
+                      </mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Facturas cobradas -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Facturas cobradas
+            </mat-panel-title>
+            <mat-panel-description>
+              {{invoicesPaid.length}} facturas x {{invoicesResume[1].total | currency: 'EUR'}}
+              <mat-icon mat-list-icon>attach_money</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="table-responsive-md">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Código</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Especial</th>
+                <th scope="col">Precio</th>
+                <th scope="col" *ngIf="showingRange">Fecha</th>
+                <th scope="col">Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let p of invoicesPaid">
+                <th scope="row">
+                  <mat-icon mat-list-icon color="primary">attach_money</mat-icon>
+                </th>
+                <td>{{p.code}}</td>
+                <td>{{p.familyName}}</td>
+                <td>{{p.special ? 'Sí' : 'No'}}</td>
+                <td>{{p.pvp | currency: 'EUR'}}</td>
+                <td *ngIf="showingRange">{{p.createdAt | date: dateFormatTable}}</td>
+                <td>
+                  <a
+                      [routerLink]="'/invoice/'+p._id"
+                      target="_blank"
+                      mat-stroked-button
+                  >
+                    <mat-icon>print</mat-icon>
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Facturas cerradas -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Facturas cerradas
+            </mat-panel-title>
+            <mat-panel-description>
+              {{invoicesClosed.length}} facturas x {{invoicesResume[2].total | currency: 'EUR'}}
+              <mat-icon mat-list-icon>close</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="table-responsive-md">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Código</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Especial</th>
+                <th scope="col">Precio</th>
+                <th scope="col" *ngIf="showingRange">Fecha</th>
+                <th scope="col">Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let p of invoicesClosed">
+                <th scope="row">
+                  <mat-icon mat-list-icon color="accent">close</mat-icon>
+                </th>
+                <td>{{p.code}}</td>
+                <td>{{p.familyName}}</td>
+                <td>{{p.special ? 'Sí' : 'No'}}</td>
+                <td>{{p.pvp | currency: 'EUR'}}</td>
+                <td *ngIf="showingRange">{{p.createdAt | date: dateFormatTable}}</td>
+                <td>
+                  <a
+                      [routerLink]="'/invoice/'+p._id"
+                      target="_blank"
+                      mat-stroked-button
+                  >
+                    <mat-icon>print</mat-icon>
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Tabla resumen -->
+        <mat-expansion-panel [expanded]="invoices.length < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Cierre de caja
+            </mat-panel-title>
+            <mat-panel-description>
+              Resúmenes
+              <mat-icon mat-list-icon>inbox</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="table-responsive-md">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Facturas</th>
+                <th scope="col">Especial</th>
+                <th scope="col">Subtotal</th>
+                <th scope="col">Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let p of invoicesResume">
+                <th scope="row">
+                  <mat-icon mat-list-icon color="primary">{{p.icon}}</mat-icon>
+                </th>
+                <td>{{p.type}}</td>
+                <td>{{p.count}}</td>
+                <td><strong>{{p.hasSpecial ? 'Sí' : 'No'}}</strong></td>
+                <td>{{p.total | currency: 'EUR'}}</td>
+                <td>{{p.totalWithoutSpecials | currency: 'EUR'}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+
+      </mat-accordion>
+    </div>
+  </mat-card>
+</div>

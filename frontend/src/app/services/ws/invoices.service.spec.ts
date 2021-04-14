@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { InvoicesService } from './invoices.service';
+import { InvoiceWsService } from './invoice-ws.service';
 
 describe('InvoicesService', () => {
-  let service: InvoicesService;
+  let service: InvoiceWsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(InvoicesService);
+    service = TestBed.inject(InvoiceWsService);
   });
 
   it('should be created', () => {
