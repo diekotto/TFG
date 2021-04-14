@@ -39,6 +39,8 @@ export class Order {
   @Prop() updatedAt: Date;
   @Prop() paid: boolean;
   @Prop() deleted: boolean;
+  @Prop() origin: string; // USER ID
+  @Prop() resolver: string; // USER ID
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
