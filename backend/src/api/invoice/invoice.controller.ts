@@ -19,6 +19,8 @@ import { InvoiceService, ResolveInvoiceAction } from './invoice.service';
 import { Order, OrderDocument } from '../../db/order-mongo/order-schema';
 import { Roles } from '../guards/roles/roles.decorator';
 import { RoleName } from '../../db/role-mongo/role-schema';
+import { Jwt } from '../custom-decorators/jwtParamDecorator';
+import { JWToken } from '../guards/jwtoken.interface';
 
 @ApiTags('Invoices')
 @Controller('invoice')
@@ -64,21 +66,24 @@ export class InvoiceController {
 
   @Post('/')
   @Roles(RoleName.RECEPCION, RoleName.CAJA)
-  create(@Body() body: Order): Promise<OrderDocument> {
-    return this.service.create(body);
+  async create(
+    @Body() body: Order,
+    @Jwt() jwt: JWToken,
+  ): Promise<OrderDocument> {
+    return this.service.create(body, jwt);
   }
 
   @Put('/:id/pay')
   @Roles(RoleName.CAJA)
   @ApiNoContentResponse()
-  payInvoice(@Param('id') id: string): Promise<void> {
-    return this.service.resolveInvoice(id, ResolveInvoiceAction.PAY);
+  payInvoice(@Param('id') id: string, @Jwt() jwt: JWToken): Promise<void> {
+    return this.service.resolveInvoice(id, ResolveInvoiceAction.PAY, jwt);
   }
 
   @Put('/:id/close')
   @Roles(RoleName.CAJA)
   @ApiNoContentResponse()
-  closeInvoice(@Param('id') id: string): Promise<void> {
-    return this.service.resolveInvoice(id, ResolveInvoiceAction.CLOSE);
+  closeInvoice(@Param('id') id: string, @Jwt() jwt: JWToken): Promise<void> {
+    return this.service.resolveInvoice(id, ResolveInvoiceAction.CLOSE, jwt);
   }
 }

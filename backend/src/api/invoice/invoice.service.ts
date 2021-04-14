@@ -8,15 +8,29 @@ import { OrderMongoService } from '../../db/order-mongo/order-mongo.service';
 import { Order, OrderDocument } from '../../db/order-mongo/order-schema';
 import { uid } from 'uid';
 import { WebsocketsService } from '../../websockets/websockets.service';
+import { JWToken } from '../guards/jwtoken.interface';
+import { UserMongoService } from '../../db/user-mongo/user-mongo.service';
+import { UserAction } from '../../db/user-mongo/user-schema';
 
 @Injectable()
 export class InvoiceService {
   constructor(
     private mongo: OrderMongoService,
+    private userMongo: UserMongoService,
     private wsService: WebsocketsService,
   ) {}
 
-  async create(input: Order): Promise<any> {
+  async saveUserAction(jwt: JWToken, actionTxt: string): Promise<void> {
+    const user = await this.userMongo.findById(jwt.id);
+    const action: UserAction = {
+      date: new Date(),
+      action: actionTxt,
+    };
+    user.actionsHistory.push(action);
+    await user.save();
+  }
+
+  async create(input: Order, jwt: JWToken): Promise<any> {
     input.createdAt = new Date();
     input.updatedAt = new Date();
     input.code = `${new Date().getFullYear().toString()}-${uid(
@@ -24,8 +38,10 @@ export class InvoiceService {
     ).toUpperCase()}`;
     input.paid = false;
     input.deleted = false;
+    input.origin = jwt.id;
     const order: OrderDocument = await this.mongo.create(input);
     this.broadcastInvoiceResolved(order.id, ResolveInvoiceAction.CREATED);
+    await this.saveUserAction(jwt, `Invoice created ${order.id}`);
     return order.toObject();
   }
 
@@ -107,6 +123,7 @@ export class InvoiceService {
   async resolveInvoice(
     id: string,
     action: ResolveInvoiceAction,
+    jwt: JWToken,
   ): Promise<void> {
     const order: OrderDocument = await this.mongo.findById(id);
     if (!order) throw new NotFoundException(`Invoice with id ${id} not found`);
@@ -127,7 +144,12 @@ export class InvoiceService {
     }
     this.broadcastInvoiceResolved(id, action);
     order.updatedAt = new Date();
+    order.resolver = jwt.id;
     await order.save();
+    await this.saveUserAction(
+      jwt,
+      `Updated invoice ${jwt.id} with action ${action}`,
+    );
   }
 
   private broadcastInvoiceResolved(
