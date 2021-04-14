@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '../config/configuration';
 import Server from 'ws';
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -11,6 +12,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { ResolveInvoiceAction } from '../api/invoice/invoice.service';
+import { Socket } from 'socket.io';
 
 export enum WsTopics {
   INVOICES = 'invoices',
@@ -28,12 +30,18 @@ export class WebsocketsService
   constructor(private config: ConfigService<AppConfig>) {}
 
   @SubscribeMessage(WsTopics.INVOICES)
-  handleInvoiceMessage(@MessageBody() data: any): void {
+  handleInvoiceMessage(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ): void {
     console.log(data, typeof data);
-    this.broadcast({
-      event: WsTopics.INVOICES,
-      data,
-    });
+    this.broadcast(
+      {
+        event: WsTopics.INVOICES,
+        data,
+      },
+      client,
+    );
   }
 
   handleConnection(client: any): void {
@@ -47,7 +55,7 @@ export class WebsocketsService
     }
   }
 
-  broadcast(message: WsMessage | string): void {
+  broadcast(message: WsMessage | string, sender: Socket): void {
     const payload: WsMessage = {
       event: WsTopics.UNKNOWN,
       data: '',
@@ -59,6 +67,9 @@ export class WebsocketsService
       payload.data = message.data;
     }
     for (const c of this.wsClients) {
+      if (c.id === sender.id) {
+        return;
+      }
       c.send(JSON.stringify(payload));
     }
   }
@@ -68,7 +79,7 @@ export class WebsocketsService
       event: WsTopics.INVOICES,
       data: message,
     };
-    this.broadcast(data);
+    this.broadcast(data, { id: null } as Socket);
   }
 }
 

@@ -19,10 +19,13 @@ export class InvoiceService {
   async create(input: Order): Promise<any> {
     input.createdAt = new Date();
     input.updatedAt = new Date();
-    input.code = uid(7).toUpperCase();
+    input.code = `${new Date().getFullYear().toString()}-${uid(
+      7,
+    ).toUpperCase()}`;
     input.paid = false;
     input.deleted = false;
     const order: OrderDocument = await this.mongo.create(input);
+    this.broadcastInvoiceResolved(order.id, ResolveInvoiceAction.CREATED);
     return order.toObject();
   }
 
@@ -30,6 +33,48 @@ export class InvoiceService {
     const order: OrderDocument = await this.mongo.findById(id);
     if (!order) throw new NotFoundException(`Invoice with id ${id} not found`);
     return order.toObject();
+  }
+
+  async readToday(): Promise<OrderDocument[]> {
+    const currentDate: Date = new Date();
+    currentDate.setHours(0);
+    currentDate.setMinutes(0);
+    currentDate.setMilliseconds(0);
+    const nextDate: Date = new Date();
+    nextDate.setDate(currentDate.getDate() + 1);
+    nextDate.setHours(0);
+    nextDate.setMinutes(0);
+    nextDate.setMilliseconds(0);
+    const filter = {
+      createdAt: {
+        $gte: currentDate,
+        $lte: nextDate,
+      },
+    };
+    return (await this.mongo.findByConditions(filter)).map((o: OrderDocument) =>
+      o.toObject(),
+    );
+  }
+
+  async readDateRange(from: number, to: number): Promise<OrderDocument[]> {
+    const currentDate: Date = new Date(from);
+    currentDate.setHours(0);
+    currentDate.setMinutes(0);
+    currentDate.setMilliseconds(0);
+    const nextDate: Date = new Date(to);
+    nextDate.setDate(nextDate.getDate() + 1);
+    nextDate.setHours(0);
+    nextDate.setMinutes(0);
+    nextDate.setMilliseconds(0);
+    const filter = {
+      createdAt: {
+        $gte: currentDate,
+        $lte: nextDate,
+      },
+    };
+    return (await this.mongo.findByConditions(filter)).map((o: OrderDocument) =>
+      o.toObject(),
+    );
   }
 
   async readFamilyCurrentMonth(
@@ -99,4 +144,5 @@ export class InvoiceService {
 export enum ResolveInvoiceAction {
   CLOSE,
   PAY,
+  CREATED,
 }

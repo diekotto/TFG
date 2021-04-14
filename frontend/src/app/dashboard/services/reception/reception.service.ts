@@ -24,7 +24,7 @@ export class ReceptionService {
       pvp: products.reduce((prev: number, cur: ProductResume) => prev + (cur.pvp * cur.amount), 0)
     };
     body.pvp = Number(body.pvp.toFixed(2));
-    return this.http.post<InvoiceDto>(environment.backend + '/invoice',
+    return this.http.post<InvoiceDto>(`${environment.backend}/invoice`,
       body,
       {
         headers: {
@@ -34,7 +34,39 @@ export class ReceptionService {
   }
 
   findFamilyCurrentMonth(credential: string, expedient: string): Promise<InvoiceDto[]> {
-    return this.http.get<InvoiceDto[]>(environment.backend + `/invoice/credential/${credential}/expedient/${expedient}`, {
+    return this.http.get<InvoiceDto[]>(`${environment.backend}/invoice/credential/${credential}/expedient/${expedient}`, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`
+      },
+    }).toPromise();
+  }
+
+  getTodayInvoices(): Promise<InvoiceDto[]> {
+    return this.http.get<InvoiceDto[]>(`${environment.backend}/invoice/today`, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`
+      },
+    }).toPromise();
+  }
+
+  getRangeInvoices(from: number, to: number): Promise<InvoiceDto[]> {
+    return this.http.get<InvoiceDto[]>(`${environment.backend}/invoice/from/${from}/to/${to}`, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`
+      },
+    }).toPromise();
+  }
+
+  payInvoiceById(id: string): Promise<void> {
+    return this.http.put<void>(`${environment.backend}/invoice/${id}/pay`, {}, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`
+      },
+    }).toPromise();
+  }
+
+  closeInvoiceById(id: string): Promise<void> {
+    return this.http.put<void>(`${environment.backend}/invoice/${id}/close`, {}, {
       headers: {
         Authorization: `Bearer ${this.userService.jwt}`
       },
@@ -75,6 +107,6 @@ export interface InvoiceDto {
   pvp: number;
   createdAt?: string;
   updatedAt?: string;
-  charged?: boolean;
+  paid?: boolean;
   deleted?: boolean;
 }

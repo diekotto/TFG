@@ -1,0 +1,51 @@
+.cash-buttons {
+  text-align: right;
+  margin-bottom: 30px;
+}
+
+.cash-card {
+  padding-bottom: 35px;
+  padding-top: 35px;
+}
+
+.cash-date-range {
+  padding-top: 30px;
+  padding-bottom: 10px;
+}
+
+.cash-invoices-list {
+  padding-top: 40px;
+  padding-bottom: 10px;
+}
+
+.cash-add-message {
+  cursor: pointer;
+}
+
+.cash-accordion .mat-expansion-panel-header-title,
+.cash-accordion .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.cash-accordion .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list {
+  text-align: left;
+}
+
+.container {
+  margin-top: 3em;
+}
+
+h1 {
+  font-size: 3.375rem;
+  margin-bottom: 1em;
+  line-height: normal;
+}
+
+.table td, .table th {
+  vertical-align: middle;
+}
