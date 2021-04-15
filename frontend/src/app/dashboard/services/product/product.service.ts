@@ -4,7 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { UserService } from '../../../services/user/user.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
 
@@ -13,39 +13,43 @@ export class ProductService {
 
   constructor(
     private userService: UserService,
-    private http: HttpClient
+    private http: HttpClient,
   ) { }
 
   async fetchAll(): Promise<Product[]> {
     return this.http.get(environment.backend + '/product', {
       headers: {
-        Authorization: `Bearer ${this.userService.jwt}`
+        Authorization: `Bearer ${this.userService.jwt}`,
       },
     }).toPromise()
       .then((data: any) => {
         this.products = data;
         return Promise.resolve(data);
-      });
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
   async fetchByEan(ean: string): Promise<Product> {
     return this.http.get(environment.backend + '/product/ean/' + ean, {
       headers: {
-        Authorization: `Bearer ${this.userService.jwt}`
+        Authorization: `Bearer ${this.userService.jwt}`,
       },
     }).toPromise()
       .then((data: any) => {
         this.openFoodProduct = data;
         return Promise.resolve(data);
-      });
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
   async fetchById(id: string): Promise<Product> {
     return this.http.get<Product>(environment.backend + '/product/' + id, {
       headers: {
-        Authorization: `Bearer ${this.userService.jwt}`
+        Authorization: `Bearer ${this.userService.jwt}`,
       },
-    }).toPromise();
+    }).toPromise()
+      .then((response) => response)
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
   async create(input: any): Promise<Product> {
@@ -63,17 +67,19 @@ export class ProductService {
         { price: 22, quantity: input.limit22e },
         { price: 27, quantity: input.limit27e },
         { price: 32, quantity: input.limit32e },
-      ]
+      ],
     };
     return this.http.post(environment.backend + '/product',
       product,
       {
         headers: {
-          Authorization: `Bearer ${this.userService.jwt}`
+          Authorization: `Bearer ${this.userService.jwt}`,
         },
-      }).toPromise().then((data: any) => {
-      return Promise.resolve(data);
-    });
+      }).toPromise()
+      .then((data: any) => {
+        return Promise.resolve(data);
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
   async updateById(input: any): Promise<Product> {
@@ -91,25 +97,29 @@ export class ProductService {
         { price: 22, quantity: input.limit22e },
         { price: 27, quantity: input.limit27e },
         { price: 32, quantity: input.limit32e },
-      ]
+      ],
     };
     return this.http.put(environment.backend + '/product/' + input._id,
       product,
       {
         headers: {
-          Authorization: `Bearer ${this.userService.jwt}`
+          Authorization: `Bearer ${this.userService.jwt}`,
         },
-      }).toPromise().then((data: any) => {
-      return Promise.resolve(data);
-    });
+      }).toPromise()
+      .then((data: any) => {
+        return Promise.resolve(data);
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
   async deleteProductById(id: string): Promise<void> {
     await this.http.delete(environment.backend + '/product/' + id, {
       headers: {
-        Authorization: `Bearer ${this.userService.jwt}`
+        Authorization: `Bearer ${this.userService.jwt}`,
       },
-    }).toPromise();
+    }).toPromise()
+      .then((response) => response)
+      .catch(err => this.userService.logoutHttp401(err) as any);
     const index = this.products.findIndex((p: Product) => p._id === id);
     this.products.splice(index, 1);
   }

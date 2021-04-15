@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { EventEmitter } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PingService {
   private static timer: number;
@@ -37,6 +37,7 @@ export class PingService {
       return;
     }
     PingService.timer = setTimeout(() => {
+      PingService.timer = null;
       this.pingAndManage();
     }, 60000);
   }
@@ -46,7 +47,6 @@ export class PingService {
       this.onPing.emit(pinged);
       this.backendStatus = pinged;
       this.initTimeout();
-      PingService.timer = null;
     });
   }
 
