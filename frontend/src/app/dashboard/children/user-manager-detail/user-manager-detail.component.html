@@ -1,1 +1,95 @@
-<p>user-manager-detail {{userId}} works!</p>
+<div class="container">
+  <mat-card class="user-manager-detail-card">
+    <h1 class="banner">Editar usuario</h1>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <div class="form-container" *ngIf="!loading">
+      <form class="user-manager-detail-form" [formGroup]="myForm">
+        <div class="row">
+          <div class="col-md-4 input-row-padding">
+            <mat-checkbox formControlName="admin">Usuario administrador</mat-checkbox>
+          </div>
+          <div class="col-md-4 input-row-padding">
+            <mat-slide-toggle formControlName="active">Activo</mat-slide-toggle>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field>
+              <mat-label>Permisos</mat-label>
+              <mat-select formControlName="permissions" multiple>
+                <mat-option *ngFor="let permission of permissions" [value]="permission">{{permission}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="standard">
+              <mat-label>Nombre</mat-label>
+              <input
+                  matInput
+                  type="text"
+                  placeholder="El nombre completo"
+                  formControlName="name"
+                  maxlength="256"
+              >
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="standard">
+              <mat-label>Email</mat-label>
+              <input
+                  matInput
+                  type="email"
+                  placeholder="email@example.com"
+                  formControlName="email"
+                  maxlength="100"
+              >
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="standard" *ngIf="myForm.get('changePassword').value">
+              <mat-label>Password</mat-label>
+              <input
+                  matInput
+                  type="password"
+                  placeholder="********"
+                  formControlName="password"
+                  autocomplete="false"
+                  maxlength="256"
+              >
+              <mat-hint>Mínimo 8 de longitud</mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="col-md-12 input-row-padding">
+            <mat-slide-toggle formControlName="changePassword">Cambiar contraseña</mat-slide-toggle>
+          </div>
+        </div>
+      </form>
+      <div class="user-manager-detail-buttons">
+        <div class="row">
+          <div class="col-md-3">
+          </div>
+          <div class="col-md-3">
+            <button
+                class="user-manager-detail-button"
+                mat-raised-button color="primary"
+                (click)="submitForm()"
+                [disabled]="submitFormDisabled()"
+            >
+              Guardar
+              <mat-progress-spinner *ngIf="loading"
+                                    class="user-manager-detail-spinner"
+                                    mode="indeterminate"
+                                    [diameter]="17">
+              </mat-progress-spinner>
+            </button>
+          </div>
+          <div class="col-md-3">
+            <a class="user-manager-cancel-button" routerLink="/dashboard/user-manager" mat-raised-button color="accent">
+              Cancelar
+            </a>
+          </div>
+          <div class="col-md-3">
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

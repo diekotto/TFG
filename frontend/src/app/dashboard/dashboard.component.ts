@@ -26,7 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private loginService: LoginService,
     private pingService: PingService,
     private communication: DashboardCommunicationService,
-    private route: Router,
+    private router: Router,
     private snackBar: MatSnackBar
   ) { }
 
@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   async logout(): Promise<void> {
     await this.loginService.logout();
-    await this.route.navigate(['']);
+    await this.router.navigate(['']);
   }
 
   toggleMenu(): void {

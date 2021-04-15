@@ -3,78 +3,88 @@
     <h1 class="banner">Creación de usuarios</h1>
     <div class="form-container">
       <form class="user-manager-create-form" [formGroup]="myForm">
-        <mat-grid-list cols="2" rowHeight="85px">
-          <mat-grid-tile>
-            <mat-checkbox formControlName="admin">This user is an admin</mat-checkbox>
-          </mat-grid-tile>
-          <mat-grid-tile>
+        <div class="row">
+          <div class="col-md-4 input-row-padding">
+            <mat-checkbox formControlName="admin">Usuario administrador</mat-checkbox>
+          </div>
+          <div class="col-md-4 input-row-padding">
             <mat-slide-toggle formControlName="active">Activar al crear</mat-slide-toggle>
-          </mat-grid-tile>
-          <mat-grid-tile>
-            <mat-form-field appearance="standard">
-              <mat-label>Nombre</mat-label>
-              <input
-                matInput
-                type="text"
-                placeholder="El nombre completo"
-                formControlName="name"
-                maxlength="256"
-              >
-            </mat-form-field>
-          </mat-grid-tile>
-          <mat-grid-tile>
-            <mat-form-field appearance="standard">
-              <mat-label>Email</mat-label>
-              <input
-                matInput
-                type="email"
-                placeholder="email@example.com"
-                formControlName="email"
-                maxlength="100"
-              >
-            </mat-form-field>
-          </mat-grid-tile>
-          <mat-grid-tile>
-            <mat-form-field appearance="standard">
-              <mat-label>Password</mat-label>
-              <input
-                matInput
-                type="password"
-                placeholder="********"
-                formControlName="password"
-                autocomplete="false"
-                maxlength="256"
-              >
-              <mat-hint>Mínimo 8 de longitud</mat-hint>
-            </mat-form-field>
-          </mat-grid-tile>
-          <mat-grid-tile>
+          </div>
+          <div class="col-md-4">
             <mat-form-field>
               <mat-label>Permisos</mat-label>
               <mat-select formControlName="permissions" multiple>
                 <mat-option *ngFor="let permission of permissions" [value]="permission">{{permission}}</mat-option>
               </mat-select>
             </mat-form-field>
-          </mat-grid-tile>
-        </mat-grid-list>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="standard">
+              <mat-label>Nombre</mat-label>
+              <input
+                  matInput
+                  type="text"
+                  placeholder="El nombre completo"
+                  formControlName="name"
+                  maxlength="256"
+              >
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="standard">
+              <mat-label>Email</mat-label>
+              <input
+                  matInput
+                  type="email"
+                  placeholder="email@example.com"
+                  formControlName="email"
+                  maxlength="100"
+              >
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="standard">
+              <mat-label>Password</mat-label>
+              <input
+                  matInput
+                  type="password"
+                  placeholder="********"
+                  formControlName="password"
+                  autocomplete="false"
+                  maxlength="256"
+              >
+              <mat-hint>Mínimo 8 de longitud</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
       </form>
       <div class="user-manager-create-buttons">
-        <button
-          class="user-manager-create-button"
-          mat-raised-button color="primary"
-          (click)="submitForm()"
-          [disabled]="submitFormDisabled()"
-        >
-          Crear
-          <mat-progress-spinner *ngIf="loading"
-                                class="user-manager-create-spinner"
-                                mode="indeterminate"
-                                [diameter]="17">
-          </mat-progress-spinner>
-        </button>
-        <a class="user-manager-cancel-button" routerLink="/dashboard/user-manager" mat-raised-button color="accent">
-          Cancelar
-        </a>
+        <div class="row">
+          <div class="col-md-3">
+          </div>
+          <div class="col-md-3">
+            <button
+                class="user-manager-create-button"
+                mat-raised-button color="primary"
+                (click)="submitForm()"
+                [disabled]="submitFormDisabled()"
+            >
+              Crear
+              <mat-progress-spinner *ngIf="loading"
+                                    class="user-manager-create-spinner"
+                                    mode="indeterminate"
+                                    [diameter]="17">
+              </mat-progress-spinner>
+            </button>
+          </div>
+          <div class="col-md-3">
+            <a class="user-manager-cancel-button" routerLink="/dashboard/user-manager" mat-raised-button color="accent">
+              Cancelar
+            </a>
+          </div>
+          <div class="col-md-3">
+          </div>
+        </div>
       </div>
     </div>
   </mat-card>
