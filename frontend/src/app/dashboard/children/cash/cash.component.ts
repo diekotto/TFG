@@ -12,6 +12,7 @@ import { InvoiceDto, ReceptionService } from '../../services/reception/reception
 export class CashComponent implements OnInit, OnDestroy {
 
   invoiceSubscription: Subscription;
+  socketReconnectSubscription: Subscription;
   myForm: FormGroup;
   invoices: InvoiceDto[] = [];
   invoicesPaid: InvoiceDto[] = [];
@@ -30,6 +31,9 @@ export class CashComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.socketReconnectSubscription = this.invoicesWs.socketReconnected.subscribe(() => {
+      this.searchByDateRange();
+    });
     this.invoiceSubscription = this.invoicesWs.invoiceSubscription.subscribe((message: WsMessage) => {
       if (message.event === WsTopics.INVOICES) {
         this.searchByDateRange();
@@ -45,6 +49,9 @@ export class CashComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.invoiceSubscription) {
       this.invoiceSubscription.unsubscribe();
+    }
+    if (this.socketReconnectSubscription) {
+      this.socketReconnectSubscription.unsubscribe();
     }
   }
 
@@ -75,7 +82,7 @@ export class CashComponent implements OnInit, OnDestroy {
     }
     this.invoicesClosing = {};
     this.invoicesPaying = {};
-    this.searchByDateRange();
+    this.loading = true;
   }
 
   cancelPayOrClose(): void {

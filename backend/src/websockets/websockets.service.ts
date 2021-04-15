@@ -34,14 +34,7 @@ export class WebsocketsService
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket,
   ): void {
-    console.log(data, typeof data);
-    this.broadcast(
-      {
-        event: WsTopics.INVOICES,
-        data,
-      },
-      client,
-    );
+    // TODO: Decidir uso de recibir un mensaje
   }
 
   handleConnection(client: any): void {

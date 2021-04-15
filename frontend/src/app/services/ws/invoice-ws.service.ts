@@ -3,12 +3,13 @@ import { environment } from '../../../environments/environment';
 import { PingService } from '../ping/ping.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InvoiceWsService {
 
   static socket: WebSocket;
   readonly invoiceSubscription = new EventEmitter<WsMessage>();
+  readonly socketReconnected = new EventEmitter<void>();
   private connectionClosed = true;
 
   constructor(private pingService: PingService) {
@@ -43,6 +44,7 @@ export class InvoiceWsService {
         console.log('El websocket se ha cerrado');
         this.connectionClosed = true;
         this.pingService.pingAndManage();
+        this.socketReconnected.emit();
       };
     };
   }

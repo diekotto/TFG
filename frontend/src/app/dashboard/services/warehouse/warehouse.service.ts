@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WarehouseService {
 
@@ -12,19 +12,20 @@ export class WarehouseService {
 
   constructor(
     private userService: UserService,
-    private http: HttpClient
+    private http: HttpClient,
   ) { }
 
   async fetchAll(): Promise<Warehouse[]> {
     return this.http.get(environment.backend + '/warehouse', {
       headers: {
-        Authorization: `Bearer ${this.userService.jwt}`
+        Authorization: `Bearer ${this.userService.jwt}`,
       },
     }).toPromise()
       .then((data: any) => {
         this.warehouses = data;
         return Promise.resolve(data);
-      });
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
   getAll(): Warehouse[] {
@@ -36,13 +37,14 @@ export class WarehouseService {
       warehouse,
       {
         headers: {
-          Authorization: `Bearer ${this.userService.jwt}`
+          Authorization: `Bearer ${this.userService.jwt}`,
         },
       }).toPromise()
       .then((data: any) => {
         this.warehouses = data;
         return Promise.resolve(data);
-      });
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
 }

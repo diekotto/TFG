@@ -1,8 +1,8 @@
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
@@ -26,7 +26,7 @@ export class JwtGuard implements CanActivate {
       const g = regex.exec(bearer);
       token = jwt.verify(g[1], this.configService.get('jwtSecret')) as any;
     } catch (err) {
-      throw new BadRequestException('Bad bearer token');
+      throw new UnauthorizedException('Bad bearer token');
     }
     req['jwt'] = token;
     return true;

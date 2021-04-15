@@ -1,18 +1,22 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   static readonly storageKey = 'currentUser';
   private user: User;
 
-  constructor() {
+  constructor(private route: Router) {
+    this.intervalCheckValidJwt();
     try {
       this.reload();
     } catch (err) {
       console.log(err);
       console.log('Login needed');
+      this.logout();
     }
   }
 
@@ -38,11 +42,33 @@ export class UserService {
       name: obj.name,
       permissions: obj.permissions,
     };
-    if (user.jwtExpiry.getTime() < new Date().getTime()) {
+    if (this.jwtExpired(user)) {
       throw new Error('Jwt expired');
     }
     this.user = user;
     this.save();
+  }
+
+  jwtExpired(user = this.user): boolean {
+    return user.jwtExpiry.getTime() < new Date().getTime();
+  }
+
+  intervalCheckValidJwt(): void {
+    setInterval(() => {
+      console.log('Checking jwt...');
+      try {
+        if (this.jwtExpired()) {
+          // La función puede fallar dado que this.user puede ser undefined
+          throw new Error();
+        } else {
+          console.log('Jwt ok');
+        }
+      } catch (e) {
+        console.log('Jwt expired');
+        this.logout();
+      }
+
+    }, 60000);
   }
 
   logout(): void {
@@ -102,6 +128,14 @@ export class UserService {
   isFamily(): boolean {
     return this.user.permissions.includes(RoleName.FAMILIAR)
       || this.isAdminLocal();
+  }
+
+  logoutHttp401(err: HttpErrorResponse): void {
+    if (err.status === 401) {
+      console.log('Logout due to Unauthorized request');
+      this.logout();
+      this.route.navigate(['']);
+    }
   }
 }
 
