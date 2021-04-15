@@ -54,11 +54,6 @@
               Pedidos
             </a>
           </li>
-          <li *ngIf="userService.isFamily()">
-            <a routerLink="/dashboard/family" title="Familias" (click)="toggleMenu()">
-              Familias
-            </a>
-          </li>
           <li *ngIf="userService.isCash()">
             <a routerLink="/dashboard/cash" title="Caja" (click)="toggleMenu()">
               Caja
