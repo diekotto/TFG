@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -14,7 +15,7 @@ import {
 import { UserDto } from './dto/user-dto';
 import { AddCommentDto } from './dto/add-comment-dto';
 import { Role } from '../../db/role-mongo/role-schema';
-import { hashSync } from 'bcrypt';
+import { compareSync, hashSync } from 'bcrypt';
 import { NotificationMongoService } from '../../db/notification-mongo/notification-mongo.service';
 import { NotificationDocument } from '../../db/notification-mongo/notification-schema';
 import { NotificationsResponseDto } from './dto/notifications-response-dto';
@@ -99,6 +100,20 @@ export class UserService {
     if (input.password) {
       user.password = hashSync(input.password, this.hashRounds);
     }
+    await user.save();
+    return UserService.userMapper(user);
+  }
+
+  async updatePassword(
+    id: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<UserDto> {
+    const user: UserDocument = await this.userMongo.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+    if (!compareSync(oldPassword, user.password))
+      throw new ForbiddenException('Error old password does not match');
+    user.password = hashSync(newPassword, this.hashRounds);
     await user.save();
     return UserService.userMapper(user);
   }
