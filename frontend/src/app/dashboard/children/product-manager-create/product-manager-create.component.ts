@@ -55,7 +55,7 @@ export class ProductManagerCreateComponent implements OnInit {
     setTimeout(async () => {
       await this.service.create(this.myForm.value);
       this.myForm.reset();
-      this.communicationService.snackBarEmitMessage('Producto guardado correctamente');
+      this.communicationService.snackBarEmitMessage('Producto creado correctamente');
       this.loading = false;
     }, 500);
   }

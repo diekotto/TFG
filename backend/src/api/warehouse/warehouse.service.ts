@@ -71,6 +71,15 @@ export class WarehouseService {
     });
   }
 
+  async update(id: string, name: string): Promise<WarehouseResponseDto> {
+    const warehouse = await this.warehouseMongo.findById(id);
+    if (!warehouse)
+      throw new NotFoundException(`Warehouse with id ${id} not found`);
+    warehouse.name = name;
+    await warehouse.save();
+    return WarehouseResponseDto.fromWarehouseDocument(warehouse);
+  }
+
   async addProduct(
     id: string,
     input: AddProductDto,

@@ -76,6 +76,15 @@ export class UserController {
     return this.service.updateUser(user);
   }
 
+  @Put('/:id/password')
+  @Roles(RoleName.OWNER)
+  updatePasswordUser(
+    @Param('id') id: string,
+    @Body() body: { newPassword: string; oldPassword: string },
+  ): Promise<UserDto> {
+    return this.service.updatePassword(id, body.oldPassword, body.newPassword);
+  }
+
   @Put('/:id/activate')
   @Roles(RoleName.ADMINLOCAL)
   activateUser(@Param('id') id: string): Promise<UserDto> {

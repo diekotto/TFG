@@ -83,6 +83,16 @@ export class WarehouseController {
     return this.service.addProduct(id, input);
   }
 
+  @Put('/:id')
+  @Roles(RoleName.ALMACEN)
+  @UseGuards(WarehouseGuard)
+  update(
+    @Param('id') id: string,
+    @Body() body: { name: string },
+  ): Promise<WarehouseResponseDto> {
+    return this.service.update(id, body.name);
+  }
+
   @Put('/:id/retrieve-product')
   @Roles(RoleName.ALMACEN)
   @UseGuards(WarehouseGuard)

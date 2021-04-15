@@ -42,7 +42,11 @@ export class UserManagerDetailService {
       headers: {
         Authorization: `Bearer ${this.userService.jwt}`,
       },
-    }).toPromise();
+    }).toPromise()
+      .then((data: any) => {
+        return Promise.resolve(data);
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
   readUserById(id: string): Promise<UserDto> {
@@ -50,6 +54,23 @@ export class UserManagerDetailService {
       headers: {
         Authorization: `Bearer ${this.userService.jwt}`,
       },
-    }).toPromise();
+    }).toPromise()
+      .then((data: any) => {
+        return Promise.resolve(data);
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
+  }
+
+  updatePassword(id: string, input: { newPassword: string, oldPassword: string }): Promise<UserDto> {
+    return this.http.put<UserDto>(`${environment.backend}/user/${id}/password`,
+      input, {
+        headers: {
+          Authorization: `Bearer ${this.userService.jwt}`,
+        },
+      }).toPromise()
+      .then((data: any) => {
+        return Promise.resolve(data);
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 }
