@@ -1,0 +1,39 @@
+.user-manager-detail-buttons {
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 50px;
+}
+
+.user-manager-detail-button {
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.user-manager-cancel-button {
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.user-manager-detail-spinner {
+    margin-left: 15px;
+    display: inline;
+}
+
+.user-manager-detail-card {
+    padding-bottom: 35px;
+    padding-top: 35px;
+}
+
+.container {
+    margin-top: 3em;
+}
+
+h1 {
+    font-size: 3.375rem;
+    margin-bottom: 1em;
+    line-height: normal;
+}
+
+.input-row-padding {
+    padding-top: 17px;
+}

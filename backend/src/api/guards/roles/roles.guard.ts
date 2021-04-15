@@ -22,9 +22,10 @@ export class RolesGuard implements CanActivate {
     if (roles.length < 1) return true;
     const req: Request = context.switchToHttp().getRequest();
     const token: JWToken = req['jwt'];
-    if (roles.includes(RoleName.OWNER)) return req.params.id === token.id;
+    if (roles.includes(RoleName.OWNER) && roles.length === 1)
+      return req.params.id === token.id;
     return roles
       .filter((role) => role !== RoleName.OWNER)
-      .every((role) => Role.hasNeededRole(token.roles, role));
+      .some((role) => Role.hasNeededRole(token.roles, role));
   }
 }

@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { ConfigModule } from '@nestjs/config';
 import { UserMongoModule } from '../../db/user-mongo/user-mongo.module';
-import { RoleMongoModule } from '../../db/role-mongo/role-mongo.module';
 import { UserService } from './user.service';
 import configuration from '../../config/configuration';
 import { Mongoose } from 'mongoose';
@@ -25,7 +24,6 @@ describe('UserController (e2e)', () => {
           load: [configuration],
         }),
         UserMongoModule,
-        RoleMongoModule,
         NotificationMongoModule,
       ],
       providers: [UserService],

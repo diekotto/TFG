@@ -35,13 +35,13 @@ export class InvoiceController {
   constructor(private service: InvoiceService) {}
 
   @Get('/today')
-  @Roles(RoleName.RECEPCION)
+  @Roles(RoleName.CAJA, RoleName.RECEPCION, RoleName.ALMACEN)
   readToday(): Promise<OrderDocument[]> {
     return this.service.readToday();
   }
 
   @Get('/from/:from/to/:to')
-  @Roles(RoleName.RECEPCION)
+  @Roles(RoleName.CAJA, RoleName.RECEPCION)
   readDateRange(
     @Param('from') from: string,
     @Param('to') to: string,
@@ -50,13 +50,13 @@ export class InvoiceController {
   }
 
   @Get('/:id')
-  @Roles(RoleName.RECEPCION)
+  @Roles(RoleName.CAJA, RoleName.RECEPCION, RoleName.ALMACEN)
   readById(@Param('id') id: string): Promise<OrderDocument> {
     return this.service.readById(id);
   }
 
   @Get('/credential/:credential/expedient/:expedient')
-  @Roles(RoleName.RECEPCION)
+  @Roles(RoleName.CAJA, RoleName.RECEPCION)
   getFamilyCurrentMonth(
     @Param('credential') credential: string,
     @Param('expedient') expedient: string,
@@ -65,7 +65,7 @@ export class InvoiceController {
   }
 
   @Post('/')
-  @Roles(RoleName.RECEPCION, RoleName.CAJA)
+  @Roles(RoleName.CAJA, RoleName.RECEPCION)
   async create(
     @Body() body: Order,
     @Jwt() jwt: JWToken,

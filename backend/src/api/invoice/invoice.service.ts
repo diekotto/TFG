@@ -11,14 +11,23 @@ import { WebsocketsService } from '../../websockets/websockets.service';
 import { JWToken } from '../guards/jwtoken.interface';
 import { UserMongoService } from '../../db/user-mongo/user-mongo.service';
 import { UserAction } from '../../db/user-mongo/user-schema';
+import * as NodeCache from 'node-cache';
 
 @Injectable()
 export class InvoiceService {
+  private cache: NodeCache;
+  private ordersCacheKey = 'orders';
+
   constructor(
     private mongo: OrderMongoService,
     private userMongo: UserMongoService,
     private wsService: WebsocketsService,
-  ) {}
+  ) {
+    this.cache = new NodeCache({
+      stdTTL: 60 * 60 * 2, // 2 horas
+      useClones: false,
+    });
+  }
 
   async saveUserAction(jwt: JWToken, actionTxt: string): Promise<void> {
     const user = await this.userMongo.findById(jwt.id);
@@ -42,6 +51,7 @@ export class InvoiceService {
     const order: OrderDocument = await this.mongo.create(input);
     this.broadcastInvoiceResolved(order.id, ResolveInvoiceAction.CREATED);
     await this.saveUserAction(jwt, `Invoice created ${order.id}`);
+    await this.refreshCache();
     return order.toObject();
   }
 
@@ -52,6 +62,8 @@ export class InvoiceService {
   }
 
   async readToday(): Promise<OrderDocument[]> {
+    let orders: OrderDocument[] = this.cache.get(this.ordersCacheKey);
+    if (orders) return orders;
     const currentDate: Date = new Date();
     currentDate.setHours(0);
     currentDate.setMinutes(0);
@@ -67,13 +79,26 @@ export class InvoiceService {
         $lte: nextDate,
       },
     };
-    return (await this.mongo.findByConditions(filter)).map((o: OrderDocument) =>
-      o.toObject(),
-    );
+    orders = (
+      await this.mongo.findByConditions(filter)
+    ).map((o: OrderDocument) => o.toObject());
+    this.cache.set(this.ordersCacheKey, orders);
+    return orders;
   }
 
   async readDateRange(from: number, to: number): Promise<OrderDocument[]> {
+    const today = new Date();
     const currentDate: Date = new Date(from);
+    if (
+      from === to &&
+      today.getDate() === currentDate.getDate() &&
+      today.getMonth() === currentDate.getMonth() &&
+      today.getFullYear() === currentDate.getFullYear()
+    ) {
+      const orders: OrderDocument[] = this.cache.get(this.ordersCacheKey);
+      if (orders) return orders;
+      return this.refreshCache();
+    }
     currentDate.setHours(0);
     currentDate.setMinutes(0);
     currentDate.setMilliseconds(0);
@@ -150,6 +175,7 @@ export class InvoiceService {
       jwt,
       `Updated invoice ${jwt.id} with action ${action}`,
     );
+    await this.refreshCache();
   }
 
   private broadcastInvoiceResolved(
@@ -160,6 +186,11 @@ export class InvoiceService {
       invoiceId,
       action,
     });
+  }
+
+  private async refreshCache(): Promise<OrderDocument[]> {
+    this.cache.del(this.ordersCacheKey);
+    return await this.readToday();
   }
 }
 

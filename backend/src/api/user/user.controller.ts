@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
@@ -14,7 +13,7 @@ import { ApiBadRequestResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user-dto';
 import { AddCommentDto } from './dto/add-comment-dto';
-import { Role, RoleName } from '../../db/role-mongo/role-schema';
+import { RoleName } from '../../db/role-mongo/role-schema';
 import { RolesGuard } from '../guards/roles/roles.guard';
 import { Roles } from '../guards/roles/roles.decorator';
 import { JwtGuard } from '../guards/roles/jwt.guard';
@@ -89,17 +88,6 @@ export class UserController {
     return this.service.deactivateUser(id);
   }
 
-  @Put('/:id/role/:roleName')
-  @Roles(RoleName.ADMINLOCAL)
-  addRoleToUser(
-    @Param('id') id: string,
-    @Param('roleName') roleName: RoleName,
-  ): Promise<UserDto> {
-    if (!Role.validateRole(roleName))
-      throw new BadRequestException('Role invalid');
-    return this.service.addRoleToUser(id, roleName);
-  }
-
   @Put('/:id/comment')
   @Roles(RoleName.ADMINLOCAL)
   addCommentToUser(
@@ -107,16 +95,5 @@ export class UserController {
     @Body() body: AddCommentDto,
   ): Promise<UserDto> {
     return this.service.addCommentToUser(id, new AddCommentDto(body));
-  }
-
-  @Delete('/:id/role/:roleName')
-  @Roles(RoleName.ADMINLOCAL)
-  removeRoleFromUser(
-    @Param('id') id: string,
-    @Param('roleName') roleName: RoleName,
-  ): Promise<UserDto> {
-    if (!Role.validateRole(roleName))
-      throw new BadRequestException('Role invalid');
-    return this.service.removeRoleFromUser(id, roleName);
   }
 }

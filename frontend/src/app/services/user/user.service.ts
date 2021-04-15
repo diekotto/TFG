@@ -98,14 +98,14 @@ export class UserService {
     return this.user.permissions.includes(RoleName.SUPERADMIN);
   }
 
-  isAdmin(): boolean {
-    return this.user.permissions.findIndex((r: RoleName) => {
+  isAdmin(user: User = this.user): boolean {
+    return user.permissions.findIndex((r: RoleName) => {
       return r === RoleName.SUPERADMIN || r === RoleName.ADMIN;
     }) > -1;
   }
 
-  isAdminLocal(): boolean {
-    return this.user.permissions.findIndex((r: RoleName) => {
+  isAdminLocal(user: User = this.user): boolean {
+    return user.permissions.findIndex((r: RoleName) => {
       return r === RoleName.SUPERADMIN || r === RoleName.ADMIN || r === RoleName.ADMINLOCAL;
     }) > -1;
   }
