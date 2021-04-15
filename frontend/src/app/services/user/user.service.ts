@@ -24,6 +24,10 @@ export class UserService {
     return this.user.jwt;
   }
 
+  get id(): string {
+    return this.user.id;
+  }
+
   setCurrent(obj: any): void {
     const jwtDecoded: any = JSON.parse(atob(obj.jwt.split('.')[1]));
     console.log('jwt', jwtDecoded);
@@ -136,6 +140,7 @@ export class UserService {
       this.logout();
       this.route.navigate(['']);
     }
+    throw err;
   }
 }
 

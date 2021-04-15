@@ -15,6 +15,16 @@ export class WarehouseService {
     private http: HttpClient,
   ) { }
 
+  async readById(id: string): Promise<Warehouse> {
+    return this.http.get<Warehouse>(`${environment.backend}/warehouse/${id}`, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`,
+      },
+    }).toPromise()
+      .then((data: Warehouse) => data)
+      .catch(err => this.userService.logoutHttp401(err) as any);
+  }
+
   async fetchAll(): Promise<Warehouse[]> {
     return this.http.get(environment.backend + '/warehouse', {
       headers: {
@@ -33,17 +43,26 @@ export class WarehouseService {
   }
 
   async create(warehouse: { name: string, headquarter: string }): Promise<Warehouse> {
-    return this.http.post(environment.backend + '/warehouse',
+    return this.http.post<Warehouse>(`${environment.backend}/warehouse`,
       warehouse,
       {
         headers: {
           Authorization: `Bearer ${this.userService.jwt}`,
         },
       }).toPromise()
-      .then((data: any) => {
-        this.warehouses = data;
-        return Promise.resolve(data);
-      })
+      .then((data: Warehouse) => data)
+      .catch(err => this.userService.logoutHttp401(err) as any);
+  }
+
+  async update(id: string, warehouse: { name: string }): Promise<Warehouse> {
+    return this.http.put<Warehouse>(`${environment.backend}/warehouse/${id}`,
+      { id, ...warehouse },
+      {
+        headers: {
+          Authorization: `Bearer ${this.userService.jwt}`,
+        },
+      }).toPromise()
+      .then((data: Warehouse) => data)
       .catch(err => this.userService.logoutHttp401(err) as any);
   }
 

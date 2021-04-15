@@ -43,7 +43,11 @@ export class InvoiceComponent implements OnInit {
       headers: {
         Authorization: `Bearer ${this.userService.jwt}`
       },
-    }).toPromise();
+    }).toPromise()
+      .then((data: any) => {
+        return Promise.resolve(data);
+      })
+      .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
   formatNumber(input: number): string {
