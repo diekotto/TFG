@@ -1,1 +1,138 @@
-<p>warehouse works!</p>
+<div class="container">
+  <mat-card class="warehouse-card">
+    <h1 class="banner">Almacén</h1>
+    <mat-divider></mat-divider>
+
+    <!-- Tabla de facturas -->
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <div class="warehouse-invoices-list" *ngIf="!dispatching">
+      <mat-accordion class="warehouse-accordion">
+        <!-- Pedidos sin despachar -->
+        <mat-expansion-panel [expanded]="orders.length > 0">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Pedidos pendientes
+            </mat-panel-title>
+            <mat-panel-description>
+              {{orders.length}} pedidos
+              <mat-icon mat-list-icon>check</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="table-responsive-md table-hover">
+            <table class="table table-sm">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Código</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Productos</th>
+                <th scope="col">Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let p of orders">
+                <th scope="row">
+                  <mat-icon mat-list-icon color="primary">check</mat-icon>
+                </th>
+                <td>{{p.code}}</td>
+                <td>{{p.familyName}}</td>
+                <td><strong>{{p.sumTotalProducts}}</strong></td>
+                <td>
+                  <button
+                      mat-stroked-button
+                      color="primary"
+                      (click)="startDispatch(p._id)"
+                  >
+                    <mat-icon>save_alt</mat-icon>
+                  </button>
+                  <a
+                      [routerLink]="'/invoice/'+p._id"
+                      target="_blank"
+                      mat-stroked-button
+                  >
+                    <mat-icon>print</mat-icon>
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Pedidos despachados -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Pedidos despachados
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ordersDispatched.length}} pedidos
+              <mat-icon mat-list-icon>check</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="table-responsive-md">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Código</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Productos</th>
+                <th scope="col">Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let p of ordersDispatched">
+                <th scope="row">
+                  <mat-icon mat-list-icon color="primary">check</mat-icon>
+                </th>
+                <td>{{p.code}}</td>
+                <td>{{p.familyName}}</td>
+                <td><strong>{{p.sumTotalProducts}}</strong></td>
+                <td>
+                  <a
+                      [routerLink]="'/invoice/'+p._id"
+                      target="_blank"
+                      mat-stroked-button
+                  >
+                    <mat-icon>print</mat-icon>
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+
+      </mat-accordion>
+    </div>
+
+    <div class="warehouse-dispatch-products" *ngIf="dispatching">
+      <h2>Depachando pedido</h2>
+      <!-- Productos -->
+      <div class="row warehouse-dispatch-products-list">
+        <div class="col-sm-6 col-md-4 col-lg-3"
+             *ngFor="let p of dispatchingProducts">
+          <mat-checkbox (change)="checkedProduct($event)">{{p.name}} x {{p.amount}}</mat-checkbox>
+        </div>
+      </div>
+      <hr>
+      <!-- Botones -->
+      <div class="row warehouse-dispatch-buttons">
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+          <button
+              class="warehouse-button"
+              (click)="sendDispatch()"
+              mat-raised-button color="primary">
+            Despachar
+          </button>
+        </div>
+        <div class="col-md-3">
+          <button class="warehouse-button" (click)="stopDispatch()" mat-raised-button color="accent">Cancelar</button>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+    </div>
+  </mat-card>
+</div>
