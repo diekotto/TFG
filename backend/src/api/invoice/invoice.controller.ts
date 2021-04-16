@@ -86,4 +86,11 @@ export class InvoiceController {
   closeInvoice(@Param('id') id: string, @Jwt() jwt: JWToken): Promise<void> {
     return this.service.resolveInvoice(id, ResolveInvoiceAction.CLOSE, jwt);
   }
+
+  @Put('/:id/dispatch')
+  @Roles(RoleName.CAJA)
+  @ApiNoContentResponse()
+  dispatchOrder(@Param('id') id: string, @Jwt() jwt: JWToken): Promise<void> {
+    return this.service.resolveInvoice(id, ResolveInvoiceAction.PAY, jwt);
+  }
 }

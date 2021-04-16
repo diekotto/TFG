@@ -41,6 +41,10 @@ export class Order {
   @Prop() deleted: boolean;
   @Prop() origin: string; // USER ID
   @Prop() resolver: string; // USER ID
+  @Prop() resolvedAt: Date;
+  @Prop() dispatcher: string; // USER ID
+  @Prop() dispatched: boolean;
+  @Prop() dispatchedAt: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -50,7 +50,10 @@ export class InvoiceService {
     input.origin = jwt.id;
     const order: OrderDocument = await this.mongo.create(input);
     this.broadcastInvoiceResolved(order.id, ResolveInvoiceAction.CREATED);
-    await this.saveUserAction(jwt, `Invoice created ${order.id}`);
+    await this.saveUserAction(
+      jwt,
+      `Invoice ${order.id} created by ${order.id}`,
+    );
     await this.refreshCache();
     return order.toObject();
   }
@@ -169,13 +172,30 @@ export class InvoiceService {
     }
     this.broadcastInvoiceResolved(id, action);
     order.updatedAt = new Date();
+    order.resolvedAt = new Date();
     order.resolver = jwt.id;
     await order.save();
     await this.saveUserAction(
       jwt,
-      `Updated invoice ${jwt.id} with action ${action}`,
+      `Invoice ${order.id} updated by ${jwt.id} with action ${action}`,
     );
     await this.refreshCache();
+  }
+
+  async dispatchOrder(id: string, jwt: JWToken): Promise<OrderDocument> {
+    const order: OrderDocument = await this.mongo.findById(id);
+    if (!order) throw new NotFoundException(`Invoice with id ${id} not found`);
+    if (order.dispatched) {
+      throw new PreconditionFailedException(
+        'This order has been dispached already',
+      );
+    }
+    order.dispatched = true;
+    order.dispatcher = jwt.id;
+    order.dispatchedAt = new Date();
+    order.updatedAt = new Date();
+    await this.saveUserAction(jwt, `Order ${order.id} dispatched by ${jwt.id}`);
+    return order;
   }
 
   private broadcastInvoiceResolved(
