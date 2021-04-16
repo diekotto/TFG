@@ -88,7 +88,7 @@ export class InvoiceController {
   }
 
   @Put('/:id/dispatch')
-  @Roles(RoleName.CAJA)
+  @Roles(RoleName.ALMACEN)
   @ApiNoContentResponse()
   dispatchOrder(@Param('id') id: string, @Jwt() jwt: JWToken): Promise<void> {
     return this.service.resolveInvoice(id, ResolveInvoiceAction.PAY, jwt);
