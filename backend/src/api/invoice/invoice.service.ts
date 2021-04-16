@@ -194,7 +194,9 @@ export class InvoiceService {
     order.dispatcher = jwt.id;
     order.dispatchedAt = new Date();
     order.updatedAt = new Date();
+    await order.save();
     await this.saveUserAction(jwt, `Order ${order.id} dispatched by ${jwt.id}`);
+    this.deleteCache();
     return order;
   }
 
@@ -209,8 +211,12 @@ export class InvoiceService {
   }
 
   private async refreshCache(): Promise<OrderDocument[]> {
-    this.cache.del(this.ordersCacheKey);
+    this.deleteCache();
     return await this.readToday();
+  }
+
+  private deleteCache(): void {
+    this.cache.del(this.ordersCacheKey);
   }
 }
 

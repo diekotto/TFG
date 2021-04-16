@@ -1,0 +1,69 @@
+.warehouse-dispatch-products {
+    padding-top: 30px;
+}
+
+.warehouse-dispatch-products-list {
+    text-align: left;
+}
+
+.warehouse-dispatch-buttons {
+    padding-top: 10px;
+}
+
+.warehouse-button {
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.warehouse-card {
+    padding-bottom: 35px;
+    padding-top: 35px;
+}
+
+.warehouse-date-range {
+    padding-top: 30px;
+    padding-bottom: 10px;
+}
+
+.warehouse-invoices-list {
+    padding-top: 40px;
+    padding-bottom: 10px;
+}
+
+.warehouse-add-message {
+    cursor: pointer;
+}
+
+.warehouse-accordion .mat-expansion-panel-header-title,
+.warehouse-accordion .mat-expansion-panel-header-description {
+    flex-basis: 0;
+}
+
+.warehouse-accordion .mat-expansion-panel-header-description {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list {
+    text-align: left;
+}
+
+.container {
+    margin-top: 3em;
+}
+
+h1 {
+    font-size: 3.375rem;
+    margin-bottom: 1em;
+    line-height: normal;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+@media (max-width: 576px) {
+    .warehouse-dispatch-products-list {
+        text-align: center;
+    }
+}

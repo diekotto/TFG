@@ -10,7 +10,6 @@ import { InvoiceDto, ReceptionService } from '../../services/reception/reception
   styleUrls: ['./cash.component.css'],
 })
 export class CashComponent implements OnInit, OnDestroy {
-
   invoiceSubscription: Subscription;
   socketReconnectSubscription: Subscription;
   myForm: FormGroup;

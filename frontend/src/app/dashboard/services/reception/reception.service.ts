@@ -84,6 +84,16 @@ export class ReceptionService {
       .then((response) => response)
       .catch(err => this.userService.logoutHttp401(err) as any);
   }
+
+  dispatchOrderById(id: string): Promise<void> {
+    return this.http.put<void>(`${environment.backend}/invoice/${id}/dispatch`, {}, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`,
+      },
+    }).toPromise()
+      .then((response) => response)
+      .catch(err => this.userService.logoutHttp401(err) as any);
+  }
 }
 
 export interface FamilyResume {
@@ -116,9 +126,16 @@ export interface InvoiceDto {
   credential: string;
   special: boolean;
   products: ProductResume[]; // list of ean products
+  sumTotalProducts?: number; // Only used and generated in warehouse
   pvp: number;
   createdAt?: string;
   updatedAt?: string;
   paid?: boolean;
   deleted?: boolean;
+  origin?: string; // USER ID
+  resolver?: string; // USER ID
+  resolvedAt?: string;
+  dispatcher?: string; // USER ID
+  dispatched?: boolean;
+  dispatchedAt?: string;
 }
