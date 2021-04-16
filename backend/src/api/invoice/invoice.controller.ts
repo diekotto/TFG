@@ -90,7 +90,10 @@ export class InvoiceController {
   @Put('/:id/dispatch')
   @Roles(RoleName.ALMACEN)
   @ApiNoContentResponse()
-  dispatchOrder(@Param('id') id: string, @Jwt() jwt: JWToken): Promise<void> {
-    return this.service.resolveInvoice(id, ResolveInvoiceAction.PAY, jwt);
+  dispatchOrder(
+    @Param('id') id: string,
+    @Jwt() jwt: JWToken,
+  ): Promise<OrderDocument> {
+    return this.service.dispatchOrder(id, jwt);
   }
 }
