@@ -1,4 +1,14 @@
+.inner-card {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.data-card-today-info{
+  font-size: 1.2em;
+}
+
 .dashboard-card {
+  background-color: #f1f1f1;
   padding-bottom: 35px;
   padding-top: 35px;
 }

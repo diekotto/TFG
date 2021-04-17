@@ -25,6 +25,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { ChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -69,7 +70,7 @@ import { InvoiceComponent } from './invoice/invoice.component';
     ProductManagerComponent,
     ProductManagerCreateComponent,
     ProductManagerDetailComponent,
-    InvoiceComponent
+    InvoiceComponent,
   ],
   imports: [
     BrowserModule,
@@ -99,10 +100,11 @@ import { InvoiceComponent } from './invoice/invoice.component';
     MatChipsModule,
     MatButtonToggleModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    ChartsModule,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'es' }],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
 }

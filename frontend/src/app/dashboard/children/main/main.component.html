@@ -1,6 +1,162 @@
 <div class="container">
-    <mat-card class="dashboard-card">
-      <h1 class="banner">Dashboard</h1>
-      <p>Contenido temporal</p>
-    </mat-card>
+  <mat-card class="dashboard-card">
+    <h1 class="banner">Economato social</h1>
+    <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+    <div class="row">
+      <!-- resumen hoy -->
+      <div class="col-md-6">
+        <mat-card class="inner-card">
+          <mat-card-header>
+            <mat-card-title>
+              Resumen hoy
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="row">
+              <div class="col-12 data-card-today-info">{{cardDataToday.date | date: dateFormat}}</div>
+              <div class="col-6 data-card-today-info">Familias:</div>
+              <div class="col-6 data-card-today-info">{{cardDataToday.familiesAttended}}</div>
+              <div class="col-6 data-card-today-info">Productos:</div>
+              <div class="col-6 data-card-today-info">{{cardDataToday.amountProducts}}</div>
+              <div class="col-6 data-card-today-info">Caja:</div>
+              <div class="col-6 data-card-today-info">{{cardDataToday.totalInvoices | currency: 'EUR'}}</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <!-- familias especiales -->
+      <div class="col-md-6">
+        <mat-card class="inner-card">
+          <mat-card-header>
+            <mat-card-title>
+              Familias especiales
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="row">
+              <div class="col-12 data-card-today-info">
+                <p>En total se han atendido {{cardDataSpecial.totalFamilies}} familias.</p>
+              </div>
+              <div class="col-12 data-card-today-info">
+                <p>De las cuales, {{cardDataSpecial.specialFamilies}} son especiales.</p>
+              </div>
+              <div class="col-12 data-card-today-info">
+                <p>La relación es de un {{cardDataSpecial.ratio | number: '1.2-2'}}%</p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <!-- últimas facturas -->
+      <div class="col-lg-6">
+        <mat-card class="inner-card">
+          <mat-card-header>
+            <mat-card-title>
+              Últimas facturas hoy
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="table-responsive-sm table-hover">
+              <table class="table table-sm">
+                <thead>
+                <tr>
+                  <th scope="col">Código</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Especial</th>
+                  <th scope="col">Precio</th>
+                  <th scope="col">Imprimir</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let p of cardDataLastInvoices" [ngClass]="p.special ? 'table-warning': ''">
+                  <td>{{p.code}}</td>
+                  <td>{{p.familyName}}</td>
+                  <td><strong>{{p.special ? 'Sí' : 'No'}}</strong></td>
+                  <td>{{p.pvp | currency: 'EUR'}}</td>
+                  <td>
+                    <a
+                        [routerLink]="'/invoice/'+p._id"
+                        target="_blank"
+                        mat-stroked-button
+                    >
+                      <mat-icon>print</mat-icon>
+                    </a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <!-- histórito familias -->
+      <div class="col-lg-6">
+        <mat-card class="inner-card">
+          <mat-card-header>
+            <mat-card-title>
+              Histórico familias
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-wrapper">
+              <canvas baseChart
+                      [datasets]="cardDataFamiliesChart.dataset"
+                      [labels]="cardDataFamiliesChart.labels"
+                      [options]="cardDataFamiliesChart.barChartOptions"
+                      [legend]="cardDataFamiliesChart.legend"
+                      [chartType]="cardDataFamiliesChart.charType"
+                      [colors]="cardDataFamiliesChartColors"
+              >
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <!-- cierres de caja -->
+      <div class="col-md-6">
+        <mat-card class="inner-card">
+          <mat-card-header>
+            <mat-card-title>
+              Histórico caja
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-wrapper">
+              <canvas baseChart
+                      [datasets]="cardDataCashChart.dataset"
+                      [labels]="cardDataCashChart.labels"
+                      [options]="cardDataCashChart.barChartOptions"
+                      [legend]="cardDataCashChart.legend"
+                      [chartType]="cardDataCashChart.charType"
+                      [colors]="cardDataCashChartColors"
+              >
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <!-- productos favoritos -->
+      <div class="col-md-6">
+        <mat-card class="inner-card">
+          <mat-card-header>
+            <mat-card-title>
+              Productos favoritos
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="chart-wrapper">
+              <canvas baseChart
+                      [datasets]="cardDataFavProductsChart.dataset"
+                      [labels]="cardDataFavProductsChart.labels"
+                      [options]="cardDataFavProductsChart.barChartOptions"
+                      [legend]="cardDataFavProductsChart.legend"
+                      [chartType]="cardDataFavProductsChart.charType"
+              >
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </mat-card>
 </div>
