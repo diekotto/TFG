@@ -223,7 +223,7 @@ export class MainComponent implements OnInit, OnDestroy {
     lastDays.push(currentDay);
     lastDays[0].date = 'Hoy';
     console.log('lastDays: ', lastDays);
-    lastDays.forEach((l) => {
+    lastDays.reverse().forEach((l) => {
       this.cardDataFamiliesChart.labels.push(l.date);
       this.cardDataFamiliesChart.dataset[0].data.push(l.total);
     });
@@ -258,7 +258,7 @@ export class MainComponent implements OnInit, OnDestroy {
     lastDays.push(currentDay);
     lastDays[0].date = 'Hoy';
     console.log('lastDays: ', lastDays);
-    lastDays.forEach((l) => {
+    lastDays.reverse().forEach((l) => {
       this.cardDataCashChart.labels.push(l.date);
       this.cardDataCashChart.dataset[0].data.push(l.total);
     });
