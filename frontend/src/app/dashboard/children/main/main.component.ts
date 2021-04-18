@@ -253,14 +253,14 @@ export class MainComponent implements OnInit, OnDestroy {
         };
         continue;
       }
-      currentDay.total += s.pvp;
+      currentDay.total += Number(s.pvp.toFixed(2));
     }
     lastDays.push(currentDay);
     lastDays[0].date = 'Hoy';
     console.log('lastDays: ', lastDays);
     lastDays.reverse().forEach((l) => {
       this.cardDataCashChart.labels.push(l.date);
-      this.cardDataCashChart.dataset[0].data.push(l.total);
+      this.cardDataCashChart.dataset[0].data.push(Number(l.total.toFixed(2)));
     });
   }
 
