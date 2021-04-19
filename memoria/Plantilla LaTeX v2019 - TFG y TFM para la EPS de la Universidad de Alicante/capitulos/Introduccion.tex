@@ -5,31 +5,71 @@
 % Contacto: info@jmrplens.com / Telegram:@jmrplens
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Introducción (Con ejemplos de contenido)}
+\chapter{Introducción}
+En este apartado se va a presentar el trabajo, se introducirá la situación social actual que ha hecho de este trabajo una necesidad, se presentarán y explicarán las motivaciones que han hecho que este trabajo se haya llevado a cabo y, por último, se relacionará el alcance del trabajo y las asignaturas y contenido que, en el grado de Ingeniería Informática de la Universidad de Alicante, ha sido clave para el buen desarrollo del proyecto.
 
-Antes de comenzar la lectura de este documento debo agradecer el trabajo realizado por Pedro Pernías Peco en su plantilla de ``tfg'' que se puede ver en \url{https://github.com/lcg51/tfg}. Gracias a esa plantilla me he lanzado a crear mi versión. Algunos contenidos aquí mostrados han sido extraídos de la plantilla de Pedro. 
-\\
-\par Esta plantilla se ha diseñado de 0 y por ello no utiliza la misma estructura que la plantilla de Pedro. Pero la estructura de contenido para un TFG/TFM es la misma y a continuación se muestran las diferentes partes que debe tener un TFG/TFM redactado por Pedro.
-\section{¡Importante!, leer primero}
+ 
+\section{Introducción}
 
-Este texto está escrito pensando en orientar a los alumnos que usarán \LaTeX~para escribir su \gls{tfg} y \gls{tfm}. 
-\\
-\par Contiene información útil para aquellos que no tengan experiencia previa en \LaTeX~así como algunos datos acerca de cómo escribir mejor su \gls{tfg}.
-A continuación, se ofrece una copia de la información que hay en el libro de estilo para la realización de los \gls{tfg} de la EPS de la Universidad de Alicante.
+El objetivo de este proyecto consiste en aportar una solución informática a los economatos sociales, dado que usan procedimientos manuales que les lastran en tiempo y confianza. Como por ejemplo el seguimiento de un expediente para mantener ciertas limitaciones o los cierres de caja y seguimiento de precios de los productos. Este proyecto toma como referencia aplicaciones de gestión de stock, facturación o erp's (Enterprices Resource Planning).
+\vspace{1em}
+\par Los economatos sociales, como bancos de alimentos, se apoyan fuertemente en el voluntariado de la gente, habitualmente éstos son vecinos del mismo barrio en el que se encuentra. Dado que se dedican a ayudar a familias con pocos o ningún recurso, es común encontrarlos en zonas de clase media/baja e incluso en barrios con familias en peligro de exclusión social; esta es una de las razones por las que suelen carecer de equipos o procedimientos informatizados lo suficientemente desarrollados como para que el buen funcionamiento de éstos deje de consistir una carga y una preocupación.
+\vspace{1em}
+\par Los economatos sociales suelen ser sedes de distribución de alimentos y productos de higiene, que usan el dinero del que les provee alguna ONG para mantener el stock en sus almacenes. El economato social para el que se ha realizado este TFG está bajo la dirección de Caritas y, a priori, la aplicación dará solución exclusivamente a este economato, hasta que se haya refinado y adoptado lo suficiente como para dar el salto a otros economatos de la ciudad de Alicante.
+\vspace{1em}
+\par La entrada de soluciones de software desarrolladas adhoc para esta clase de actividades empuja en la buena dirección, ayudando a que la gente que se preocupa de poder atender a las familias lo mejor posible, realmente se dedique a ello; sin tener que preocuparse de poner parches procedimentales a la forma en la que trabajan, que si bien ayudan, no solucionan. Normalmente hacen un uso principal del elemento humano, confiando en el buen hacer y organización personal de cada uno de los y las voluntarias. Algo de lo que se aprende en el grado de informática es que el elemento humano da pie inequívocamente a errores de procedimiento y datos; de esta forma, la automatización de recogida, procesamiento, almacenamiento y distribución de datos se hace cargo de una de las obligaciones manuales que estaban llevando a cabo en persona.
+\vspace{1em}
+\par Del economato para el que hemos trabajado este proyecto hemos visto algunos de estos procedimientos manuales, hojas de excel que se deben guardar apropiadamente y almacenar en carpetas concretas manualmente para su posterior uso, dado que una de las necesidades que tiene este economato es el seguimiento de expedientes. Pues cada familia tiene ciertas limitaciones en función de su situación social, limitaciones que decide Caritas, como son saldo máximo a usar en el mes en curso y en relación a este, stock máximo de productos concretos que se puede retirar. Hacer uso de seguimientos manuales mientas, en el mismo momento en que se está atendiendo a esta familia, hay una cola interminable en la calle esperando; es cuanto menos estresante y, además, ineficiente y propenso a errores.
+\vspace{1em}
+ 
+\section{Motivaciones}
+Este país y nuestra sociedad, históricamente, ha sido social, dedicando recursos económicos y personales en amparo de los más vulnerables. Que aún haya actividades tan importantes, como las que se llevan a cabo en los economatos sociales, que estén rozando la superficie del uso de la capacidad informática y tecnológica de la que disponemos actualmente; empieza a hacer sentir urgente la necesidad de integraciones hechas a medida, que les brinden reducciones de tiempos en sus tareas, automatización de tareas repetitivas y la seguridad e instantaneidad de obtención y cálculo de datos veraces.
+\vspace{1em}
+\par A día de hoy, la falta de recursos económicos no es excusa ni debería ser impedimento para tener soluciones de software de libre acceso, código abierto y de infraestructura en servicios en la nube. Una de las primeras premisas, bajo las cuales, se estableció la base de actuación y diseño de la aplicación para este trabajo fue ésta: la falta de recursos económicos. No siempre por no tener dinero, si no que a menudo, la burocracia hace tan tediosa la adopción de alguna solución informática, que por no ver claro su uso y beneficio, o la falta de conocimiento o capacidad de
+aplicación, se acaba dejando de lado; de ésta manera, un proyecto libre y gratuito, saltaría de golpe un muro que aparentemente se había convertido en uno francamente duro de salvar.
+\vspace{1em}
+\par Vista esta problemática, es un ingeniero de software la mejor carta a jugar para investigar y construir una solución que abarque estas premisas y así, facilitar y mejorar el trato y la calidad que reciben estas familias sin recursos; que lo único que quieren es poder comer en el mes en curso y no preocuparse de que se haya perdido un fichero o de que no encuentran el historial de su expediente y que les hagan esperar mientras llaman por teléfono a la sede para informarse.
+Esto, a su vez, facilita el trabajo de los voluntarios; que pudiendo confiar en una herramienta que les va a brindar un proceso limpio y automático para realizar su función en el economato, se verán aliviados, aunque sea un poco, de la realidad que viven cada día que levantan la persiana del almacén; pues se habrán quitado de encima el peso de la incertidumbre y la preocupación de hacer mal
+su función como voluntarios.
+\vspace{1em}
+\par Todo esto es lo ha motivado a mis tutores a proponer éste como trabajo de fin de grado y a mí, como estudiante de informática, a solicitar llevarlo a cabo y defenderlo. Si bien he tenido la suerte de no necesitar nunca acudir a un banco de alimentos, sí he vivido de cerca la ansiedad y la carga que supone la falta de recursos. Ser voluntario puede ser, además de dar tu tiempo en trabajo manual, dar tiempo y conocimiento para crear una solución que les facilite el trabajo.
+\clearpage
 
-En los capítulos siguientes encontrarás ejemplos de muchas de las cosas que se pueden realizar con \LaTeX. Con un poco de paciencia, estudia cómo se hacen estas cosas y luego aplícalas en tus documentos.
+\section{Objetivos}
+En este proyecto se pretende dar una solución de software mediante la consecución de una serie de objetivos propuestos, que permitan alcanzar la meta final de este trabajo:
+\begin{itemize}
+    \item Investigar la viabilidad de selfhosting con una raspberry pi
+    \item Investigar la viabilidad de servicios en la nube y precios
+    \item Comparar y decidir la arquitectura final que dará accesibilidad al servicio
+    \item Analizar las necesidades del economato y decidir el alcance y funcionalidades
+    \item Investigar capacidades y herramientas de leer códigos de barras (hardware, webcam)
+    \item Diseño de una base de datos adecuada a las necesidades del economato
+    \item Decidir tecnología para llevar a cabo la solución de software
+    \item Implementar solución de software del backend
+    \item Diseñar e implementar frontend SPA
+    \item Reuniones con los implicados de forma ocasional para obtener feedback
+    \item Entregar solución software cerrada y funcionando, infraestructura, backend y frontend
+\end{itemize}
 
+\section{Relación con asignaturas}
+Los estudiantes de la Ingeniería Informática de la Universidad de Alicante son preparados como profesionales, haciendo uso de una sólida y amplia formación que los encamine a ser capaces de dirigir y realizar las tareas de que son propias de todos las fases del ciclo del software, arquitectura de hardware y gestión de proyectos. Los estudiantes se preparan para resolver problemas de cualquier ámbito de la tecnología de la información y las comunicaciones, aplicando conocimiento científico y métodos y técnicas propios de la ingeniería.
+En el aspecto personal, me he decantado siempre por el software y la administración de sistemas; siendo la mejora personal y el crecimiento profesional en este campo la razón por la que me decidí a matricularme en el grado de Ingeniería Informática.
+\vspace{1em}
+\par Una recopilación de las asignaturas cursadas que ayudan a que este trabajo se pueda realizar en tiempo y forma, son:
+\begin{itemize}
+    \item Diseño de bases de datos
+    \item Herramientas avanzadas para el desarrollo de software
+    \item Diseño de sistemas de software
+    \item Ingeniería web
+    \item Programación
+    \item Administración de Sistemas Operativos y Redes de computadores
+    \item Gestión proyectos informáticos
+\end{itemize}
+
+\section{Borrar al terminar}
+Dejo el contenido siguiente en el bloque 1.x como guía hasta que termine la redacción del TFG.
 
 \section{Estructura de un \glsentryshort{tfg}}
-
-En caso de que el \gls{tfg}/\gls{tfm} tenga como finalidad la elaboración de un proyecto o un 
-informe científico o técnico, deberá ajustarse a lo dispuesto en las normas UNE 
-157001:2002 y UNE 50135:1996 respectivamente.
-
-Si el \gls{tfg}/\gls{tfm} tiene por finalidad la elaboración de un trabajo monográfico, el 
-documento presentado deberá constar de las siguientes partes, teniendo como base la 
-norma UNE 50136:1997.
-
 \begin{description}
 \item[Preámbulo:] se describirán brevemente la motivación que ha originado la realización del \gls{tfg}/\gls{tfm}, así como una breve descripción de los objetivos generales que se quieren alcanzar con el trabajo presentado.
 \item[Agradecimientos:] se podrán añadir las hojas necesarias para realizar los agradecimientos, a veces obligatorios, a las entidades y organismos colaboradores.
@@ -56,36 +96,8 @@ divisiones y subdivisiones utilizarán cifras arábigas (según UNE 50132:1994) 
 \begin{verbatim}
 \bibliographystyle{apacite}
 \end{verbatim}
-
-
 \item[Anexos:] se podrán incluir los anexos que se consideren oportunos.
-
 \end{description}
-
-\section{Apartados dentro de los capítulos}
-En \LaTeX~existen diferentes niveles de títulos para realizar secciones, subsecciones, etc. En esta web puedes ver más información al respecto \url{https://en.wikibooks.org/wiki/LaTeX/Document_Structure}
-
-Para ello se utilizan los siguientes comandos;
-
-\begin{lstlisting}[style=Latex-color]
-	\section{Esto es una sección}
-	Y este el contenido de la sección.
-	\subsection{Esto es una subsección}
-	Y este el contenido de la subsección.
-	\subsubsection{Esto es una subsubsección}
-	Y este el contenido de la subsubsección.
-	\paragraph{Esto es un paragraph}
- 	Y este el contenido del paragraph. Que siempre se inicia en la misma línea que el título del mismo.
-\end{lstlisting}
- Y se genera lo siguiente:
- \section{Esto es una sección}
-	Y este el contenido de la sección.
-	\subsection{Esto es una subsección}
-	Y este el contenido de la subsección.
-	\subsubsection{Esto es una subsubsección}
-	Y este el contenido de la subsubsección.
-	\paragraph{Esto es un paragraph}
- 	Y este el contenido del paragraph. Que siempre se inicia en la misma línea que el título del mismo.
 
 \section{Citar bibliografía}
 Para citar la bibliografía tal como se define en el sistema APA (en esta web se indica como debe aparecer en el texto la cita: \url{http://guides.libraries.psu.edu/apaquickguide/intext}) se debe realizar con alguno de los comandos mostrados a continuación:
@@ -130,74 +142,3 @@ A continuación se muestran ejemplos de distintos estilos de texto:
 	\item \textbackslash textsc\{Mayúsculas capitales\} $\rightarrow$ \textsc{Mayúsculas capitales}
 	\item \textbackslash uppercase\{Todo mayúsculas\} $\rightarrow$ \uppercase{Todo mayúsculas} 
 \end{itemize}
-
- \section{Acrónimos}
- Ahora vamos a ver cómo se ponen los acrónimos.
- 
- La norma dice que la primera vez que aparece un acrónimo debe ponerse su fórmula completa, es decir lo que significa, al lado del acrónimo. Después de ello, podemos usar sólo el acrónimo salvo cuando consideremos que debemos volver a usar la fórmula completa por alguna razón de legibilidad.
- 
- ¿Cómo llevar la cuenta de cuándo es la primera vez que ponemos el acrónimo? si hacemos cambios en el doc es fácil que perdamos esa información así que lo mejor es que sea el propio \LaTeX~el que lleve esa cuenta. Para ello tenemos que hacer dos cosas:
- \begin{description}
- \item[Primero:] creamos la entrada del acrónimo en el fichero acronimos.tex. Revisa los comentarios de su cabecera para saber cómo crear esa entrada. Básicamente lo que hacemos allí es poner la ``fórmula corta'' y la ``fórmula larga'' del acrónimo es decir, el propio acrónimo y su significado
- \item[Segundo:] escribimos en el texto el acrónimo SIEMPRE diciendo que es un acrónimo y el tipo de fórmula que queremos usar. Por ejemplo, si siempre que queremos hacer referencia al IEEE escribimos \begin{lstlisting}[style=Latex-color]
- \gls{ieee}
- \end{lstlisting}  se consigue que la primera vez que aparezca el acrónimo ponga las fórmulas larga y corta y en las siguientes ocasiones sólo aparecerá la corta.
- \end{description}
- 
- Aquí va un ejemplo:
- 
- Si escribimos:
- 
-\begin{lstlisting}[style=Latex-color]
- El \gls{ieee} es una institución muy importante en el mundo de la
- ingeniería.  El \gls{ieee} lleva marcando normas y protocolos desde
- hace mucho tiempo.  Pero el \gls{ieee} no está solo en esta tarea. 
- Además del \gls{ieee} hay muchas otras instituciones para ello.  \end{lstlisting}
- 
- Obtendremos: 
- 
-El \gls{ieee} es una institución muy importante en el mundo de la
- ingeniería.  El \gls{ieee} lleva marcando normas y protocolos desde
- hace mucho tiempo.  Pero el \gls{ieee} no está solo en esta tarea. 
- Además del \gls{ieee} hay muchas otras instituciones para ello.
- 
- \section{Tareas por hacer}
- 
- En esta plantilla se ha incluido un paquete para incluir notas/comentarios en el texto para recordar partes que hay que revisar o terminar de desarrollar. El uso es sencillo, el manual para conocer todos los comandos se encuentra en \url{http://osl.ugr.es/CTAN/macros/latex/contrib/todonotes/todonotes.pdf}, a continuación se muestran algunos ejemplos:
- \\
-\par Para incluir un comentario sobre el texto:
-
-\begin{lstlisting}[style=Latex-color]
-	Recomiendo utilizar programas LaTeX que permitan trabajar con sistema de archivos para poder editar el conjunto de capítulos en la misma ventana. Este tipo de función lo tienen programas como TexStudio, es multiplataforma. \todo{Incluir más ejemplos de programas}
-\end{lstlisting}
-
-\LaTeX~genera lo siguiente:
-\\
-\par Recomiendo utilizar programas LaTeX que permitan trabajar con sistema de archivos para poder editar el conjunto de capítulos en la misma ventana. Este tipo de función lo tienen programas como TexStudio, es multiplataforma. \todo{Incluir más ejemplos de programas}
-\vspace{1em}
-\noindent\hrule
-\vspace{1em}
-\par Para incluir un comentario sobre el texto pero dentro del texto:
-
-\begin{lstlisting}[style=Latex-color]
-	Recomiendo utilizar programas LaTeX que permitan trabajar con sistema de archivos para poder editar el conjunto de capítulos en la misma ventana. Este tipo de función lo tienen programas como TexStudio, es multiplataforma. \todo[inline]{Incluir más ejemplos de programas}
-\end{lstlisting}
-
-\LaTeX~genera lo siguiente:
-\\
-\par Recomiendo utilizar programas LaTeX que permitan trabajar con sistema de archivos para poder editar el conjunto de capítulos en la misma ventana. Este tipo de función lo tienen programas como TexStudio, es multiplataforma. \todo[inline]{Incluir más ejemplos de programas}
-\vspace{1em}
-\noindent\hrule
-\vspace{1em}
-\par También se puede dejar indicado donde falta una imagen o figura, para incluirla más adelante del siguiente modo:
-
-\begin{lstlisting}[style=Latex-color]
-\missingfigure{Añadir gráfica de rendimiento}	
-\end{lstlisting}
-
-\LaTeX~genera lo siguiente:
-\\
-\missingfigure{Añadir gráfica de rendimiento}	
-
-
-
