@@ -40,6 +40,14 @@ export abstract class AbstractMongo<C, D extends Document> {
     return this.model.findOne(conditions as any, this.defaultProjection);
   }
 
+  async updateByConditions(
+    conditions: { [key: string]: any },
+    updateData: any,
+  ): Promise<number> {
+    return (await this.model.updateMany(conditions as any, updateData))
+      .nModified;
+  }
+
   async deleteOneByConditions(conditions: {
     [key: string]: any;
   }): Promise<void> {

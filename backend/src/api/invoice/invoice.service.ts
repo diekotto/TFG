@@ -90,32 +90,7 @@ export class InvoiceService {
   }
 
   async readDateRange(from: number, to: number): Promise<OrderDocument[]> {
-    const today = new Date();
-    const currentDate: Date = new Date(from);
-    if (
-      from === to &&
-      today.getDate() === currentDate.getDate() &&
-      today.getMonth() === currentDate.getMonth() &&
-      today.getFullYear() === currentDate.getFullYear()
-    ) {
-      const orders: OrderDocument[] = this.cache.get(this.ordersCacheKey);
-      if (orders) return orders;
-      return this.refreshCache();
-    }
-    currentDate.setHours(0);
-    currentDate.setMinutes(0);
-    currentDate.setMilliseconds(0);
-    const nextDate: Date = new Date(to);
-    nextDate.setDate(nextDate.getDate() + 1);
-    nextDate.setHours(0);
-    nextDate.setMinutes(0);
-    nextDate.setMilliseconds(0);
-    const filter = {
-      createdAt: {
-        $gte: currentDate,
-        $lte: nextDate,
-      },
-    };
+    const filter = this.filterByRange(from, to);
     return (await this.mongo.findByConditions(filter)).map((o: OrderDocument) =>
       o.toObject(),
     );
@@ -200,6 +175,38 @@ export class InvoiceService {
     return order;
   }
 
+  async anonymizeOrder(id: string, jwt: JWToken): Promise<OrderDocument> {
+    const order: OrderDocument = await this.mongo.findById(id);
+    if (!order) throw new NotFoundException(`Invoice with id ${id} not found`);
+    order.familyName = null;
+    order.expedient = null;
+    order.credential = null;
+    order.updatedAt = new Date();
+    await order.save();
+    await this.saveUserAction(jwt, `Order ${order.id} anonymized by ${jwt.id}`);
+    this.deleteCache();
+    return order;
+  }
+
+  async anonymizeDateRange(
+    from: number,
+    to: number,
+    jwt: JWToken,
+  ): Promise<number> {
+    const filter = this.filterByRange(from, to);
+    const updateData = {
+      familyName: null,
+      expedient: null,
+      credential: null,
+    };
+    const updated = await this.mongo.updateByConditions(filter, updateData);
+    await this.saveUserAction(
+      jwt,
+      `Orders ${updated} anonymized by ${jwt.id} from ${from} to ${to}`,
+    );
+    return updated;
+  }
+
   private broadcastInvoiceResolved(
     invoiceId: string,
     action: ResolveInvoiceAction,
@@ -217,6 +224,35 @@ export class InvoiceService {
 
   private deleteCache(): void {
     this.cache.del(this.ordersCacheKey);
+  }
+
+  private filterByRange(from: number, to: number): any {
+    const today = new Date();
+    const currentDate: Date = new Date(from);
+    if (
+      from === to &&
+      today.getDate() === currentDate.getDate() &&
+      today.getMonth() === currentDate.getMonth() &&
+      today.getFullYear() === currentDate.getFullYear()
+    ) {
+      const orders: OrderDocument[] = this.cache.get(this.ordersCacheKey);
+      if (orders) return orders;
+      return this.refreshCache();
+    }
+    currentDate.setHours(0);
+    currentDate.setMinutes(0);
+    currentDate.setMilliseconds(0);
+    const nextDate: Date = new Date(to);
+    nextDate.setDate(nextDate.getDate() + 1);
+    nextDate.setHours(0);
+    nextDate.setMinutes(0);
+    nextDate.setMilliseconds(0);
+    return {
+      createdAt: {
+        $gte: currentDate,
+        $lte: nextDate,
+      },
+    };
   }
 }
 

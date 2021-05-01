@@ -12,24 +12,13 @@ export class ProductResume {
   @Prop() pvp: number;
 }
 
-@Schema({
-  strict: false,
-})
+@Schema({ strict: false })
 export class Order {
-  @Prop({
-    index: true,
-  })
-  code: string; // Code for easy human identification
+  @Prop({ index: true }) code: string; // Code for easy human identification
   @Prop() headquarter: string; // foreign key headquarter collection
   @Prop() familyName: string;
-  @Prop({
-    index: true,
-  })
-  expedient: string;
-  @Prop({
-    index: true,
-  })
-  credential: string;
+  @Prop({ index: true }) expedient: string;
+  @Prop({ index: true }) credential: string;
   @Prop() special: boolean;
   @Prop() products: ProductResume[]; // list of ean products
   @Prop() pvp: number;

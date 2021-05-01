@@ -96,4 +96,24 @@ export class InvoiceController {
   ): Promise<OrderDocument> {
     return this.service.dispatchOrder(id, jwt);
   }
+
+  @Put('/:id/anonymize')
+  @Roles(RoleName.ALMACEN)
+  @ApiNoContentResponse()
+  anonymizeOrder(
+    @Param('id') id: string,
+    @Jwt() jwt: JWToken,
+  ): Promise<OrderDocument> {
+    return this.service.anonymizeOrder(id, jwt);
+  }
+
+  @Get('/anonymize/from/:from/to/:to')
+  @Roles(RoleName.CAJA, RoleName.RECEPCION)
+  anonymizeDateRange(
+    @Param('from') from: string,
+    @Param('to') to: string,
+    @Jwt() jwt: JWToken,
+  ): Promise<number> {
+    return this.service.anonymizeDateRange(+from, +to, jwt);
+  }
 }
