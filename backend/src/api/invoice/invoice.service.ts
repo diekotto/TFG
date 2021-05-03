@@ -1,6 +1,8 @@
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
   PreconditionFailedException,
 } from '@nestjs/common';
@@ -12,6 +14,7 @@ import { JWToken } from '../guards/jwtoken.interface';
 import { UserMongoService } from '../../db/user-mongo/user-mongo.service';
 import { UserAction } from '../../db/user-mongo/user-schema';
 import * as NodeCache from 'node-cache';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class InvoiceService {
@@ -22,6 +25,7 @@ export class InvoiceService {
     private mongo: OrderMongoService,
     private userMongo: UserMongoService,
     private wsService: WebsocketsService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {
     this.cache = new NodeCache({
       stdTTL: 60 * 60 * 2, // 2 horas
@@ -268,7 +272,7 @@ export class InvoiceService {
         $lte: nextDate,
       },
     };
-    console.log('Filter: ', JSON.stringify(result.filter));
+    this.logger.debug('Filter: ', JSON.stringify(result.filter));
     return result;
   }
 }
