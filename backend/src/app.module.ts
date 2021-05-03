@@ -34,6 +34,7 @@ import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winst
     WinstonModule.forRoot({
       transports: [
         new winston.transports.Console({
+          level: 'silly',
           format: winston.format.combine(
             winston.format.timestamp(),
             nestWinstonModuleUtilities.format.nestLike(),
