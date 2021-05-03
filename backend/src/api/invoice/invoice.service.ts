@@ -90,10 +90,11 @@ export class InvoiceService {
   }
 
   async readDateRange(from: number, to: number): Promise<OrderDocument[]> {
-    const filter = this.filterByRange(from, to);
-    return (await this.mongo.findByConditions(filter)).map((o: OrderDocument) =>
-      o.toObject(),
-    );
+    const filterOrCache = await this.filterByRange(from, to);
+    if (filterOrCache.orders) return filterOrCache.orders;
+    return (
+      await this.mongo.findByConditions(filterOrCache.filter)
+    ).map((o: OrderDocument) => o.toObject());
   }
 
   async readFamilyCurrentMonth(
@@ -193,13 +194,16 @@ export class InvoiceService {
     to: number,
     jwt: JWToken,
   ): Promise<number> {
-    const filter = this.filterByRange(from, to);
+    const filterOrCache = await this.filterByRange(from, to, true);
     const updateData = {
       familyName: null,
       expedient: null,
       credential: null,
     };
-    const updated = await this.mongo.updateByConditions(filter, updateData);
+    const updated = await this.mongo.updateByConditions(
+      filterOrCache.filter,
+      updateData,
+    );
     await this.saveUserAction(
       jwt,
       `Orders ${updated} anonymized by ${jwt.id} from ${from} to ${to}`,
@@ -226,18 +230,28 @@ export class InvoiceService {
     this.cache.del(this.ordersCacheKey);
   }
 
-  private filterByRange(from: number, to: number): any {
+  private async filterByRange(
+    from: number,
+    to: number,
+    ignoreCache = false,
+  ): Promise<{ filter: any; orders: any }> {
+    const result = {
+      filter: null,
+      orders: null,
+    };
     const today = new Date();
     const currentDate: Date = new Date(from);
     if (
       from === to &&
       today.getDate() === currentDate.getDate() &&
       today.getMonth() === currentDate.getMonth() &&
-      today.getFullYear() === currentDate.getFullYear()
+      today.getFullYear() === currentDate.getFullYear() &&
+      !ignoreCache
     ) {
       const orders: OrderDocument[] = this.cache.get(this.ordersCacheKey);
-      if (orders) return orders;
-      return this.refreshCache();
+      if (orders) result.orders = orders;
+      else result.orders = await this.refreshCache();
+      return result;
     }
     currentDate.setHours(0);
     currentDate.setMinutes(0);
@@ -247,12 +261,13 @@ export class InvoiceService {
     nextDate.setHours(0);
     nextDate.setMinutes(0);
     nextDate.setMilliseconds(0);
-    return {
+    result.filter = {
       createdAt: {
         $gte: currentDate,
         $lte: nextDate,
       },
     };
+    return result;
   }
 }
 
