@@ -22,11 +22,24 @@ import { OpenfoodMongoModule } from './db/openfood-mongo/openfood-mongo.module';
 import { InvoiceModule } from './api/invoice/invoice.module';
 import { WebsocketsModule } from './websockets/websockets.module';
 import configuration from './config/configuration';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winston.utilities';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
+    }),
+    WinstonModule.forRoot({
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            nestWinstonModuleUtilities.format.nestLike(),
+          ),
+        }),
+      ],
     }),
     ProvidersModule,
     UserMongoModule,

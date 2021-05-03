@@ -2,7 +2,6 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
-  Logger,
   NotFoundException,
   PreconditionFailedException,
 } from '@nestjs/common';
@@ -15,6 +14,7 @@ import { UserMongoService } from '../../db/user-mongo/user-mongo.service';
 import { UserAction } from '../../db/user-mongo/user-schema';
 import * as NodeCache from 'node-cache';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 @Injectable()
 export class InvoiceService {
