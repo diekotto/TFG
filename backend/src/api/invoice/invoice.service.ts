@@ -272,7 +272,7 @@ export class InvoiceService {
         $lte: nextDate,
       },
     };
-    this.logger.debug('Filter: ', JSON.stringify(result.filter));
+    this.logger.debug(`Filter: ${JSON.stringify(result.filter)}`);
     return result;
   }
 }
