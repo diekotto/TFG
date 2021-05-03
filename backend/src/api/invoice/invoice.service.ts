@@ -204,6 +204,7 @@ export class InvoiceService {
       filterOrCache.filter,
       updateData,
     );
+    await this.refreshCache();
     await this.saveUserAction(
       jwt,
       `Orders ${updated} anonymized by ${jwt.id} from ${from} to ${to}`,
@@ -267,6 +268,7 @@ export class InvoiceService {
         $lte: nextDate,
       },
     };
+    console.log('Filter: ', JSON.stringify(result.filter));
     return result;
   }
 }
