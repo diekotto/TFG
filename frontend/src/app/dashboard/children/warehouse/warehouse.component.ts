@@ -87,7 +87,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
   }
 
   sliceData(data: InvoiceDto[]): void {
-    this.orders = data.filter((d) => !d.dispatched);
+    this.orders = data.filter((d) => !d.dispatched && !d.deleted);
     this.orders.forEach((order: InvoiceDto) => {
       order.sumTotalProducts = 0;
       order.products.forEach((p: ProductResume) => {

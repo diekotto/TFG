@@ -9,7 +9,7 @@ import { FamilyResume, InvoiceDto, ProductResume, ReceptionService } from '../..
 @Component({
   selector: 'app-reception',
   templateUrl: './reception.component.html',
-  styleUrls: ['./reception.component.css']
+  styleUrls: ['./reception.component.css'],
 })
 export class ReceptionComponent implements OnInit {
   @ViewChild('stepper') stepper: MatHorizontalStepper;
@@ -83,7 +83,7 @@ export class ReceptionComponent implements OnInit {
 
     this.secondStepControl = this.fb.group({
       productsAdded: [false, Validators.requiredTrue],
-      limitNotSurpassed: [true, Validators.requiredTrue]
+      limitNotSurpassed: [true, Validators.requiredTrue],
     });
 
     this.firstStepForm = this.fb.group({
@@ -91,7 +91,7 @@ export class ReceptionComponent implements OnInit {
       expedient: ['', Validators.required],
       credential: ['', Validators.required],
       special: [false],
-      limit: [null, [Validators.required, Validators.min(this.limitsAvailable[0])]]
+      limit: [null, [Validators.required, Validators.min(this.limitsAvailable[0])]],
     });
 
     this.secondStepForm = this.fb.group({
@@ -117,9 +117,10 @@ export class ReceptionComponent implements OnInit {
         subtractLimit += product.amount;
       }
     });
-    return limits.find((l: ProductLimits) => {
+    const result = limits.find((l: ProductLimits) => {
       return l.price === this.family.originalLimit;
     }).quantity - subtractLimit;
+    return result >= 0 ? result : 0;
   }
 
   addProduct(p: Product, amount = 0): void {
@@ -134,7 +135,7 @@ export class ReceptionComponent implements OnInit {
         pvp: [p.pvp, Validators.required],
         type: [p.type],
         chargeableOutBudget: [p.chargeableOutBudget],
-        chargeableOutBudgetSelected: [false]
+        chargeableOutBudgetSelected: [false],
       }));
   }
 
@@ -329,7 +330,7 @@ export class ReceptionComponent implements OnInit {
     // falsy AbstractControl made to just call the modify with 0 amount and an empty control.
     const falsyAbstractControl = {
       value: 0,
-      setValue: () => {}
+      setValue: () => {},
     };
     this.modifyProductAmount(falsyAbstractControl as any, 0);
   }
