@@ -7,7 +7,7 @@
       <h2>{{invoice.familyName}} - {{invoice.credential}}</h2>
       <p *ngIf="invoice.special">Familia especial: {{invoice.special ? 'Sí' : 'No'}}</p>
       <p>{{firstLetterUpperCase(emitted | date: 'EEEE')}}, {{emitted | date: 'd MMMM y'}}</p>
-      <p>Expediente {{invoice.expedient}}</p>
+      <p>Expediente {{invoice.expedient || 'anónimo'}}</p>
     </div>
     <hr>
     <!-- Tabla de productos -->
@@ -35,7 +35,7 @@
         <tr *ngFor="let product of invoice.products">
           <th scope="row">
             <mat-icon mat-list-icon>
-            {{productService.productTypeIcon(product.type)}}
+              {{productService.productTypeIcon(product.type)}}
             </mat-icon>
           </th>
           <td>{{product.code}}</td>

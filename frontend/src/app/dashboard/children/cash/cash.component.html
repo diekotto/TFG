@@ -3,6 +3,43 @@
     <h1 class="banner">Caja</h1>
     <mat-divider></mat-divider>
 
+    <!-- Botón anonimizar la búsqueda -->
+    <div class="anonymize" *ngIf="userService.isAdmin()">
+      <div *ngIf="!anonymizing">
+        <button
+            mat-stroked-button
+            color="accent"
+            (click)="toggleAnonymize()"
+        >
+          Anonimizar estas facturas
+        </button>
+      </div>
+      <div *ngIf="anonymizing">
+        <div class="alert alert-warning">
+          <p><strong>Esta acción no es reversible.</strong>
+            <br>
+            Si aceptas, borrarás el expediente, documento y nombre de la familia de estas facturas.
+            Anonimizando estas compras.</p>
+        </div>
+        <button
+            mat-stroked-button
+            color="primary"
+            (click)="anonymizeByDateRange()"
+        >
+          Aceptar
+          <mat-icon>security</mat-icon>
+        </button>
+        <button
+            mat-stroked-button
+            color="accent"
+            (click)="toggleAnonymize()"
+        >
+          Cancelar
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
     <!-- Búsqueda por rango de fechas -->
     <form [formGroup]="myForm">
       <div class="row cash-date-range">

@@ -65,6 +65,16 @@ export class ReceptionService {
       .catch(err => this.userService.logoutHttp401(err) as any);
   }
 
+  anonymizeRangeInvoices(from: number, to: number): Promise<any> {
+    return this.http.get<number>(`${environment.backend}/invoice/anonymize/from/${from}/to/${to}`, {
+      headers: {
+        Authorization: `Bearer ${this.userService.jwt}`,
+      },
+    }).toPromise()
+      .then((response) => response)
+      .catch(err => this.userService.logoutHttp401(err) as any);
+  }
+
   payInvoiceById(id: string): Promise<void> {
     return this.http.put<void>(`${environment.backend}/invoice/${id}/pay`, {}, {
       headers: {

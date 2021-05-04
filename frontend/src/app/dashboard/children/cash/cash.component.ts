@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { UserService } from '../../../services/user/user.service';
 import { InvoiceWsService, WsMessage, WsTopics } from '../../../services/ws/invoice-ws.service';
 import { InvoiceDto, ReceptionService } from '../../services/reception/reception.service';
 
@@ -22,27 +23,30 @@ export class CashComponent implements OnInit, OnDestroy {
   loading = true;
   showingRange = false;
   dateFormatTable = 'dd/MM/y';
+  anonymizing = false;
+  anonymizeLoading = false;
 
   constructor(
     private invoicesWs: InvoiceWsService,
     private receptionService: ReceptionService,
     private fb: FormBuilder,
+    public userService: UserService,
   ) { }
 
   ngOnInit(): void {
     this.socketReconnectSubscription = this.invoicesWs.socketReconnected.subscribe(() => {
-      this.searchByDateRange();
+      this.searchByDateRange(true);
     });
     this.invoiceSubscription = this.invoicesWs.invoiceSubscription.subscribe((message: WsMessage) => {
       if (message.event === WsTopics.INVOICES) {
-        this.searchByDateRange();
+        this.searchByDateRange(true);
       }
     });
     this.myForm = this.fb.group({
       from: [new Date(), Validators.required],
       to: [new Date(), Validators.required],
     });
-    this.searchByDateRange();
+    this.searchByDateRange(true);
   }
 
   ngOnDestroy(): void {
@@ -89,7 +93,10 @@ export class CashComponent implements OnInit, OnDestroy {
     this.invoicesClosing = {};
   }
 
-  searchByDateRange(): void {
+  searchByDateRange(force = false): void {
+    if (this.loading && !force) {
+      return;
+    }
     this.loading = true;
     const from: number = this.myForm.get('from').value.getTime();
     const to: number = this.myForm.get('to').value.getTime();
@@ -162,6 +169,24 @@ export class CashComponent implements OnInit, OnDestroy {
       totalWithoutSpecials: this.invoicesClosed.reduce((p, c) => p + (c.special ? 0 : c.pvp), 0),
     };
     this.invoicesResume = [...resume];
+  }
+
+  toggleAnonymize(): void {
+    this.anonymizing = !this.anonymizing;
+  }
+
+  anonymizeByDateRange(): void {
+    this.anonymizeLoading = true;
+    this.loading = true;
+    const from: number = this.myForm.get('from').value.getTime();
+    const to: number = this.myForm.get('to').value.getTime();
+    this.showingRange = from !== to;
+    setTimeout(() => {
+      this.receptionService.anonymizeRangeInvoices(from, to).then((anonymized: number) => {
+        console.log('Anonymized: ', anonymized);
+        this.anonymizeLoading = this.loading = this.anonymizing = false;
+      });
+    }, 500);
   }
 }
 
