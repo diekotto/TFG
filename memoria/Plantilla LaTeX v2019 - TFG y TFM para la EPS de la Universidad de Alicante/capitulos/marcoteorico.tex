@@ -94,23 +94,23 @@ El proyecto debe ser lo más barato posible o, si es posible, ser gratuito. En c
 El mercado de los ERP es amplio y con mucha variedad de soluciones. Una pequeña búsqueda desde el buscador favorito de cada uno devolverá infinidad de listados y comparaciones con votaciones. Sólo podemos estar seguros de una cosa, y es que el Software ERP mueve mucho dinero. Es muy difícil encontrar alguna solución que sea 100\% libre y/o sin coste asociado. Aquí podemos ver un ejemplo de listado bastante completo \citep{15FreeERP}.
 \vspace{1em}
 \par Uno de los ERP más conocidos en el mundo del desarrollo es \citep{odooWebpage}, es Open Source, aunque no de licencia libre ni con capas gratuitas. Este ERP está basado en módulos para hacer configurable su uso y su tarifa y, además, tiene capacidad para que desarrolles Python construyan módulos y los pongan a la venta en su app store, o si no quisieran venderlos, engancharlos a su solución Odoo y no compartirlos con nadie.
-\begin{table}[h]
+\begin{figure}[h]
 \centering
 \begin{tabular}{ccc}
 \includegraphics[scale=0.4]{archivos/odooModules.png}
 \end{tabular}
 \caption{Compra de módulos de Odoo}
 \label{fig:odooModules}
-\end{table}
+\end{figure}
 \clearpage
-\begin{table}[h]
+\begin{figure}[h]
 \centering
 \begin{tabular}{ccc}
 \includegraphics[scale=0.38]{archivos/odooModules2.png}
 \end{tabular}
 \caption{Comunicación entre módulos de Odoo}
 \label{fig:odooModules}
-\end{table}
+\end{figure}
 \par Podríamos listar las siguientes ventajas:
 \begin{itemize}
     \item Bajo coste
@@ -133,27 +133,104 @@ Y las siguientes desventajas:
 % --------------------------------------------------------------
 \clearpage
 \subsection{Hardware lowcost}
-Dadas las premisas de arquitectura, para este proyecto optamos por estudiar 3 posibilidades:
+Dadas las premisas de arquitectura, para este proyecto optamos por estudiar las siguientes posibilidades:
 \begin{itemize}
     \item Raspberry pi y Do It Yourself
-    \item Cloud con mantenimiento manual
-    \item Cloud autoconfigurado y serverless
+    \item Computación elástica bajo demanda
+    \item Serverless
 \end{itemize}
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 % --------------------------------------------------------------
-\clearpage
 \subsubsection{Raspberry pi (DIY)}
+\begin{figure}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.5]{archivos/RPi_4.jpg}
+\end{tabular}
+\caption{Raspberry Pi 4 Modelo B}
+\label{fig:rpi4}
+\end{figure}
+\vspace{1em}
+\par La Raspberry Pi fue nuestra primera idea, debido a su condición de software de código abierto, bajo coste de adquisición, reducido espacio y poco consumo.
+\vspace{1em}
+\par La Raspberry Pi es una serie de ordenadores de placa reducida de bajo coste desarrollado en el Reino Unido. Su objetivo principal ha sido siempre poner a disposición de todo el mundo el poder de la informática con un ordenador reducido en espacio y coste. Cuando se creó, se pretendía promocionar la enseñanza informática en las escuelas, pero terminó siendo mucho más popular de lo que se esperaba. Como se muestra en la figura 2.3, no trae ningún tipo de periférico, ni carcasa; aunque ya hay packs de todo tipo para ayudar a la adopción del hardware.
+\begin{figure}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.4]{archivos/rpi4keyboard.png}
+\end{tabular}
+\caption{Raspberry Pi integrada en el interior de un teclado}
+\label{fig:rpi4keyboard}
+\end{figure}
+\begin{figure}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.4]{archivos/rpi4case.png}
+\end{tabular}
+\caption{Raspberry Pi protegida con funda}
+\label{fig:rpi4case}
+\end{figure}
+\vspace{1em}
+\par En cuanto a la distribución del hardware, la Raspberry Pi Foundation no indica expresamente que el hardware sea libre o con derechos de marca, aunque sí explican en su web oficial que cualquiera puede convertirse en revendedor o redistribuidor de las tarjetas Raspberry Pi, dando a entender que es un producto con propiedad registrada pero permitiendo el uso libre tanto a nivel educativo como particular.
+\vspace{1em}
+\par Su software sí es código abierto, basando su sistema operativo en Debian y llamándose Raspberry Pi OS; el procesador es ARM por lo que la paquetería debianita tiene que pasar un proceso de adaptación y recompilación para poder usarse en la Pi OS.
+\vspace{1em}
+\par Todas estas características fueron las que nos incitó a considerarla como una buena solución a lo que se no estaba planteando. Pero el conocimiento de sistemas informáticos iba a ser una carga muy elevada en caso de avería, mantenimiento o escalabilidad. Además, una última idea nos hizo deshacernos de las Pis como solución de hardware, la disponibilidad del software.
+\vspace{1em}
+\par Una de nuestras premisas era tener en cuenta la capacidad de salto a otros bancos de alimentos, tanto de la zona, como de la ciudad; haber resuelto el host de la aplicación web en una raspberry pi nos habría planteado problemas de arquitectura mucho más elevados más adelante.
+\begin{itemize}
+    \item ¿Dónde deberá localizarse el servidor una vez haya más de una sede haciendo uso?
+    \item ¿Deberíamos distribuir su ejecución por si el nodo principal se queda sin luz?
+\end{itemize}
+En seguida caímos en que si bien es una problemática resoluble, teníamos soluciones al alcance de la mano y por muy bajo coste: Los servicios de computación en la nube bajo demanda.
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 \clearpage
-\subsubsection{Cloud Aws - Arquitectura manual}
+\subsubsection{Computación elástica bajo demanda (Cloud)}
+Dado que la arquitectura hardware mantenida por nosotros no iba a ser viable a la larga, pusimos la vista en la computación elástica.
+\vspace{1em}
+\par Los servicios Cloud nacen para dar una recurso muy simple de explicar y no tan fácil de proveer, capacidad de procesamiento infinita. Un servicio cloud no es simplemente un software que corre en el ordenador de otro en lugar del propio, es la escalabilidad (casi) sin límites y bajo demanda, lo que le da potencia como idea. Hoy en día hay múltiples proveedores de servicios cloud, aunque los jugadores más fuertes son indiscutiblemente Aws, Azure y Digital Ocean.
+\begin{table}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.2]{archivos/aws.png}
+\includegraphics[scale=0.2]{archivos/azure.png}
+\includegraphics[scale=0.08]{archivos/digitalocean.png}
+\end{tabular}
+\end{table}
+\vspace{1em}
+\par Dado que yo tengo experiencia laboral y personal como arquitecto cloud en servicios aws y me estoy preparando el examen oficial, decidimos sin pensárnoslo mucho en estudiar nuestra solución como nativa cloud haciendo uso de los servicios Aws. Si bien Aws tiene capas gratuitas, éstas son temporales en caso de la computación y son circulares en caso de la transmisión de datos. Dado nuestro cliente y nuestro estudio de casos de uso, sabíamos que podríamos usar las capas gratuitas de transferencia de datos sin problema, pero el hosting sí podría suponer una traba. Aún así, proseguimos.
+\vspace{1em}
+\par En concreto, con Aws, usaríamos una de las máquinas de computación elástica más pequeña que tiene, para montar nuestro servidor web, haciendo uso de imágenes dockerizadas y distribuídas por el propio registro de imágenes de Aws. En todo momento hemos querido mantener el estándar y el open source, esto facilitaría la recepción de voluntarios informáticos. Las máquinas que Aws provee, servicio llamado \citep{ec2AWS}, es descrito como `Capacidad informática segura y de tamaño ajustable que admite prácticamente cualquier carga de trabajo`.
+\vspace{1em}
+\par La parte buena de usar este servicio es la capacidad de usar sus servicios bajo demanda, podemos hacer crecer y disminuir máquinas conforme necesitemos, balancear la carga entre varios nodos si quisiéramos o incluso aumentar nuestro porcentaje de disponibilidad usando la Route 53 para que si una región deja de estar disponible, automáticamente el trafico quedase redirigido a la región más cercana. Habríamos usado una base de datos adhoc RDS para evitar configuración y mantenimiento, teniéndolo todo centralizado en una misma red para minimizar la espera por latencia y habríamos protegido el acceso y ddos de nuestra máquina usando el servicio de ApiGateway. El frontend podría ser desatendido, almacenado en un S3 de bajo coste y distribuido y cacheado por el servicio de CloudFront.
+\begin{figure}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.5]{archivos/arquitecturaAws.png}
+\end{tabular}
+\caption{Arquitectura simplificada}
+\end{figure}
+\clearpage
+\begin{figure}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.6]{archivos/budgetAws.png}
+\end{tabular}
+\caption{Presupuesto simplificado}
+\end{figure}
+\clearpage
+\vspace{1em}
+\par Todo esto hace de la arquitectura un proyecto ideal, una estructura sencilla de manejar para alguien con conocimientos, pero aunque hubiésemos podido aceptar el presupuesto, volvimos a toparnos la misma problemática que con la Raspberry Pi. ¿Qué ocurriría si una máquina deja de estar accesible? ¿Y si hay un problema en la configuración de red o de acceso por grupos de seguridad? ¿Y si alguien toca sin querer algo que no debe en un despliegue? Nuestro objetivo de no ceder el mantenimiento a la posibilidad de tener siempre conocimientos informáticos disponibles en el voluntariado, era más fuerte que intentar idear una arquitectura digna de proyectos modernos.
+\vspace{1em}
+\par Sólo nos quedaba una carta que jugar, una forma de explotar el cloud que ya había usado en proyectos anteriores, y que podría ser lo que nos permitiese centrar el conocimiento informático voluntario en el desarrollo y mantenimiento de la aplicación; permitiéndonos ignorar la disponibilidad del servicio y configuración de las máquinas: el Serverless.
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 \clearpage
-\subsubsection{Cloud Heroku - Serverless}
+\subsubsection{Serverless (Cloud)}
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 % --------------------------------------------------------------
