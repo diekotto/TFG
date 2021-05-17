@@ -231,24 +231,90 @@ Dado que la arquitectura hardware mantenida por nosotros no iba a ser viable a l
 % --------------------------------------------------------------
 \clearpage
 \subsubsection{Serverless (Cloud)}
+Como ya hemos ido hablando, el sector privado tiende cada vez hacia la nube, sobretodo el sector comercial; dada la capacidad de contratar y configurar soluciones a medida de las necesidades de cada uno. Dentro de la oferta de servicios cloud existe el uno llamado Serverless Computing, una de las prácticas más recientes, y comúnmente conocido como FaaS (Function as a Service).
+\vspace{1em}
+\par El primer concepto que nos atrajo para adoptar esta solución es la propia descripción del Serverless Computing o Arquitectura Serverless. Éste viene a ser un modelo que permite a los usuarios crear y ejecutar aplicaciones y procesos sin entrar en contacto con el servidor subyacente. Dado que es justo lo que queremos, un entorno en la nube en el que es el propio proveedor el que se ocupa del suministro, gestión y escalado del servicio. Ésto además tiene un punto fuerte para nuestra intención de adopción futura, podemos centrar toda nuestra atención y esfuerzo en el desarrollo y en la ejecución del software, ahorrando tareas y conocimientos al equipo implicado.
+\vspace{1em}
+\par También, normalmente los proveedores de Serverless no sólo son responsables de que los recursos de servidor estén siempre disponibles, si no también lo son de garantizar la disponibilidad del servicio; es decir, seguridad anticaída. Normalmente este tipo de servicios tienen un modelo de pago por uso, el cual abordaremos después.
+\subsubsection{¿Cómo funciona?}
+En una infraestructura serverless, la gestión del hardware por parte del proveedor es esencial. El único desafío con el que tienen que lidiar los usuarios es integrar su software o su lógica, incluidas las funciones adecuadas, en el espacio alquilado en la nube. El acceso a estas funciones se puede realizar de dos maneras:
+\begin{itemize}
+    \item de forma asíncrona, a través de eventos
+    \item de forma síncrona, según el modelo Cliente-Servidor clásico
+\end{itemize}
+\vspace{1em}
+\par La forma de uso asíncrona ofrece la ventaja de evitar acoplamiento entre las funciones y mantener la demanda de recursos en un nivel bajo durante la ejecución. Un ejemplo de función asíncrona sería que al cargar una imagen cree también un icono en miniatura. Son funciones atómicas, que permiten mucho control en el código, simplicidad y reducción de gastos, dado que sólo se paga cuando se usa; problemas de optimización también son más fáciles de acotar y se puede decidir poner recursos a optimizar una función que funcione deficientemente pero no necesariamente a todo el sistema.
+\vspace{1em}
+\par El uso que nosotros vamos a darle al Serverless es la función síncrona, vamos a usar el servicio para poder mantener levantado un servidor web sin tener que estar pendientes de mantener el sistema, actualizarlo o configurarlo. En concreto, vamos a usar la solución que provee Heroku, un proveedor de servicios Serverless con una generosa capa gratuita que a éste trabajo le vendrá de perlas. La única limitación que pueda importarnos, de las que tiene Heroku en su capa gratuita, es que los servicios mueren tras 5 minutos sin uso; haciendo que la siguiente petición tarde un poco más. Esto encaja a la perfección con nuestras necesidades pues, a priori, se le va a dar uso al sistema un par de días a la semana.
+\vspace{1em}
+\par A diferencia de una infrastructura de plataforma como servicio, el proveedor Serverless no facilita para ello un entorno de trabajo duradero para todo el tiempo de trabajo, si no que aporta de manera puntual y en tiempo real aquellos recursos que se requieren durante el tiempo de ejecución de la llamada a la función. A pesar de llamarse Serverless, obviamente sí hay servidores detrás del telón, aunque el usuario nunca lo perciba.
+\subsubsection{Vista general de ventajas y desventajas}
+Las infraestructuras convencionales en la nube permiten al usuario administrar y eliminar el hardware que se require pero, a menudo, ésto requiere grandes esfuerzos a nivel de administración y microgestión. Lo que pretende el Serverless es minimaz eso al máximo.
+\vspace{1em}
+\par Podríamos considerar las siguientes ventajas y desventajas
+\begin{itemize}
+    \item Ventajas
+    \begin{itemize}
+        \item Escalamiento y administración de los recursos necesarios por parte del proveedor
+        \item Suministro ágil de los recursos en tiempo real, en función del consumo en cada momento
+        \item Cobro únicamente por uso al milisegundo
+        \item Gran tolerancia a errores gracias a la infraestructura flexible de hardaware
+    \end{itemize}
+    \item Desventajas
+    \begin{itemize}
+        \item Acceso restringido a los sistemas e incapacidad de configuración de éstos
+        \item Grandes proyectos basados en funciones asíncronas pueden suponer un gran esfuerzo de implementación
+        \item Gran dependencia del proveedor, posibles dificultades de migración
+        \item Procesos de monitorización y depuración de errores más complejos
+    \end{itemize}
+\end{itemize}
+\subsubsection{Cuándo se usa el principio Serverless}
+El serverless computing ha sido concebido principalmente para el intercambio efímero de datos de aplicaciones web y de negocios en la nube, aunque acabó abarcando servicios más complejos y con una vida de ejecución más larga pero basándose en las mismas premisas: escalabilidad elástica en tiempo real y adecuándose al uso, sin que el usuario tenga que hacerse cargo de configuraciones de sistemas y redes.
+\vspace{1em}
+\par Los escenarios más comunes del Serverless son los siguientes:
+\begin{itemize}
+    \item Proxy API: muchas aplicaciones comerciales antiguas cuenta con interfaces complejas y lentas. Mediante el serverless se puede crear una capa de abstracción alternativa para poder acceder a estas aplicaciones mediante una API REST mucho más simple
+    \item Serverless Backend: el serverless computing también se usa cada vez más para construir y soportar todo el backend de una aplicación en la nube. Backend as a Service.
+    \item Procesamiento de datos no estructurados: hoy en día, es imposible imaginar un entorno de negocios sin big data. En este contexto, el serverless se muestra como un gran aliado para procesar este tipo de información.
+    \item Ejecución de tareas según horario: una gran cantidad de demanda de este tipo de funciones en un horario definido, un disparador que ejecuta alguna automatización aislada como backups de bases de datos, reorganización de datos, etc.
+    \item Aplicación de asistentes y chat bots: Normalmente este tipo de aplicaciones son sin estado y conectan con servicios de modelos inteligentes más complejos, estas interfaces en serverless están en auge.
+\end{itemize}
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 % --------------------------------------------------------------
+\subsubsection{Ejemplos de uso con heroku}
+\begin{figure}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.5]{archivos/heroku01.png}
+\end{tabular}
+\caption{Configurando proyecto en Heroku}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.5]{archivos/heroku02.png}
+\end{tabular}
+\caption{CI/CD en Heroku}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[scale=0.5]{archivos/heroku03.png}
+\end{tabular}
+\caption{Ejemplo de uso de Heroku por línea de comandos}
+\end{figure}
 \clearpage
-\subsection{Cloud lowcost}
-% --------------------------------------------------------------
-% --------------------------------------------------------------
-% --------------------------------------------------------------
-\clearpage
-\subsection{Capas gratuitas}
-% --------------------------------------------------------------
-% --------------------------------------------------------------
-% --------------------------------------------------------------
-\clearpage
-\subsection{Serverless y CI/CD}
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 \clearpage
 \subsection{Stack FrontEnd/BackEend}
+Nestjs: Typescript, nodejs y express para backend.
+Angular: Typescript, javascript, html y css para frontend.
 \clearpage
+% --------------------------------------------------------------
+% --------------------------------------------------------------
+% --------------------------------------------------------------
