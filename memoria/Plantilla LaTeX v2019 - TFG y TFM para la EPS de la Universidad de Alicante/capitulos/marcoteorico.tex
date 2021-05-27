@@ -132,7 +132,7 @@ Y las siguientes desventajas:
 % --------------------------------------------------------------
 % --------------------------------------------------------------
 \clearpage
-\subsection{Hardware lowcost}
+\subsection{Decidiendo arquitectura}
 Dadas las premisas de arquitectura, para este proyecto optamos por estudiar las siguientes posibilidades:
 \begin{itemize}
     \item Raspberry pi y Do It Yourself
@@ -312,8 +312,19 @@ El serverless computing ha sido concebido principalmente para el intercambio ef�
 % --------------------------------------------------------------
 \clearpage
 \subsection{Stack FrontEnd/BackEend}
-Nestjs: Typescript, nodejs y express para backend.
-Angular: Typescript, javascript, html y css para frontend.
+Una de nuestras principales preocupaciones, como se lleva diciendo toda la exposición, es la escalabilidad del proyecto en cuanto a la facilidad de colaboración técnica voluntaria. Desde esta premisa estuvimos estudiando qué lenguajes de programación podrían encajar en esta dinámica.
+\vspace{1em}
+\par Del mundo del desarrollo, la plataforma más usada de largo es Stack Overflow; en esencia es un foro tecnológico donde usuarios escriben sus dudas y otros usuarios intentan resolverlas. Stack Overflow hace una encuesta todos los años para extraer datos demográficos, económicos y tecnológicos sobre la comunidad tecnológica mundial. Decidimos basarnos en la encuesta de 2020 \citep{techSurveyStackOverflow} para valorar el stack a usar.
+\vspace{1em}
+\par Como se aprecia en la encuesta, javascript es el más usado tanto profesional como amateur; además, encaja en nuestra idea inicial, en la que considerábamos usar el mismo lenguaje para frontend y backend una ventaja competitiva. Dado que va a ser un proyecto dilatado en el tiempo, un lenguaje de tipado estático sería una buena forma de agilizar la curva de aprendizaje del proyecto y recortar la barrera de entrada para los aspirantes; así pues, dado que Typescript está en el top 10 y podemos considerarlo javascript, optamos por usarlo.
+\vspace{1em}
+\par Una vez decidido el lenguaje, queda la decisión de si usar frameworks o no. No usar frameworks puede ser potente en un inicio pues permite la flexibilidad de montar el sistema como se quiera y definir unas pautas; unas pautas que preferiríamos que pudiesen ponerse en tela de juicio lo menos posible, así que optaremos por frameworks pues así la forma de hacer las cosas será siempre la misma independientemente de quién trabaje en el proyecto.
+\vspace{1em}
+\par En javascript es muy común el stack MEAN (Mongo, Express, Angular y Nodejs), y para acomodar el backend y el frontend, usaremos para el backend con Express el framework Nestjs; un framework disponible en typescript cuya estructura MVC es muy parecida a Angular, de esta forma, un desarrollador frontend podrá pivotar al backend y viceversa con muy poco problema.
+\vspace{1em}
+\par Para la persistencia de datos se había propuesto MongoDB desde un inicio, y éste encaja con Javascript a la perfección, dado que los documentos de ambos se anotan en JSON, la integración entre ambos es intuitiva y sencilla. Además, MongoDB tiene capa gratuita en su servicio cloud Compass y es justo lo que queremos. 
+\vspace{1em}
+\par Y de esta forma queda decidido, se usará Typescript con Nestjs para el backend, Typescript con Angular para el frontend y MongoDB para la persistencia de datos. 
 \clearpage
 % --------------------------------------------------------------
 % --------------------------------------------------------------

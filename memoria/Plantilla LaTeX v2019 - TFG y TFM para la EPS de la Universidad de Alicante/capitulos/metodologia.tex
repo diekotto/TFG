@@ -5,81 +5,99 @@
 % Contacto: info@jmrplens.com / Telegram:@jmrplens
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Metodología (Con ejemplos de figuras)}
+\chapter{Metodología}
 \label{metodologia}
+En este apartado se van a describir las herramientas necesarias para el correcto desarrollo del proyecto. Éstas herramientas están comprendidas en lo que se puede llamar ingeniería del software, disciplina que comprende análisis del problema, estudio de la solución, el diseño del proyecto, el desarrollo del software, las pruebas que faciliten la integración continua y la adopción del sistema. Éste proyecto se ha llevado a cabo mediante etapas como las detallas a continuación:
+\section{Requisitos mínimos}
+Los requisitos mínimos que se deben cumplir para poder desarrollar el proyecto, probarlo y ponerlo en marcha son los siguientes:
+\begin{itemize}
+    \item Pc, smartphone o tablet de cualquier sistema operativo que posea un navegador moderno
+    \item Si Pc, lector de código de barras independiente por usb o webcam
+    \item Si smartphone o tablet, cámara integrada para poder leer códigos de barras
+    \item Conexión estable a internet
+\end{itemize}
+\section{Fases del desarrollo}
+Aquí se van a nombrar y explicar de forma introductoria las fases de desarrollo que se han seguido para llevar a cabo el proyecto:
+\begin{itemize}
+    \item Análisis de requisitos: es la primera etapa en la que se identificarán los conceptos importantes sobre el proyecto, tales como las necesidades del proyecto, las funcionalidades requeridas y los requisitos para su buen funcionamiento
+    \item Diseño del proyecto: en esta etapa se redactan los casos de uso y se realizan los mockups para una primera impresión visual de la aplicación
+    \item Desarrollo del software: en esta etapa se realiza la aplicación usando las etapas anteriores como guía
+    \item Pruebas: en esta etapa, que va muy ligada al desarrollo del software, se preparan pruebas automatizadas que permitan cerciorarse de que las funcionalidades desarrolladas efectivamente funcionan, y lo siguen haciendo tras refactorizaciones o nuevos desarrollos en la aplicación.
+\end{itemize}
+\section{Metodología ágil utilizada}
+En este proyecto se ha seguido la metodología ágil denominada SCRUM. Ésta se define como un proceso de gestión que reduce la complejidad en el desarrollo de productos para satisfacer las necesidades de los clientes.
+\vspace{1em}
+\par En este proyecto en particular, se ha desarrollado el software mediante sprints, sprints review y milestones, que se detallan a continuación:
+\vspace{1em}
+\par Sprint: Etapa de 3 semanas en las que se desarrollan los objetivos establecidos para el mismo
+\vspace{1em}
+\par Sprint review: Reunión en la que se realiza una revisión de lo desarrollado, bloqueos, problemas y soluciones, además de una retrospectiva y planificación del siguiente.
+\vspace{1em}
+\par Milestone: Conjunto de objetivos de desarrollo que marcan metas en el progreso. Se han usado junto a fechas, para poder estimar y considerar el alcance en función del tiempo disponible.
 
-\section{Inserción de figuras}
-
-Las figuras son un caso un poco especial ya que \LaTeX~busca el mejor lugar para ponerlas, no siendo necesariamente el lugar donde está la referencia. Por ello es importante añadirle un ``caption'' y un ``label'' para poder hacer referencia a ellas en el párrafo correspondiente. Nosotros ponemos la referencia a la figura \ref{multiimagen} que está en la página \pageref{multiimagen}, justo aquí debajo, pero \LaTeX ~puede que la ubique en otro lugar. (observa el código \LaTeX~ de este párrafo para observar como se realizan las referencias. Estos detalles también se aplican a tablas y otros objetos).
-
-\begin{table}[h]
-\centering
-\begin{tabular}{ccc}
-\includegraphics[scale=0.2]{archivos/130} & \includegraphics[scale=0.2]{archivos/160} & \includegraphics[scale=0.2]{archivos/190} \\
-$Dist=1m \; ; \; \phi=30º$  & $Dist=1m \; ; \; \phi=60º$  & $Dist=1m \; ; \; \phi=90º$  \\
-\includegraphics[scale=0.2]{archivos/230} & \includegraphics[scale=0.2]{archivos/260} & \includegraphics[scale=0.2]{archivos/290} \\
-$Dist=2m \; ; \; \phi=30º$  & $Dist=2m \; ; \; \phi=60º$  & $Dist=2m \; ; \; \phi=90º$  \\
-\includegraphics[scale=0.2]{archivos/330} & \includegraphics[scale=0.2]{archivos/360} & \includegraphics[scale=0.2]{archivos/390} \\
-$Dist=3m \; ; \; \phi=30º$  & $Dist=3m \; ; \; \phi=60º$  & $Dist=3m \; ; \; \phi=90º$ \\
-\end{tabular}
-\caption{Esta es una tabla con múltiples imágenes. Útil cuando se deben mostrar varias juntas.}
-\label{multiimagen} % 
-\end{table}
-
-Existe también la posibilidad de realizarlo sin tablas, con subfiguras:
-\begin{lstlisting}[style=Latex-color]
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.4\textwidth} % Espacio horizontal ocupado por la subfigura
-    	\centering
-        \includegraphics[width=4cm]{archivos/subs-sin} % Tamaño de la imagen
-        \caption{Sin procesado.}
-        \label{fig:gull}
-    \end{subfigure}
-    ~ % Añadir el espacio deseado, si se deja la linea en blanco la siguiente subfigura ira en una nueva linea
-    \begin{subfigure}[b]{0.4\textwidth} % Espacio horizontal ocupado por la subfigura
-    	\centering
-        \includegraphics[width=4cm]{archivos/subs-con} % Tamaño de la imagen
-        \caption{Con procesado.}
-        \label{fig:tiger}
-    \end{subfigure}
-    \caption{Ejemplo de subfiguras}\label{sistemass}
-\end{figure}
-\end{lstlisting}
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{0.4\textwidth}
-    	\centering
-        \includegraphics[width=4cm]{archivos/subs-sin}
-        \caption{Sin procesado.}
-        \label{fig:gull1}
-    \end{subfigure}
-    ~ % Añadir el espacio deseado, si se deja la linea en blanco la siguiente subfigura ira en una nueva linea
-    \begin{subfigure}[b]{0.4\textwidth}
-    	\centering
-        \includegraphics[width=4cm]{archivos/subs-con}
-        \caption{Con procesado.}
-        \label{fig:tiger1}
-    \end{subfigure}
-    \caption{Ejemplo de subfiguras}\label{sistemass1}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}[b]{\textwidth}
-    	\centering
-        \includegraphics[width=4cm]{archivos/subs-sin}
-        \caption{Sin procesado.}
-        \label{fig:gull2}
-    \end{subfigure}
-    
-    \begin{subfigure}[b]{\textwidth}
-    	\centering
-        \includegraphics[width=4cm]{archivos/subs-con}
-        \caption{Con procesado.}
-        \label{fig:tiger2}
-    \end{subfigure}
-    \caption{Ejemplo de subfiguras vertical}\label{sistemass2}
-\end{figure}
-
-Si eliminas la línea '\textbackslash caption' de las subfiguras, tendrás las imágenes sin la información individual, aunque sí con la principal. Y obviamente, si eliminas el de la figura no se mostrará ninguna información.
+Gracias a la utilización de metodologías ágiles es posible obtener grandes beneficios como indica la empresa \citep{braventAgile} en un artículo:
+\begin{itemize}
+    \item Satisfacción del cliente a través de la entrega temprana y continua del software de valor.
+    \item Proximidad del cliente y constante iteración con él, es parte del equipo y está presente en la toma de decisiones.
+    \item Gestión regular de las expectativas del cliente y basada en resultados tangibles.
+    \item Resultados anticipados (time to market).
+    \item Flexibilidad y adaptación respecto a las necesidades del cliente, cambios en el mercado, etc.
+    \item Gestión sistemática del Retorno de la Inversión (ROI).
+    \item Capacidad para abordar los requisitos cambiantes, incluso si llegan tarde en el proceso de desarrollo.
+    \item Equipo implicado y motivado ya que pueden usar su creatividad para resolver problemas y pueden decidir organizar su trabajo.
+    \item Auto-superación: de forma periódica se evalúa el producto que se está desarrollando
+    \item Priorizar los requerimientos de acuerdo a su valor.
+    \item Se proporciona la mínima funcionalidad, de forma que solo se desarrolla lo necesario. Evita
+escribir código innecesario.
+    \item Calidad del producto obtenido. El software que funciona es la principal medida del
+progreso.
+    \item Pruebas continuas durante todo el desarrollo.
+    \item Mejora la productividad y el control del tiempo requerido para realizar el proyecto.
+    \item Permite dividir el trabajo en módulos minimizando los fallos y el coste.
+    \item Si surge cualquier error, se sabe rápido, disminuyendo riesgos.
+    \item Permite solucionar rápidamente los problemas que impiden que los equipos progresen.
+\end{itemize}
+\section{Herramientas hardware}
+Este apartado trata de los dispositivos de hardware necesarios para el buen desarrollo del proyecto, a excepción del ordenador utilizado para realizar el proyecto, del cual se asume que es obligatorio pero no exclusivo.
+\vspace{1em}
+\par Dado que una de las necesidades del proyecto es leer códigos de barras, podemos hacerlo de dos formas en función de qué dispositivos tengamos a mano:
+\begin{itemize}
+    \item Lector manual de código de barras por usb, al usar Pc
+    \begin{itemize}
+        \item Es la forma más cómoda de leer un código de barras cuando alguien trae una donación al banco de alimentos. Es la forma más fiable, teniendo el dispositivo a mano, sin importar el tamaño del producto, el tamaño del código de barras ni si es transparente o con poco contraste de colores.
+    \end{itemize}
+    \item Webcam al usar Pc
+    \begin{itemize}
+        \item Es un poco más tedioso que el anterior, se debe coger el producto y sostenerlo delante de la webcam, que en función de la calidad de ésta no enfoque bien automáticamente. Sin contar que la calidad y contrastes de la impresión del código de barras es un factor que puede hacerlo ilegible frente a una cámara.
+    \end{itemize}
+    \item Cámara trasera del dispositivo móvil
+    \begin{itemize}
+        \item Es un poco más tedioso que el hardware adhoc, normalmente los voluntarios no estarán usando el móvil, deben hacer login expresamente para esto e ir a la edición del producto para añadir el EAN. Sin contar, como en la anterior, que la calidad y contrastes de la impresión del código de barras es un factor que puede hacerlo ilegible frente a una cámara.
+    \end{itemize}
+\end{itemize}
+\section{Herramientas software}
+En este apartado se va a realizar una descripción del propósito de cada una de las herramientas de software utilizadas y que han sido necesarias para la realización del proyecto.
+\subsection{Documentación}
+En este apartado se define el software necesario para crear la documentación y memoria, y distribuirla.
+\begin{itemize}
+    \item Dropbox: Gestor de archivos en la nube, permite documentos simples y colaborativos. Los primeros bocetos de las ideas a desarrollar fueron en esta plataforma.
+    \item Overleaf: Gestor de documentos Latex en la nube. La memoria se ha creado completamente en Latex y online
+    \item Github: Control de versiones en la nube, las versiones de la memoria se han ido publicando en el repositorio que contiene el proyecto.
+\end{itemize}
+\subsection{Planificación y cumplimiento de las etapas}
+En este apartado se va a definir el software necesario para poder realizar una planificación temporal del proyecto, definiendo etapas y marcas temporales y una estructuración de tareas.
+\begin{itemize}
+    \item Github: Panel de proyecto. Github contiene un panel en los repositorios que permite crear y manejar proyectos, al estilo de un tablero canvan. Las tareas se pueden mover de forma automática siendo disparadas por commits o pull requests.
+    \item Github: Issues. Github permite listar y crear tareas, dándole etiquetas y relacionándolas con proyectos y milestones para acomodar su gestión.
+    \item Github: Milestones. Github permite crear milestones con fecha de inicio y fin. Las milestones pueden estar relacionadas con proyectos y contener tantas issues como se crea conveniente en la planificación. 
+\end{itemize}
+\subsection{Desarrollo}
+En este apartado se va a comentar el software que se ha utilizado para la realización del backend y el frontend dentro del proyecto.
+\begin{itemize}
+    \item Git: Control de versiones que permite conectar con gestores remotos, en este caso Github.
+    \item Heroku-cli: Control de Continuous Delivery integrado con Git, permite la entrega continua y el despliegue automático completamente integrado con el uso de las ramas del proyecto.
+    \item Docker: Se ha usado docker para virtualizar MongoDB en local y así desarrollar y lanzar las pruebas automáticas contra la máquina local y no afectar a los datos de producción en compass.
+    \item Jest: Librería de testing para javascript que facilita muchísimo el uso de mocks, stubs y espiarlos.
+    \item Yarn: Gestor de paquetería para javascript, facilita el manejo de dependencias del proyecto.
+    \item WebStorm: IDE de JetBrains, contiene todo lo necesario para desarrollar javascript, nodejs y typescript. Trae integración con git para facilitar el uso del control de versiones, comparación de ramas, secciones de código, code blame y resolución de conflictos; además integra gestión de baterías de testing con Jest.
+\end{itemize}
