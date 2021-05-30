@@ -8,7 +8,7 @@
 \chapter{Estudio viabilidad}
 \label{estudioviabilidad}
 En este punto del proyecto se va a presentar una planificación temporal del proyecto, la planificación de los recursos y requisitos, además de una planificación de riesgos.
-\subsection{Planificación temporal}
+\section{Planificación temporal}
 Para llegar a buen puerto en un proyecto es necesario intentar una buena estimación, que sabiendo que no es tarea fácil y difícil de cumplir, teniendo fechas de entrega continua al cliente podemos establecer prioridades y tomar decisiones estructurales en función de las necesidades temporales y de entrega. Como puede ser, por ejemplo, la entrada de nuevos requisitos que hacen retroceder otras funcionalidades en prioridad o que, incluso, las hacen quedar fuera del backlog; o que por problemas técnicos o por dificultad de implementación una tarea se retrase tanto que arrastre otras relacionadas.
 \vspace{1em}
 \par Cada hito realizado se asemeja bastante a las fases de la ingeniería de software y, a grandes rasgos, son los siguientes:
@@ -33,4 +33,564 @@ Para llegar a buen puerto en un proyecto es necesario intentar una buena estimac
 \label{fig:github_milestones}
 \end{figure}
 \clearpage
-\subsection{Gestión de riesgos}
+\section{Gestión de riesgos}
+Una de los aspectos más importantes de la planificación de un proyecto es una buena prevención de los riesgos y contratiempos que se puedan ocasionar durante la realización del proyecto. Tanto si deben ser mitigables sin falta o si se pueden asumir. Para ello se documentan y se establecen pautas que especifiquen cómo se resuelve cada riesgo, éstos se identifican de la siguiente manera:
+\begin{itemize}
+    \item Identificador: código de identificación
+    \item Nombre: Palabra o conjunto de palabras breves y descriptivas
+    \item Probabilidad: posibilidad de que ocurra dicho riesgo
+    \item Consecuencia: nivel de importancia de que ocurra el riesgo
+    \item Estrategia: pautas a seguir para resolver el riesgo
+\end{itemize}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R1 \\ [0.5ex] 
+\hline\hline
+Nombre & No disponer de hosting \\ 
+\hline
+Tipo & Tecnología \\
+\hline
+Probabilidad & Media \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Obtener presupuestos \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R2 \\ [0.5ex] 
+\hline\hline
+Nombre & Caída del hosting \\ 
+\hline
+Tipo & Tecnología \\
+\hline
+Probabilidad & Baja \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Obtener presupuestos alta disponibilidad o esperar a su recuperación \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R3 \\ [0.5ex] 
+\hline\hline
+Nombre & Conocimientos innecesarios \\ 
+\hline
+Tipo & Persona \\
+\hline
+Probabilidad & Media \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Revisar documentación y vídeo tutoriales entregados \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R4 \\ [0.5ex] 
+\hline\hline
+Nombre & Acumulación de tareas \\ 
+\hline
+Tipo & Organizacional \\
+\hline
+Probabilidad & Media \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Buena planificación y gestión de tiempos \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R5 \\ [0.5ex] 
+\hline\hline
+Nombre & Licencias de herramientas \\ 
+\hline
+Tipo & Herramientas \\
+\hline
+Probabilidad & Media \\
+\hline
+Efectos & Tolerable \\
+\hline
+Estrategia & Asumir costes o adoptar herramientas libres \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R6 \\ [0.5ex] 
+\hline\hline
+Nombre & Bugs \\ 
+\hline
+Tipo & Herramientas \\
+\hline
+Probabilidad & Media \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Seguir metodología para arreglar y entregar rápido \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R7 \\ [0.5ex] 
+\hline\hline
+Nombre & Nueva funcionalidad \\ 
+\hline
+Tipo & Requerimientos \\
+\hline
+Probabilidad & Alta \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Seguir metodología para desarrollar y entregar rápido \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R8 \\ [0.5ex] 
+\hline\hline
+Nombre & Cambios en las bases de datos \\ 
+\hline
+Tipo & Requerimientos \\
+\hline
+Probabilidad & Alta \\
+\hline
+Efectos & Tolerable \\
+\hline
+Estrategia & Mongodb minimiza el impacto por su flexibilidad \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R9 \\ [0.5ex] 
+\hline\hline
+Nombre & Pérdida de trabajo \\ 
+\hline
+Tipo & Herramientas \\
+\hline
+Probabilidad & Baja \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Hacer copias de seguridad de forma recurrente \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R10 \\ [0.5ex] 
+\hline\hline
+Nombre & Modificaciones en el frontend \\ 
+\hline
+Tipo & Requerimientos \\
+\hline
+Probabilidad & Alta \\
+\hline
+Efectos & Tolerable \\
+\hline
+Estrategia & Seguir metodología para desarrollar y entregar rápido \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R11 \\ [0.5ex] 
+\hline\hline
+Nombre & Infraestimar tiempo de desarrollo \\ 
+\hline
+Tipo & Estimación \\
+\hline
+Probabilidad & Media \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Organizar tareas con margen suficiente \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%
+%% Riesgo %%
+%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & R12 \\ [0.5ex] 
+\hline\hline
+Nombre & Falta de realización de alguna parte del proyecto \\ 
+\hline
+Tipo & Estimación \\
+\hline
+Probabilidad & Media \\
+\hline
+Efectos & Serio \\
+\hline
+Estrategia & Documentar funcionalidades pendientes y continuar desarrollo \\ [1ex] 
+\hline
+\end{tabular}
+
+\chapter{Especificación de requisitos}
+\label{requisitos}
+En esta sección se van a detallar los objetivos del sistema para, a partir de ahí, obtener los casos de uso y así los requisitos del proyecto.
+\section{Objetivos del sistema}
+Para poder comenzar a establecer los requisitos se deben establecer los objetivos que tiene el sistema, para ello vamos a mostrarlo en formato de tabla en la que se detalla cada objetivo con su descripción y prioridad.
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O1 \\ [0.5ex] 
+\hline\hline
+Nombre & Gestión de usuarios \\ 
+\hline
+Descripción & Se debe ser capaz de crear y loguear usuarios \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O2 \\ [0.5ex] 
+\hline\hline
+Nombre & Gestión de almacenes \\ 
+\hline
+Descripción & Se debe ser capaz de crear y editar almacenes \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O3 \\ [0.5ex] 
+\hline\hline
+Nombre & Gestión de productos \\ 
+\hline
+Descripción & Se debe ser capaz de crear y editar productos \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O4 \\ [0.5ex] 
+\hline\hline
+Nombre & Gestión de roles de usuario \\ 
+\hline
+Descripción & Se debe diferenciar permisos por roles de usuario \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O5 \\ [0.5ex] 
+\hline\hline
+Nombre & Gestión de familias \\ 
+\hline
+Descripción & Se deben recordar las familias por limitaciones en el mismo mes \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O6 \\ [0.5ex] 
+\hline\hline
+Nombre & Recepción de pedidos de compra \\ 
+\hline
+Descripción & Se debe gestionar el proceso de compra con la memoria por familia \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O7 \\ [0.5ex] 
+\hline\hline
+Nombre & Gestión de cobros y caja \\ 
+\hline
+Descripción & Se deben poder marcar pedidos como cobrados o erróneos \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O8 \\ [0.5ex] 
+\hline\hline
+Nombre & Gestión de expedición de pedidos \\ 
+\hline
+Descripción & Se deben poder ver pedidos a entregar y marcarlos entregados \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O9 \\ [0.5ex] 
+\hline\hline
+Nombre & Dashboard con estadísticas \\ 
+\hline
+Descripción & Se debe añadir información relevante de forma resumida y legible \\
+\hline
+Prioridad & Media \\ [1ex] 
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O10 \\ [0.5ex] 
+\hline\hline
+Nombre & Imprimir facturas \\ 
+\hline
+Descripción & Se deben mostrar las facturas maquetadas para imprimirlas \\
+\hline
+Prioridad & Alta \\ [1ex] 
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O11 \\ [0.5ex] 
+\hline\hline
+Nombre & Anonimización de facturas \\ 
+\hline
+Descripción & Se debe poder desvincular facturas de las familias \\
+\hline
+Prioridad & Media \\ [1ex] 
+\hline
+\end{tabular}
+
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O12 \\ [0.5ex] 
+\hline\hline
+Nombre & Productos con información nutricional \\ 
+\hline
+Descripción & Se debe tener información automatizada de los productos \\
+\hline
+Prioridad & Baja \\ [1ex] 
+\hline
+\end{tabular}
+
+%%%%%%%%%%%%%%
+%% Objetivo %%
+%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||c|c||} 
+\hline
+Identificador & O13 \\ [0.5ex] 
+\hline\hline
+Nombre & Leer EAN de los productos \\ 
+\hline
+Descripción & Se debe poder vincular EAN al producto mediante cámara o lector \\
+\hline
+Prioridad & Baja \\ [1ex] 
+\hline
+\end{tabular}
+
+\section{Casos de uso}
+Los casos de uso sirven para ilustrar el comportamiento del sistema con un agente externo. Permite ver el alcance y límites del sistema y su relación con el entorno. Para poder realizar los casos de uso se deben identificar los agentes externos.
+\vspace{1em}
+\par En este sistema hay varios agentes, éstos son:
+\begin{itemize}
+    \item Usuario con uno o más roles:
+    \begin{itemize}
+        \item Recepción pedidos
+        \begin{itemize}
+            \item Búsqueda de familias
+            \item Recepción de pedidos y visualización de facturas
+        \end{itemize}
+        \item Caja
+        \begin{itemize}
+            \item Gestión de caja y facturas
+        \end{itemize}
+        \item Almacén
+        \begin{itemize}
+            \item Expedición de pedidos
+            \item Gestión de productos, añadir, editar y borrar
+        \end{itemize}
+        \item Administrador
+        \begin{itemize}
+            \item Todo lo anterior
+            \item Añadir usuarios y editarlos
+            \item Activar y desactivar usuarios
+            \item Dar o quitar roles
+            \item Anonimizar facturas
+        \end{itemize}
+    \end{itemize}
+    \item Usuario súper administrador
+    \begin{itemize}
+        \item Igual que administrador pero no puede perder su rol
+        \item Se deben crear a mano por un desarrollador con acceso al sistema
+    \end{itemize}
+\end{itemize}
+\vspace{1em}
+\par Ahora se van a clasificar cada caso de uso de una forma similar a los objetivos, con los siguientes datos: identificador, nombre, descripción, flujo básico, flujos alternos, pre-condiciones, post-condiciones.
+
+%%%%%%%%%%%%%%%%%
+%% Caso de uso %%
+%%%%%%%%%%%%%%%%%
+\vspace{1em}
+\par
+\begin{tabular}{||p{3cm}|p{11cm}||} 
+\hline
+Identificador & CU1 \\ [0.5ex] 
+\hline\hline
+Nombre & Iniciar \\ 
+\hline
+Descripción & Iniciar sesión \\
+\hline
+Pre-condiciones & Debe estar registrado \\
+\hline
+Flujo básico & Carga la página principal, escribe sus datos en el formulario
+y envía el formulario \\
+\hline
+Flujo alterno & - \\
+\hline
+Post-condiciones &
+\begin{itemize}
+    \item Login correcto: Se muestra el dashboard
+    \item Login incorrecto: Se muestra mensaje de datos incorrectos
+\end{itemize} \\
+\hline
+\end{tabular}
