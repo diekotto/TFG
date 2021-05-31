@@ -1,11 +1,12 @@
 # TFG
 > *Author: Diego Maroto*  
-> *Tutor: John Alejandro Casto Vargas*  
-> *Co-Tutor: Jose García*  
+> *Tutor: Jose García*  
+> *Cotutor: John Alejandro Casto Vargas*  
 
 ## Enlaces de interés
+
 [Backend](https://economato-social-api.herokuapp.com)  
-[Frontend](ttps://economato-social.herokuapp.com)  
+[Frontend](https://economato-social.herokuapp.com)  
 [Repository](https://github.com/DiegoMGar/TFG)  
 [Video-tutoriales resumen](https://drive.google.com/drive/folders/1pv-6iishQkM29StiSHUyY74lWEVx0t6q)  
 
