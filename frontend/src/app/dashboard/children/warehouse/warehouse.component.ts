@@ -17,6 +17,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
   loading = true;
   dateFormatTable = 'dd/MM/y';
   dispatching: string;
+  dispatchingCode: string;
   dispatchingProducts: ProductResume[];
   dispatchingChecked = 0;
 
@@ -54,6 +55,7 @@ export class WarehouseComponent implements OnInit, OnDestroy {
       return;
     }
     this.dispatchingProducts = order.products;
+    this.dispatchingCode = order.code;
     this.dispatching = id;
   }
 
