@@ -70,7 +70,7 @@ export class ProductService {
     product.type = input.type;
     product.chargeableOutBudget = input.chargeableOutBudget;
     let openFoodResponse = {};
-    if (product.ean) {
+    if (input.ean) {
       try {
         openFoodResponse = await this.readByEan(input.ean);
         product.ean = input.ean;

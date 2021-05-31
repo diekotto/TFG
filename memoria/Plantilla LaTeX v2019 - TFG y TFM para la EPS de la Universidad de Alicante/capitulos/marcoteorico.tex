@@ -96,20 +96,16 @@ El mercado de los ERP es amplio y con mucha variedad de soluciones. Una pequeña
 \par Uno de los ERP más conocidos en el mundo del desarrollo es \citep{odooWebpage}, es Open Source, aunque no de licencia libre ni con capas gratuitas. Este ERP está basado en módulos para hacer configurable su uso y su tarifa y, además, tiene capacidad para que desarrolles Python construyan módulos y los pongan a la venta en su app store, o si no quisieran venderlos, engancharlos a su solución Odoo y no compartirlos con nadie.
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.4]{archivos/odooModules.png}
-\end{tabular}
 \caption{Compra de módulos de Odoo}
-\label{fig:odooModules}
+\label{fig:odooModules_compra}
 \end{figure}
 \clearpage
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.38]{archivos/odooModules2.png}
-\end{tabular}
 \caption{Comunicación entre módulos de Odoo}
-\label{fig:odooModules}
+\label{fig:odooModules_comunicacion}
 \end{figure}
 \par Podríamos listar las siguientes ventajas:
 \begin{itemize}
@@ -145,9 +141,7 @@ Dadas las premisas de arquitectura, para este proyecto optamos por estudiar las 
 \subsubsection{Raspberry pi (DIY)}
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.5]{archivos/RPi_4.jpg}
-\end{tabular}
 \caption{Raspberry Pi 4 Modelo B}
 \label{fig:rpi4}
 \end{figure}
@@ -157,17 +151,13 @@ Dadas las premisas de arquitectura, para este proyecto optamos por estudiar las 
 \par La Raspberry Pi es una serie de ordenadores de placa reducida de bajo coste desarrollado en el Reino Unido. Su objetivo principal ha sido siempre poner a disposición de todo el mundo el poder de la informática con un ordenador reducido en espacio y coste. Cuando se creó, se pretendía promocionar la enseñanza informática en las escuelas, pero terminó siendo mucho más popular de lo que se esperaba. Como se muestra en la figura 2.3, no trae ningún tipo de periférico, ni carcasa; aunque ya hay packs de todo tipo para ayudar a la adopción del hardware.
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.4]{archivos/rpi4keyboard.png}
-\end{tabular}
 \caption{Raspberry Pi integrada en el interior de un teclado}
 \label{fig:rpi4keyboard}
 \end{figure}
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.4]{archivos/rpi4case.png}
-\end{tabular}
 \caption{Raspberry Pi protegida con funda}
 \label{fig:rpi4case}
 \end{figure}
@@ -194,11 +184,9 @@ Dado que la arquitectura hardware mantenida por nosotros no iba a ser viable a l
 \par Los servicios Cloud nacen para dar una recurso muy simple de explicar y no tan fácil de proveer, capacidad de procesamiento infinita. Un servicio cloud no es simplemente un software que corre en el ordenador de otro en lugar del propio, es la escalabilidad (casi) sin límites y bajo demanda, lo que le da potencia como idea. Hoy en día hay múltiples proveedores de servicios cloud, aunque los jugadores más fuertes son indiscutiblemente Aws, Azure y Digital Ocean.
 \begin{table}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.2]{archivos/aws.png}
 \includegraphics[scale=0.2]{archivos/azure.png}
 \includegraphics[scale=0.08]{archivos/digitalocean.png}
-\end{tabular}
 \end{table}
 \vspace{1em}
 \par Dado que yo tengo experiencia laboral y personal como arquitecto cloud en servicios aws y me estoy preparando el examen oficial, decidimos sin pensárnoslo mucho en estudiar nuestra solución como nativa cloud haciendo uso de los servicios Aws. Si bien Aws tiene capas gratuitas, éstas son temporales en caso de la computación y son circulares en caso de la transmisión de datos. Dado nuestro cliente y nuestro estudio de casos de uso, sabíamos que podríamos usar las capas gratuitas de transferencia de datos sin problema, pero el hosting sí podría suponer una traba. Aún así, proseguimos.
@@ -208,17 +196,13 @@ Dado que la arquitectura hardware mantenida por nosotros no iba a ser viable a l
 \par La parte buena de usar este servicio es la capacidad de usar sus servicios bajo demanda, podemos hacer crecer y disminuir máquinas conforme necesitemos, balancear la carga entre varios nodos si quisiéramos o incluso aumentar nuestro porcentaje de disponibilidad usando la Route 53 para que si una región deja de estar disponible, automáticamente el trafico quedase redirigido a la región más cercana. Habríamos usado una base de datos adhoc RDS para evitar configuración y mantenimiento, teniéndolo todo centralizado en una misma red para minimizar la espera por latencia y habríamos protegido el acceso y ddos de nuestra máquina usando el servicio de ApiGateway. El frontend podría ser desatendido, almacenado en un S3 de bajo coste y distribuido y cacheado por el servicio de CloudFront.
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.5]{archivos/arquitecturaAws.png}
-\end{tabular}
 \caption{Arquitectura simplificada}
 \end{figure}
 \clearpage
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.6]{archivos/budgetAws.png}
-\end{tabular}
 \caption{Presupuesto simplificado}
 \end{figure}
 \clearpage
@@ -285,25 +269,19 @@ El serverless computing ha sido concebido principalmente para el intercambio ef�
 \subsubsection{Ejemplos de uso con heroku}
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.5]{archivos/heroku01.png}
-\end{tabular}
 \caption{Configurando proyecto en Heroku}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.5]{archivos/heroku02.png}
-\end{tabular}
 \caption{CI/CD en Heroku}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\begin{tabular}{ccc}
 \includegraphics[scale=0.5]{archivos/heroku03.png}
-\end{tabular}
 \caption{Ejemplo de uso de Heroku por línea de comandos}
 \end{figure}
 \clearpage
@@ -326,6 +304,3 @@ Una de nuestras principales preocupaciones, como se lleva diciendo toda la expos
 \vspace{1em}
 \par Y de esta forma queda decidido, se usará Typescript con Nestjs para el backend, Typescript con Angular para el frontend y MongoDB para la persistencia de datos. 
 \clearpage
-% --------------------------------------------------------------
-% --------------------------------------------------------------
-% --------------------------------------------------------------

@@ -3,6 +3,11 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type ProductDocument = Product & Document;
 
+export class ProductLimits {
+  @Prop() price: number;
+  @Prop() quantity: number;
+}
+
 @Schema()
 export class Product {
   @Prop() ean: string;
@@ -24,11 +29,6 @@ export class Product {
   constructor(o: Product) {
     Object.assign(this, o);
   }
-}
-
-export class ProductLimits {
-  @Prop() price: number;
-  @Prop() quantity: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
