@@ -756,10 +756,10 @@ Para terminar esta subsección, se procede a un pequeño análisis del código d
     \item Patrón MVC clásico, con la salvedad de que la vista es mapeo e impresión de datos en json.
     \item Inyección de dependencias, Nestjs permite una configuración de módulos muy intuitiva que permite inyectar dependencias en el constructor de las clases con muy poca configuración, de esta forma la inicialización de las clases de las que depende la lógica de negocio es completamente agnóstica a la misma lógica de negocio.
     \item Patrón singleton, los servicios injectables en Nestjs que se importan desde módulos independientes tienen la peculiaridad de que sólo se instancian una vez por módulo, ahorrando memoria y errores de implementación en caso de querer hacerlo manualmente.
-    \item Patrón factory, Nestjs usa una factory por defecto para crear el model de Mongodb a partir de una clase decorada como esquema. Además, en el proyecto se ha usado el patrón factory para construir los dto de salida a partir de un documento de Mongodb.
+    \item Patrón factory, Nestjs usa una factory por defecto para crear el modelo de Mongodb a partir de una clase decorada como esquema. Además, en el proyecto se ha usado el patrón factory para construir los dto de salida a partir del documento de Mongodb al que se refiere.
 \end{itemize}
 \vspace{1em}
-\par Nestjs tiene muchos más beneficios, como el enrutado automático del servidor web o la configuración automática del servidor de documentación basado en swagger.
+\par Nestjs tiene muchos más beneficios, como el enrutado automático del servidor web o la configuración automática del servidor de documentación basado en Swagger.
 \vspace{1em}
 \par Para el frontend se ha usado Angular 11, del cual se ha expuesto menos código ya que es muy similar al backend. Ésta fue una de las razones de usar la combinación Nestjs y Angular, ambos son MVC con módulos configurables e inyectables y usan una sintaxis muy similar, de ésta forma ser conocedor de uno de los dos framework hace el acercamiento al otro mucho más sencillo y con muy poca curva de aprendizaje.
 \vspace{1em}
@@ -773,7 +773,7 @@ Más allá de los frameworks, en el desarrollo del backend se ha hecho especial 
     \end{itemize}
     \item O: Principio abierto/cerrado.
     \begin{itemize}
-        \item Cuando se ha tenido que añadir o cambiar lógica, se ha intentado siempre minimizar el impacto que esto tiene sobre las funcionalidad actuales. Las factories han servido de ayuda, ya que aíslan funcionalidades concretas de forma estática e independiente de clases relacionadas. 
+        \item Cuando se ha tenido que añadir o cambiar lógica, se ha intentado siempre minimizar el impacto que esto tiene sobre las funcionalidades actuales. Las factories han servido de ayuda, ya que aíslan funcionalidades concretas de forma estática e independiente de las clases relacionadas. 
     \end{itemize}
     \item L: Sustitución de Liskov.
     \begin{itemize}
@@ -789,10 +789,10 @@ Más allá de los frameworks, en el desarrollo del backend se ha hecho especial 
     \end{itemize}
 \end{itemize}
 \vspace{1em}
-\par Para finalizar, se ha pretendido mantener el código todo lo seco posible: DRY (Don't Repeat Yourself), haciendo uso de herencias, funciones y extrayendo a módulos inyectables las codificaciones que se han detectado como generalizaciones.
+\par Para finalizar, se ha pretendido mantener el código todo lo seco posible: DRY (Don't Repeat Yourself), haciendo uso de herencias, POO, funciones y extrayendo a módulos inyectables las codificaciones que se han detectado como generalizaciones.
 
 \section{Resultado final}
-Para finalizar este capítulo sabe señalar que hay mucho más código y muchos más detalles en la aplicacíon de lo que se puede expresar en un documento. Por lo que se va a aprovechar este cierre para incluir enlaces directamente a los servicios desplegados en producción, vídeo-tutoriales que se han entregado junto al proyecto al economato social y el enlace al proyecto en el repositorio remoto Github.
+Para finalizar este capítulo cabe señalar que hay mucho más código y muchos más detalles en la aplicacíon de lo que se puede expresar en un documento. Por lo que se va a aprovechar este cierre para incluir enlaces directamente a los servicios desplegados en producción, vídeo-tutoriales que se han entregado junto al proyecto al economato social y el enlace al proyecto en el repositorio remoto Github.
 \begin{itemize}
     \item \href{https://economato-social-api.herokuapp.com}{Enlace al Backend} \citep{BACKEND}
     \item \href{ttps://economato-social.herokuapp.com}{Enlace al Frontend} \citep{FRONTEND}
