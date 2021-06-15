@@ -6,6 +6,7 @@ backend/dist
 documentos
 tfg-48576470X-diegomaroto
 *.zip
+*.odt
 
 # Logs
 logs
