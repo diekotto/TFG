@@ -1,4 +1,6 @@
 # TFG
+> *Evaluado el: 14/06/2021*  
+> *Nota: 9*  
 > *Author: Diego Maroto*  
 > *Tutor: Jose García*  
 > *Cotutor: John Alejandro Casto Vargas*  
