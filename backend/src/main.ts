@@ -7,6 +7,8 @@ import {
   WinstonModule,
 } from 'nest-winston';
 import * as winston from 'winston';
+import * as helmet from 'helmet';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -21,7 +23,13 @@ async function bootstrap() {
       ],
     }),
   });
+  app.use(helmet());
   app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
   app.useWebSocketAdapter(new WsAdapter(app));
   await app.listen(process.env.PORT || 3000);
 }

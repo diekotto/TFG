@@ -25,6 +25,8 @@ import configuration from './config/configuration';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winston.utilities';
+import { ParishMongoModule } from './db/parish-mongo/parish-mongo.module';
+import { ParishModule } from './api/parish/parish.module';
 
 @Module({
   imports: [
@@ -61,6 +63,8 @@ import { utilities as nestWinstonModuleUtilities } from 'nest-winston/dist/winst
     OpenfoodMongoModule,
     InvoiceModule,
     WebsocketsModule,
+    ParishMongoModule,
+    ParishModule,
   ],
   controllers: [AppController],
   providers: [AppService],

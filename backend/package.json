@@ -16,6 +16,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "deploy": " git push heroku master",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "pretty:staged": "pretty-quick --staged",
     "start": "node dist/main",
@@ -42,6 +43,9 @@
     "@types/socket.io": "^2.1.13",
     "@types/ws": "^7.4.1",
     "bcrypt": "^5.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
+    "helmet": "^4.6.0",
     "husky": "^4.3.5",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
